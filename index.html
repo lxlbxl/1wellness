@@ -4,63 +4,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <script src="js/config.js"></script>
     <script src="js/webhook-manager.js"></script>
     <script src="js/tracking.js"></script>
     <script src="js/gdpr-cookie-consent.js" defer></script>
 
     <style>
+        :root {
+            --brand-midnight: #1A1A18;
+            --brand-forest: #1D4532;
+            --brand-amber: #D4860A;
+            --brand-canvas: #F9F5EE;
+            --brand-sage: #8FB89A;
+            --brand-terra: #C85A3C;
+            --brand-cream: #FFFBF4;
+            --brand-stone: #E8E0D5;
+            --brand-dusk: #6B6560;
+            --brand-charcoal: #2C2C2A;
+        }
+
+        body {
+            font-family: 'Lora', Georgia, serif;
+            background: var(--brand-canvas);
+            color: var(--brand-charcoal);
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Syne', sans-serif;
+        }
+
+        .font-display {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+        }
+
         .gradient-text {
-            background: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #14532d 100%);
+            background: linear-gradient(135deg, #1D4532 0%, #2A5C3E 50%, #8FB89A 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .hero-gradient {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
+            background: linear-gradient(135deg, #F9F5EE 0%, #FFFBF4 30%, #E8E0D5 100%);
         }
 
-        .card-hover {
-            transition: all 0.3s ease;
-        }
+        .bg-brand-50 { background: #F0F7F2; }
+        .bg-brand-100 { background: #D4EBDA; }
+        .bg-brand-500 { background: #8FB89A; }
+        .bg-brand-600 { background: #1D4532; }
+        .bg-brand-700 { background: #153525; }
+        .bg-brand-800 { background: #0E2419; }
 
+        .text-brand-600 { color: #1D4532; }
+        .text-brand-700 { color: #153525; }
+        .text-brand-100 { color: #D4EBDA; }
+        .text-brand-200 { color: #A8CFB0; }
+
+        .border-brand-500 { border-color: #8FB89A; }
+        .border-brand-300 { border-color: #D4EBDA; }
+
+        .hover\:bg-brand-700:hover { background: #153525; }
+        .hover\:bg-brand-300:hover { background: #D4EBDA; }
+        .hover\:text-brand-400:hover { color: #A8CFB0; }
+        .hover\:text-brand-600:hover { color: #1D4532; }
+
+        .shadow-brand-500\/30 { box-shadow: 0 4px 14px rgba(29, 69, 50, 0.3); }
+
+        .bg-amber-400 { background: #D4860A; }
+        .text-amber-400 { color: #D4860A; }
+
+        .bg-midnight { background: var(--brand-midnight); }
+        .text-midnight { color: var(--brand-midnight); }
+        .bg-stone { background: var(--brand-stone); }
+        .bg-cream { background: var(--brand-cream); }
+        .bg-forest { background: var(--brand-forest); }
+        .text-forest { color: var(--brand-forest); }
+
+        .card-hover { transition: all 0.3s ease; }
         .card-hover:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(26, 26, 24, 0.12);
         }
-
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-pulse-slow { animation: pulse 3s ease-in-out infinite; }
         @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
-
-        .animate-pulse-slow {
-            animation: pulse 3s ease-in-out infinite;
-        }
-
         @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.7;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
+
+        /* Product card gradients — brand palette */
+        .card-skin { background: linear-gradient(135deg, #8FB89A, #1D4532); }
+        .card-cycle { background: linear-gradient(135deg, #C85A3C, #8B3E2A); }
+        .card-lean { background: linear-gradient(135deg, #D4860A, #A06508); }
+        .card-vitality { background: linear-gradient(135deg, #1D4532, #0E2419); }
+
+        .tag-skin { background: #D4EBDA; color: #1D4532; }
+        .tag-cycle { background: #F5D5CC; color: #8B3E2A; }
+        .tag-lean { background: #FCE8C5; color: #A06508; }
+        .tag-vitality { background: #D4EBDA; color: #153525; }
+
+        .btn-skin { background: #1D4532; }
+        .btn-skin:hover { background: #153525; }
+        .btn-cycle { background: #C85A3C; }
+        .btn-cycle:hover { background: #8B3E2A; }
+        .btn-lean { background: #D4860A; }
+        .btn-lean:hover { background: #A06508; }
+        .btn-vitality { background: #1D4532; }
+        .btn-vitality:hover { background: #0E2419; }
+
+        .price-skin { color: #1D4532; }
+        .price-cycle { color: #C85A3C; }
+        .price-lean { color: #D4860A; }
+        .price-vitality { color: #1D4532; }
+
+        .save-skin { color: #1D4532; }
+        .save-cycle { color: #8B3E2A; }
+        .save-lean { color: #A06508; }
+        .save-vitality { color: #153525; }
     </style>
 </head>
 
@@ -203,7 +271,7 @@
                             class="w-10 h-10 bg-gradient-to-br from-brand-500 to-brand-700 rounded-full flex items-center justify-center">
                             <i class="fas fa-leaf text-white text-lg"></i>
                         </div>
-                        <span class="text-2xl font-serif font-bold text-gray-900">1wellness</span>
+                        <span class="text-2xl font-display font-bold text-gray-900">1wellness</span>
                     </a>
                 </div>
 
@@ -239,7 +307,7 @@
                         <span>Trusted by 50,000+ customers worldwide</span>
                     </div>
 
-                    <h1 class="text-5xl lg:text-6xl font-serif font-bold text-gray-900 leading-tight">
+                    <h1 class="text-5xl lg:text-6xl font-display font-bold text-midnight leading-tight">
                         Natural Health Solutions for the <span class="gradient-text">Modern World</span>
                     </h1>
 
@@ -330,7 +398,7 @@
     <section id="products" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-4xl font-serif font-bold text-gray-900 mb-6">Personalized Solutions for Your Health
+                <h2 class="text-4xl font-display font-bold text-midnight mb-6">Personalized Solutions for Your Health
                     Goals</h2>
                 <p class="text-xl text-gray-600">Each journey begins with a comprehensive assessment. We analyze your
                     unique needs and create a customized herbal protocol just for you.</p>
@@ -340,13 +408,13 @@
                 <!-- Acne Solution -->
                 <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                     <div
-                        class="h-48 bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+                        class="h-48 card-skin flex items-center justify-center">
                         <i class="fas fa-spa text-6xl text-white opacity-90"></i>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center gap-2 mb-3">
                             <span
-                                class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">SKIN
+                                class="px-3 py-1 tag-skin rounded-full text-xs font-semibold">SKIN
                                 HEALTH</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">GlowClear</h3>
@@ -354,13 +422,98 @@
                             causes for lasting clarity.</p>
                         <div class="flex items-center justify-between mb-4">
                             <div>
-                                <span class="text-2xl font-bold text-emerald-600" x-text="formatPrice(67)"></span>
+                                <span class="text-2xl font-bold price-skin" x-text="formatPrice(67)"></span>
                                 <span class="text-gray-400 line-through ml-2" x-text="formatPrice(147)"></span>
                             </div>
-                            <span class="text-sm text-emerald-600 font-medium">Save 54%</span>
+                            <span class="text-sm save-skin font-medium">Save 54%</span>
                         </div>
                         <a href="acne/"
-                            class="block w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-center font-semibold rounded-xl transition-colors">
+                            class="block w-full py-3 btn-skin text-white text-center font-semibold rounded-xl transition-colors">
+                            Start Assessment
+                        </a>
+                    </div>
+                </div>
+
+                <!-- PCOS Solution -->
+                <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div
+                        class="h-48 card-cycle flex items-center justify-center">
+                        <i class="fas fa-female text-6xl text-white opacity-90"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span
+                                class="px-3 py-1 tag-cycle rounded-full text-xs font-semibold">HORMONE
+                                BALANCE</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">CycleSync</h3>
+                        <p class="text-gray-600 mb-4 text-sm">Comprehensive support for hormonal harmony, cycle
+                            regulation, and fertility wellness.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="text-2xl font-bold price-cycle" x-text="formatPrice(97)"></span>
+                                <span class="text-gray-400 line-through ml-2" x-text="formatPrice(197)"></span>
+                            </div>
+                            <span class="text-sm save-cycle font-medium">Save 51%</span>
+                        </div>
+                        <a href="pcos/"
+                            class="block w-full py-3 btn-cycle text-white text-center font-semibold rounded-xl transition-colors">
+                            Start Assessment
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Weight Loss Solution -->
+                <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div
+                        class="h-48 card-lean flex items-center justify-center">
+                        <i class="fas fa-fire text-6xl text-white opacity-90"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span
+                                class="px-3 py-1 tag-lean rounded-full text-xs font-semibold">METABOLISM</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">LeanFlow</h3>
+                        <p class="text-gray-600 mb-4 text-sm">Sustainable weight management through metabolic support
+                            and natural appetite balance.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="text-2xl font-bold price-lean" x-text="formatPrice(77)"></span>
+                                <span class="text-gray-400 line-through ml-2" x-text="formatPrice(167)"></span>
+                            </div>
+                            <span class="text-sm save-lean font-medium">Save 54%</span>
+                        </div>
+                        <a href="weight/"
+                            class="block w-full py-3 btn-lean text-white text-center font-semibold rounded-xl transition-colors">
+                            Start Assessment
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Men's Vitality Solution -->
+                <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div
+                        class="h-48 card-vitality flex items-center justify-center">
+                        <i class="fas fa-male text-6xl text-white opacity-90"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span
+                                class="px-3 py-1 tag-vitality rounded-full text-xs font-semibold">VITALITY</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Men's Vitality</h3>
+                        <p class="text-gray-600 mb-4 text-sm">Natural support for energy, strength, and masculine
+                            wellness at any age.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="text-2xl font-bold price-vitality" x-text="formatPrice(87)"></span>
+                                <span class="text-gray-400 line-through ml-2" x-text="formatPrice(157)"></span>
+                            </div>
+                            <span class="text-sm save-vitality font-medium">Save 45%</span>
+                        </div>
+                        <a href="mens/"
+                            class="block w-full py-3 btn-vitality text-white text-center font-semibold rounded-xl transition-colors">
                             Start Assessment
                         </a>
                     </div>
@@ -455,7 +608,7 @@
     <section id="how-it-works" class="py-24 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-4xl font-serif font-bold text-gray-900 mb-6">Your Journey to Wellness</h2>
+                <h2 class="text-4xl font-display font-bold text-midnight mb-6">Your Journey to Wellness</h2>
                 <p class="text-xl text-gray-600">A simple, personalized approach that puts your unique needs first.</p>
             </div>
 
@@ -503,7 +656,7 @@
     <section id="testimonials" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-4xl font-serif font-bold text-gray-900 mb-6">Lives Transformed</h2>
+                <h2 class="text-4xl font-display font-bold text-midnight mb-6">Lives Transformed</h2>
                 <p class="text-xl text-gray-600">Join thousands who have discovered the power of personalized herbal
                     wellness.</p>
             </div>
@@ -573,27 +726,27 @@
     </section>
 
     <!-- Trust Badges Section -->
-    <section class="py-16 bg-brand-50">
+    <section class="py-16 bg-stone">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                 <div>
-                    <i class="fas fa-leaf text-4xl text-brand-600 mb-4"></i>
-                    <h4 class="font-bold text-gray-900 mb-2">100% Natural</h4>
+                    <i class="fas fa-leaf text-4xl text-forest mb-4"></i>
+                    <h4 class="font-bold text-midnight mb-2">100% Natural</h4>
                     <p class="text-gray-600 text-sm">Pure herbal ingredients</p>
                 </div>
                 <div>
-                    <i class="fas fa-shield-check text-4xl text-brand-600 mb-4"></i>
-                    <h4 class="font-bold text-gray-900 mb-2">90-Day Guarantee</h4>
+                    <i class="fas fa-shield-check text-4xl text-forest mb-4"></i>
+                    <h4 class="font-bold text-midnight mb-2">90-Day Guarantee</h4>
                     <p class="text-gray-600 text-sm">Full satisfaction or refund</p>
                 </div>
                 <div>
-                    <i class="fas fa-truck text-4xl text-brand-600 mb-4"></i>
-                    <h4 class="font-bold text-gray-900 mb-2">Global Shipping</h4>
+                    <i class="fas fa-truck text-4xl text-forest mb-4"></i>
+                    <h4 class="font-bold text-midnight mb-2">Global Shipping</h4>
                     <p class="text-gray-600 text-sm">Delivered to your door</p>
                 </div>
                 <div>
-                    <i class="fas fa-user-md text-4xl text-brand-600 mb-4"></i>
-                    <h4 class="font-bold text-gray-900 mb-2">Expert Formulated</h4>
+                    <i class="fas fa-user-md text-4xl text-forest mb-4"></i>
+                    <h4 class="font-bold text-midnight mb-2">Expert Formulated</h4>
                     <p class="text-gray-600 text-sm">Backed by herbalists</p>
                 </div>
             </div>
@@ -604,7 +757,7 @@
     <section id="faq" class="py-24 bg-white">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-4xl font-serif font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+                <h2 class="text-4xl font-display font-bold text-midnight mb-6">Frequently Asked Questions</h2>
             </div>
 
             <div class="space-y-4" x-data="{ open: null }">
@@ -685,14 +838,14 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-24 bg-gradient-to-br from-brand-600 to-brand-800">
+    <section class="py-24 bg-forest">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl md:text-5xl font-serif font-bold text-white mb-6">Ready to Transform Your Health?</h2>
-            <p class="text-xl text-brand-100 mb-10">Join over 50,000 people worldwide who have discovered the power of
+            <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-6">Ready to Transform Your Health?</h2>
+            <p class="text-xl text-brand-200 mb-10">Join over 50,000 people worldwide who have discovered the power of
                 personalized herbal wellness.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="#products"
-                    class="inline-flex items-center justify-center gap-2 px-10 py-5 bg-white text-brand-700 font-bold rounded-full hover:bg-gray-100 transition-all transform hover:scale-105 shadow-xl">
+                    class="inline-flex items-center justify-center gap-2 px-10 py-5 bg-amber-400 text-white font-bold rounded-full hover:bg-[#B87208] transition-all transform hover:scale-105 shadow-xl">
                     <span>Explore Products</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
@@ -705,30 +858,30 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300 py-16">
+    <footer class="bg-midnight text-gray-300 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-12 mb-12">
                 <div>
                     <div class="flex items-center gap-2 mb-6">
                         <div
-                            class="w-10 h-10 bg-gradient-to-br from-brand-500 to-brand-700 rounded-full flex items-center justify-center">
+                            class="w-10 h-10 bg-forest rounded-full flex items-center justify-center">
                             <i class="fas fa-leaf text-white text-lg"></i>
                         </div>
-                        <span class="text-2xl font-serif font-bold text-white">1wellness</span>
+                        <span class="text-2xl font-display font-bold text-white">1wellness</span>
                     </div>
                     <p class="text-gray-400 mb-6">Natural health solutions backed by traditional wisdom and modern
                         science. Personalized wellness for the modern world.</p>
                     <div class="flex gap-4">
                         <a href="#"
-                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-brand-600 transition-colors">
+                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-forest transition-colors">
                             <i class="fab fa-facebook-f"></i>
                         </a>
                         <a href="#"
-                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-brand-600 transition-colors">
+                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-forest transition-colors">
                             <i class="fab fa-instagram"></i>
                         </a>
                         <a href="#"
-                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-brand-600 transition-colors">
+                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-forest transition-colors">
                             <i class="fab fa-twitter"></i>
                         </a>
                     </div>
