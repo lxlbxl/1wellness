@@ -1,0 +1,262 @@
+{
+    "funnel_registry": {
+        "value": {
+            "acne": {
+                "name": "Acne",
+                "directory": "acne",
+                "discovered_at": "2025-11-23 15:04:30",
+                "status": "active"
+            },
+            "egbon": {
+                "name": "Egbon",
+                "directory": "egbon",
+                "discovered_at": "2025-11-24 13:11:29",
+                "status": "active"
+            },
+            "pcos": {
+                "name": "Pcos",
+                "directory": "pcos",
+                "discovered_at": "2025-11-23 15:04:30",
+                "status": "active"
+            },
+            "weight": {
+                "name": "Weight",
+                "directory": "weight",
+                "discovered_at": "2025-11-23 15:04:30",
+                "status": "active"
+            }
+        },
+        "type": "json",
+        "description": "Discovered funnels registry"
+    },
+    "payment_plans": {
+        "value": {
+            "acne": {
+                "30-day": {
+                    "name": "30-Day Acne Starter Plan",
+                    "price": 97,
+                    "currency": "USD",
+                    "description": "Essential 30-day acne management starter program with skincare routine and support",
+                    "features": [
+                        "Personalized 30-day skincare routine",
+                        "Essential supplement guide",
+                        "Acne education materials",
+                        "WhatsApp 1-on-1 Chat",
+                        "Progress tracking templates",
+                        "Quick start implementation guide",
+                        "14-day money-back guarantee"
+                    ],
+                    "file": "30-day-plan.html"
+                },
+                "90-day": {
+                    "name": "90-Day Complete Acne Transformation",
+                    "price": 197,
+                    "currency": "USD",
+                    "description": "Complete 90-day acne transformation program with advanced protocols and expert support",
+                    "features": [
+                        "Advanced 90-day skincare protocol",
+                        "Complete supplement protocol",
+                        "Professional treatment guides",
+                        "Unlimited specialist access",
+                        "Advanced tracking tools",
+                        "Long-term maintenance strategy",
+                        "30-day money-back guarantee"
+                    ],
+                    "file": "90-day-plan.html"
+                }
+            },
+            "egbon": {
+                "egbon-single": {
+                    "name": "Egbon Instant Herbal - Men's Vitality Formula",
+                    "price": 18000,
+                    "currency": "USD",
+                    "description": "100% natural herbal supplement for enhanced libido, performance, and masculine vitality",
+                    "features": [
+                        "1 Bottle of Egbon Instant Herbal",
+                        "100% Natural herbal formula",
+                        "Fast-acting performance enhancement",
+                        "Usage guide and instructions",
+                        "Fast delivery to your location",
+                        "30-day money-back guarantee"
+                    ],
+                    "file": "sales.html"
+                }
+            },
+            "pcos": {
+                "30-day": {
+                    "name": "30-Day PCOS Starter Plan",
+                    "price": 97,
+                    "currency": "USD",
+                    "description": "Essential 30-day PCOS management starter program with meal plans and support",
+                    "features": [
+                        "Personalized 30-day meal plan",
+                        "Essential supplement guide",
+                        "PCOS education materials",
+                        "WhatsApp 1-on-1 Chat",
+                        "Progress tracking templates",
+                        "Quick start implementation guide",
+                        "14-day money-back guarantee"
+                    ],
+                    "file": "30-day-plan.html"
+                },
+                "90-day": {
+                    "name": "90-Day PCOS Complete Transformation",
+                    "price": 197,
+                    "currency": "USD",
+                    "description": "Complete 90-day PCOS management program with personalized meal plans and expert support",
+                    "features": [
+                        "Personalized 90-day meal plan for your PCOS type",
+                        "Targeted supplement protocol with dosages",
+                        "PCOS-specific exercise routines",
+                        "Weekly progress tracking tools",
+                        "Direct Phone access to PCOS specialists",
+                        "Private WhatsApp Chat                           \u2713 30-day money-back guarantee"
+                    ],
+                    "file": "90-day-plan.html"
+                }
+            },
+            "pcos-1": {
+                "30-day": {
+                    "name": "30-Day Pcos 1 Plan",
+                    "price": 97,
+                    "currency": "USD",
+                    "description": "Complete 30-day pcos 1 program",
+                    "features": [
+                        "Personalized meal plan",
+                        "Email support",
+                        "Progress tracking"
+                    ],
+                    "file": "sales.html"
+                },
+                "90-day": {
+                    "name": "90-Day Pcos 1 Plan",
+                    "price": 197,
+                    "currency": "USD",
+                    "description": "Complete 90-day pcos 1 program",
+                    "features": [
+                        "Personalized meal plan",
+                        "Email support",
+                        "Progress tracking",
+                        "Weekly check-ins",
+                        "WhatsApp support group",
+                        "Direct specialist access",
+                        "Custom supplement recommendations",
+                        "Lifetime resource access"
+                    ],
+                    "file": "sales.html"
+                }
+            },
+            "weight": {
+                "30-day": {
+                    "name": "30-Day Weight Loss Starter Plan",
+                    "price": 97,
+                    "currency": "USD",
+                    "description": "Essential 30-day weight management starter program with meal plans and support",
+                    "features": [
+                        "Personalized 30-day meal plan",
+                        "Essential exercise guide",
+                        "Weight loss education materials",
+                        "WhatsApp 1-on-1 Chat",
+                        "Progress tracking templates",
+                        "Quick start implementation guide",
+                        "14-day money-back guarantee"
+                    ],
+                    "file": "30-day-plan.html"
+                },
+                "90-day": {
+                    "name": "90-Day Complete Weight Loss Transformation",
+                    "price": 197,
+                    "currency": "USD",
+                    "description": "Complete 90-day weight loss transformation program with advanced protocols and expert support",
+                    "features": [
+                        "Advanced 90-day nutrition protocol",
+                        "Complete exercise program",
+                        "Professional weight loss strategies",
+                        "Unlimited specialist access",
+                        "Advanced tracking tools",
+                        "Long-term maintenance strategy",
+                        "30-day money-back guarantee"
+                    ],
+                    "file": "90-day-plan.html"
+                }
+            }
+        },
+        "type": "json",
+        "description": "Payment plans configuration"
+    },
+    "site_name": {
+        "value": "OJG Herbal Health Assessment",
+        "type": "string",
+        "description": ""
+    },
+    "admin_email": {
+        "value": "admin@ojgherbal.com",
+        "type": "string",
+        "description": ""
+    },
+    "smtp_host": {
+        "value": "",
+        "type": "string",
+        "description": ""
+    },
+    "smtp_port": {
+        "value": "587",
+        "type": "string",
+        "description": ""
+    },
+    "smtp_username": {
+        "value": "",
+        "type": "string",
+        "description": ""
+    },
+    "smtp_password": {
+        "value": "",
+        "type": "string",
+        "description": ""
+    },
+    "smtp_from_email": {
+        "value": "",
+        "type": "string",
+        "description": ""
+    },
+    "smtp_from_name": {
+        "value": "OJG Herbal",
+        "type": "string",
+        "description": ""
+    },
+    "flutterwave_public_key": {
+        "value": "FLWPUBK-6bb0795fd3ffdab967e8503c11f9b0d2-X",
+        "type": "string",
+        "description": ""
+    },
+    "flutterwave_secret_key": {
+        "value": "FLWSECK-88f1d8d056bca4ce245e2c69719da5dc-196a28655cfvt-X",
+        "type": "string",
+        "description": ""
+    },
+    "flutterwave_encryption_key": {
+        "value": "88f1d8d056bc3000b6b4fdd1",
+        "type": "string",
+        "description": ""
+    },
+    "ai_provider": {
+        "value": "openrouter",
+        "type": "string",
+        "description": ""
+    },
+    "ai_api_key": {
+        "value": "REPLACE_WITH_YOUR_API_KEY",
+        "type": "string",
+        "description": "OpenRouter API key for AI plan generation"
+    },
+    "ai_model": {
+        "value": "openrouter\/free",
+        "type": "string",
+        "description": ""
+    },
+    "webhook_secret": {
+        "value": "",
+        "type": "string",
+        "description": ""
+    }
+}

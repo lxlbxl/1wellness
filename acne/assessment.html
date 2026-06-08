@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acne Assessment - Discover Your Acne Type</title>
+    <meta name="description"
+        content="Complete our comprehensive Acne assessment to discover your unique Acne type and get personalized treatment recommendations.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Syne', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                        body: ['Lora', 'serif'],
+                        mono: ['DM Mono', 'monospace'],
+                    },
+                    colors: {
+                        'forest': {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#1D4532',
+                            800: '#1D4532', // Forest Authority
+                            900: '#1A1A18', // Midnight Earth
+                        },
+                        'sage': {
+                            100: '#E6EBE6',
+                            200: '#CDD6CD',
+                            500: '#8FB89A', // Sage Light
+                        },
+                        'terracotta': {
+                            500: '#C85A3C', // Terracotta Bold
+                            600: '#C85A3C',
+                        },
+                        'cream': '#FFFBF4', // Warm Cream
+                        'sand': '#F9F5EE', // Pure Canvas
+                        'midnight': '#1A1A18',
+                        'amber': '#D4860A', // Amber Vitality
+                        'charcoal': '#2C2C2A',
+                        'dusk': '#6B6560',
+                        'stone': '#E8E0D5',
+                        // Compatibility mapping
+                        primary: {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#1D4532',
+                            600: '#1D4532',
+                            700: '#1A1A18',
+                            800: '#1A1A18',
+                            900: '#1A1A18'
+                        }
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(29, 69, 50, 0.1)',
+                        'glow': '0 0 20px rgba(200, 90, 60, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FFFBF4;
+            color: #2C2C2A;
+            font-family: 'Lora', Georgia, serif;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+
+    <!-- Webhook Manager -->
+    <script src="../js/config.js"></script>
+    <script src="../js/webhook-manager.js"></script>
+    <script src="../js/tracking.js"></script>
+</head>
+
+<body class="antialiased relative min-h-screen flex flex-col">
+
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-40 mix-blend-overlay"></div>
+    <div class="blob bg-sage-200 w-96 h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+    <div
+        class="blob bg-terracotta-500 w-80 h-80 rounded-full bottom-0 right-0 translate-x-1/3 translate-y-1/3 opacity-20">
+    </div>
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-40 glass-panel border-b border-sage-200/50">
+        <div class="max-w-4xl mx-auto px-4 md:px-6 py-3 md:py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-forest-900 rounded-full flex items-center justify-center shadow-md">
+                        <span class="text-sand font-serif italic text-lg">W</span>
+                    </div>
+                    <span class="text-lg font-serif font-bold tracking-tight text-forest-900">GlowClear Assessment</span>
+                </div>
+                <div>
+                    <span class="text-xs font-bold tracking-widest text-forest-800/60 uppercase">Step 1 of 2</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <!-- Main Content -->
+    <main class="flex-grow pt-20 md:pt-28 pb-10 md:pb-12 px-4" x-data="acneAssessment()" x-cloak>
+        <div class="max-w-3xl mx-auto">
+
+            <!-- Progress Bar -->
+            <div class="mb-10" x-show="!showContactForm">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs font-bold tracking-widest text-forest-400 uppercase">Progress</span>
+                    <span class="text-xs font-bold font-mono text-forest-900"
+                        x-text="`${currentQuestion + 1} / ${totalQuestions}`"></span>
+                </div>
+                <div class="w-full bg-sage-100 rounded-full h-2 overflow-hidden shadow-inner">
+                    <div class="bg-gradient-to-r from-forest-800 to-forest-600 h-2 rounded-full transition-all duration-500 ease-out"
+                        :style="`width: ${((currentQuestion + 1) / totalQuestions) * 100}%`"></div>
+                </div>
+            </div>
+
+            <!-- Assessment Form -->
+            <div
+                class="glass-panel p-6 md:p-12 rounded-[2rem] shadow-soft relative overflow-hidden transition-all duration-300">
+
+                <!-- Question Display -->
+                <div x-show="!showResults && !showContactForm">
+                    <div class="mb-8 md:mb-10 text-center md:text-left">
+                        <h2 class="text-2xl md:text-4xl font-serif text-forest-900 mb-3 md:mb-4 leading-tight"
+                            x-text="questions[currentQuestion].question"></h2>
+                        <p class="text-gray-500 text-lg font-light border-l-2 border-terracotta-500/30 pl-4"
+                            x-text="questions[currentQuestion].description"></p>
+                    </div>
+
+                    <!-- Answer Options -->
+                    <div class="space-y-4 mb-10">
+                        <template x-for="(option, index) in questions[currentQuestion].options" :key="index">
+                            <label
+                                class="group flex items-center p-5 border rounded-2xl cursor-pointer transition-all duration-200 hover:shadow-md relative overflow-hidden"
+                                :class="getSelectedAnswer() === option.value ? 'bg-forest-50 border-forest-500 ring-1 ring-forest-500' : 'bg-white border-sage-200 hover:border-sage-300'"
+                                @click="selectAnswer(option.value)">
+
+                                <input type="radio" :name="`question_${currentQuestion}`" :value="option.value"
+                                    :checked="getSelectedAnswer() === option.value" class="sr-only">
+
+                                <div class="flex-1 relative z-10">
+                                    <div class="font-medium text-lg text-forest-900 group-hover:text-forest-700 transition-colors"
+                                        x-text="option.text"></div>
+                                    <div class="text-sm text-gray-500 mt-1 font-light" x-text="option.description"
+                                        x-show="option.description"></div>
+                                </div>
+
+                                <div class="ml-4 relative z-10">
+                                    <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200"
+                                        :class="getSelectedAnswer() === option.value ? 'border-forest-600 bg-forest-600' : 'border-gray-300 group-hover:border-forest-400'">
+                                        <div class="w-2 h-2 bg-white rounded-full transition-transform duration-200"
+                                            :class="getSelectedAnswer() === option.value ? 'scale-100' : 'scale-0'">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Hover effect background -->
+                                <div class="absolute inset-0 bg-sage-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-0"
+                                    x-show="getSelectedAnswer() !== option.value"></div>
+                            </label>
+                        </template>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between items-center pt-6 border-t border-sage-200">
+                        <button type="button" @click="previousQuestion()"
+                            :class="currentQuestion > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+                            class="text-forest-800 font-medium hover:text-forest-600 transition-colors flex items-center gap-2 text-sm uppercase tracking-wide">
+                            ← Previous
+                        </button>
+
+                        <button type="button" @click="nextQuestion()" x-show="currentQuestion < totalQuestions - 1"
+                            :disabled="!getSelectedAnswer()"
+                            class="bg-forest-900 text-sand px-6 md:px-8 py-3 rounded-full font-bold transition-all hover:bg-forest-800 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg disabled:shadow-none flex items-center gap-2 text-sm md:text-base">
+                            Next
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </button>
+
+                        <button type="button" @click="submitAssessment()"
+                            x-show="currentQuestion === totalQuestions - 1"
+                            :disabled="!answers[currentQuestion] || isSubmitting"
+                            class="bg-terracotta-500 hover:bg-terracotta-600 text-white px-10 py-4 rounded-full font-bold transition-all shadow-glow hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none">
+                            <span x-show="!isSubmitting">Analyze My Results →</span>
+                            <span x-show="isSubmitting" class="flex items-center gap-2">
+                                <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                Analysing...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contact Information Form (shown after assessment) -->
+                <div x-show="showContactForm" id="contactFormSection" class="reveal-up">
+                    <div class="text-center mb-10">
+                        <div
+                            class="w-16 h-16 bg-forest-100 text-forest-800 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                            🎉</div>
+                        <h3 class="text-3xl font-serif font-bold text-forest-900 mb-2">Analysis Complete</h3>
+                        <p class="text-gray-500">Enter your details to reveal your Acne type and personalized plan.</p>
+                    </div>
+
+                    <form @submit.prevent="submitContactInfo()" class="space-y-6 max-w-lg mx-auto">
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Full
+                                    Name</label>
+                                <input type="text" x-model="contactInfo.name" required
+                                    class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:border-forest-500 outline-none transition-all shadow-sm"
+                                    placeholder="Jane Doe">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Email
+                                    Address</label>
+                                <input type="email" x-model="contactInfo.email" required
+                                    class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:border-forest-500 outline-none transition-all shadow-sm"
+                                    placeholder="jane@example.com">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Phone
+                                    Number (WhatsApp)</label>
+                                <input type="tel" x-model="contactInfo.phone" @input="contactError = ''" required
+                                    class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:border-forest-500 outline-none transition-all shadow-sm"
+                                    :class="contactError ? 'border-red-300 ring-red-200' : ''" placeholder="+1 (555) 000-0000">
+                                <div x-show="contactError" class="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span x-text="contactError"></span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Age
+                                    Range</label>
+                                <div class="relative">
+                                    <select x-model="contactInfo.ageRange"
+                                        class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:border-forest-500 outline-none transition-all shadow-sm appearance-none">
+                                        <option value="">Select age range</option>
+                                        <option value="18-25">18-25 years</option>
+                                        <option value="26-35">26-35 years</option>
+                                        <option value="36-45">36-45 years</option>
+                                        <option value="46+">46+ years</option>
+                                    </select>
+                                    <div
+                                        class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" :disabled="isSubmittingContact"
+                                class="w-full bg-forest-900 hover:bg-forest-800 text-sand font-bold text-lg py-5 rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed">
+                                <span x-show="!isSubmittingContact">Reveal My Results & Plan →</span>
+                                <span x-show="isSubmittingContact" class="flex items-center justify-center gap-2">
+                                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                    Processing...
+                                </span>
+                            </button>
+                        </div>
+
+                        <p class="text-xs text-forest-800/60 text-center flex items-center justify-center gap-2">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            Your information is secure and private.
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Loading State Overlay (Optional, used during transition) -->
+            <div x-show="isSubmitting"
+                class="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center"
+                style="display: none;">
+                <div class="text-center">
+                    <div
+                        class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-forest-900 mx-auto mb-4">
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-forest-900">Calculating...</h3>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-6 text-center text-forest-800/40 text-xs">
+        <p>© 2026 1wellness Assessment. All rights reserved.</p>
+    </footer>
+
+    <!-- Assessment Logic (Strictly Preserved) -->
+    <script>
+        function acneAssessment() {
+            return {
+                currentQuestion: 0,
+                totalQuestions: 12,
+                answers: {},
+                isSubmitting: false,
+                showContactForm: false,
+                showResults: false,
+                isSubmittingContact: false,
+                contactInfo: {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    ageRange: ''
+                },
+                contactError: '',
+
+                questions: [
+                    {
+                        question: "Where do your breakouts primarily occur?",
+                        description: "Select the most common area where you get acne",
+                        options: [
+                            { value: "jawline", text: "Jawline, chin, and around the mouth", description: "Often indicates hormonal fluctuations or stress spikes" },
+                            { value: "cheeks", text: "Cheeks and forehead", description: "Often linked to gut dysbiosis or food sensitivities" },
+                            { value: "scattered", text: "Scattered across the entire face", description: "Often seen in post-pill rebound or general congestion" },
+                            { value: "back", text: "Chest, back, or shoulders", description: "Frequently associated with high androgen or insulin activity" }
+                        ]
+                    },
+                    {
+                        question: "How would you describe the type of breakouts you experience?",
+                        description: "Choose the description that fits your acne best",
+                        options: [
+                            { value: "cysts", text: "Deep, painful, under-the-skin bumps (cysts)", description: "Often take weeks to heal or resolve" },
+                            { value: "whiteheads", text: "Surface whiteheads, papules, or red bumps", description: "Inflamed spots that easily come to a head" },
+                            { value: "oily_sheen", text: "Blackheads, congested pores, and oily sheen", description: "Consistent oil build-up and small comedones" },
+                            { value: "sudden", text: "Sudden, aggressive flare-ups", description: "A wave of breakouts that appears overnight" }
+                        ]
+                    },
+                    {
+                        question: "How would you describe your skin's oiliness level?",
+                        description: "Think about your skin texture throughout a typical day",
+                        options: [
+                            { value: "very_oily", text: "Extremely oily all over", description: "Oily T-zone and cheeks within hours of washing" },
+                            { value: "stress_oily", text: "Oily only during stress or cycle flares", description: "Mostly combination, with periods of excess oil" },
+                            { value: "dry_dehydrated", text: "Dry, tight, or flaky skin yet breaking out", description: "Surface feels dry, but breakouts still occur underneath" },
+                            { value: "normal", text: "Normal to combination skin", description: "Relatively balanced oil production" }
+                        ]
+                    },
+                    {
+                        question: "Have you stopped using hormonal birth control in the last 2 years?",
+                        description: "Including the pill, injection, implant, or hormonal IUD",
+                        options: [
+                            { value: "stopped_recent", text: "Yes, in the last 12 to 24 months", description: "My acne began or worsened after stopping" },
+                            { value: "stopped_long", text: "Yes, but it was more than 2 years ago" },
+                            { value: "never", text: "No, I have never used hormonal birth control" },
+                            { value: "currently", text: "No, I am currently using hormonal birth control" }
+                        ]
+                    },
+                    {
+                        question: "When are your skin flare-ups most predictable?",
+                        description: "Select the pattern that matches your skin behavior",
+                        options: [
+                            { value: "period", text: "7-10 days before my menstrual cycle", description: "Predictable monthly breakouts" },
+                            { value: "stress", text: "During high stress, busy, or sleepless weeks", description: "Flares when pressure is high" },
+                            { value: "food", text: "After eating specific foods (sugar, dairy, gluten)", description: "Direct reaction to dietary triggers" },
+                            { value: "constant", text: "Constant breakouts with no obvious pattern", description: "Always dealing with active spots" }
+                        ]
+                    },
+                    {
+                        question: "How is your digestion and gut health?",
+                        description: "Consider your regular daily digestion",
+                        options: [
+                            { value: "bloating", text: "Frequent bloating, gas, or irregular bowel movements", description: "Sluggish gut function" },
+                            { value: "reflux", text: "Acid reflux, food sensitivities, or indigestion" },
+                            { value: "normal", text: "Generally healthy and regular digestion" },
+                            { value: "occasional_stress", text: "Occasional digestion issues when highly stressed" }
+                        ]
+                    },
+                    {
+                        question: "Do you experience intense cravings or energy patterns?",
+                        description: "Select the option that reflects your appetite",
+                        options: [
+                            { value: "sugar", text: "Strong sugar, bread, or carb cravings", description: "Difficult to resist, especially in afternoons" },
+                            { value: "crashes", text: "Sudden energy crashes 1-2 hours after heavy meals", description: "Feeling sluggish or needing a nap after eating" },
+                            { value: "salty", text: "Cravings for salty foods or constant coffee/caffeine reliance", description: "Seeking stimulants to stay awake" },
+                            { value: "none", text: "Relatively stable energy and normal appetite" }
+                        ]
+                    },
+                    {
+                        question: "How do you typically handle stress?",
+                        description: "Reflect on your average stress levels",
+                        options: [
+                            { value: "chronic", text: "Chronic stress or burnout", description: "Feeling overwhelmed or anxious almost daily" },
+                            { value: "high", text: "High stress but manageable most weeks" },
+                            { value: "low", text: "Low to moderate daily stress" },
+                            { value: "skin_related", text: "My stress is primarily caused by my skin issues" }
+                        ]
+                    },
+                    {
+                        question: "What is your typical sleep pattern?",
+                        description: "Choose the statement that fits your night best",
+                        options: [
+                            { value: "waking", text: "Waking up around 3:00 - 4:00 AM", description: "Struggling to fall back asleep" },
+                            { value: "restless", text: "Restless sleep, waking up feeling tired and unrefreshed" },
+                            { value: "unrefreshed", text: "Sleeping 8+ hours but still waking up sluggish" },
+                            { value: "good", text: "Deep, consistent, and refreshing sleep" }
+                        ]
+                    },
+                    {
+                        question: "How long do red or dark marks persist after a breakout?",
+                        description: "Refers to post-inflammatory marks",
+                        options: [
+                            { value: "slow", text: "Very slow healing, marks stay for months", description: "Discoloration takes a long time to fade" },
+                            { value: "pitted", text: "Prone to deep, pitted scarring", description: "Breaks down the skin structure" },
+                            { value: "normal", text: "Fades within a couple of weeks" },
+                            { value: "quick", text: "Quick healing, but new spots appear immediately" }
+                        ]
+                    },
+                    {
+                        question: "Do you experience other hormonal or cycle symptoms?",
+                        description: "For women, select period patterns; otherwise select Not Applicable",
+                        options: [
+                            { value: "irregular_periods_hair", text: "Irregular cycles, facial hair, or hair thinning on scalp", description: "Often flags androgen-insulin pathways" },
+                            { value: "painful_periods", text: "Painful periods, heavy bleeding, or breast tenderness" },
+                            { value: "regular", text: "Regular periods with minimal hormonal symptoms" },
+                            { value: "male_or_none", text: "Not Applicable / Male" }
+                        ]
+                    },
+                    {
+                        question: "What is your primary goal for this skin assessment?",
+                        description: "Select your main target",
+                        options: [
+                            { value: "cystic", text: "Clearing deep cystic acne and preventing new flares" },
+                            { value: "gut_redness", text: "Calming skin redness and restoring gut health" },
+                            { value: "post_pill", text: "Managing post-pill rebound breakouts" },
+                            { value: "scars", text: "Fading dark marks and rebuilding skin texture" }
+                        ]
+                    }
+                ],
+
+                nextQuestion() {
+                    if (this.currentQuestion < this.totalQuestions - 1 && this.getSelectedAnswer()) {
+                        this.currentQuestion++;
+                    }
+                },
+
+                previousQuestion() {
+                    if (this.currentQuestion > 0) {
+                        this.currentQuestion--;
+                    }
+                },
+
+                selectAnswer(value) {
+                    // Set the answer for the current question
+                    this.answers[this.currentQuestion] = value;
+
+                    // Auto-advance to next question after a brief delay
+                    if (this.currentQuestion < this.totalQuestions - 1) {
+                        setTimeout(() => {
+                            this.nextQuestion();
+                        }, 800);
+                    } else {
+                        // If this is the last question, show submit button after delay
+                        setTimeout(() => {
+                            this.submitAssessment();
+                        }, 800);
+                    }
+                },
+
+                getSelectedAnswer() {
+                    return this.answers[this.currentQuestion] || null;
+                },
+
+                async submitAssessment() {
+                    this.isSubmitting = true;
+
+                    try {
+                        // Calculate Acne type based on answers
+                        const acneType = this.calculateAcneType();
+
+                        // Store assessment data
+                        this.assessmentData = {
+                            answers: this.answers,
+                            acneType: acneType,
+                            completedAt: new Date().toISOString()
+                        };
+
+                        // Show contact form
+                        this.showContactForm = true;
+                        this.showResults = true; // Flag to hide questions
+
+                        // Auto-scroll to contact form with mobile-friendly implementation
+                        setTimeout(() => {
+                            this.scrollToContactForm();
+                        }, 300);
+
+                    } catch (error) {
+                        console.error('Assessment submission error:', error);
+                        alert('There was an error processing your assessment. Please try again.');
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                },
+
+                async submitContactInfo() {
+                    this.isSubmittingContact = true;
+                    this.contactError = ''; // Clear any previous errors
+
+                    try {
+                        // Combine assessment and contact data
+                        const fullData = {
+                            ...this.assessmentData,
+                            contactInfo: this.contactInfo
+                        };
+
+                        // Submit to webhook
+                        if (window.WebhookManager) {
+                            await window.WebhookManager.submitAssessment(fullData);
+                        }
+
+                        // Store data in localStorage for results page
+                        localStorage.setItem('acneAssessmentData', JSON.stringify(fullData));
+
+                        // Redirect to results
+                        window.location.href = 'results.html';
+
+                    } catch (error) {
+                        console.error('Contact submission error:', error);
+
+                        // Try to extract error message from various error formats
+                        let errorMessage = '';
+
+                        // Check if the error is a fetch response error
+                        if (error.message && error.message.includes('HTTP')) {
+                            // Try to get the response body for detailed error
+                            try {
+                                // The error might contain response data
+                                if (error.response) {
+                                    const responseText = await error.response.text();
+                                    const responseData = JSON.parse(responseText);
+                                    if (responseData.error) {
+                                        errorMessage = responseData.error;
+                                    }
+                                }
+                            } catch (parseError) {
+                                console.log('Could not parse error response');
+                            }
+                        }
+
+                        // Check various error formats
+                        if (!errorMessage) {
+                            if (error.message && error.message.includes('WhatsApp')) {
+                                errorMessage = error.message;
+                            } else if (error.response && error.response.error) {
+                                errorMessage = error.response.error;
+                            } else if (typeof error === 'string' && error.includes('WhatsApp')) {
+                                errorMessage = error;
+                            } else if (error.message) {
+                                // Check if the error message contains JSON with error field
+                                try {
+                                    const errorData = JSON.parse(error.message);
+                                    if (errorData.error) {
+                                        errorMessage = errorData.error;
+                                    }
+                                } catch (e) {
+                                    // Not JSON, use the message as is if it contains WhatsApp
+                                    if (error.message.includes('WhatsApp')) {
+                                        errorMessage = error.message;
+                                    }
+                                }
+                            }
+                        }
+
+                        // Set the error message or default
+                        this.contactError = errorMessage || error.message || 'There was an error submitting your information. Please check your data and try again.';
+                    } finally {
+                        this.isSubmittingContact = false;
+                    }
+                },
+
+                // Mobile-friendly scroll function with multiple fallback methods
+                scrollToContactForm() {
+                    const contactFormSection = document.getElementById('contactFormSection');
+                    if (!contactFormSection) return;
+
+                    // Detect mobile devices
+                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+                    try {
+                        if (isMobile || isIOS) {
+                            // Mobile-specific scrolling with position calculation
+                            const rect = contactFormSection.getBoundingClientRect();
+                            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                            const targetPosition = rect.top + scrollTop - 20; // 20px offset from top
+
+                            // Try smooth scrolling first
+                            if ('scrollBehavior' in document.documentElement.style) {
+                                window.scrollTo({
+                                    top: targetPosition,
+                                    behavior: 'smooth'
+                                });
+                            } else {
+                                // Fallback for older mobile browsers
+                                window.scrollTo(0, targetPosition);
+                            }
+                        } else {
+                            // Desktop - try scrollIntoView first
+                            try {
+                                contactFormSection.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start',
+                                    inline: 'nearest'
+                                });
+                            } catch (e) {
+                                // Fallback to position calculation
+                                const rect = contactFormSection.getBoundingClientRect();
+                                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                                const targetPosition = rect.top + scrollTop - 20;
+
+                                window.scrollTo({
+                                    top: targetPosition,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }
+                    } catch (error) {
+                        // Final fallback - simple scroll to element
+                        console.log('Scroll fallback triggered');
+                        const rect = contactFormSection.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        const targetPosition = rect.top + scrollTop - 20;
+                        window.scrollTo(0, targetPosition);
+                    }
+                },
+
+                calculateAcneType() {
+                    const answers = this.answers;
+                    let scores = {
+                        insulin: 0,
+                        inflammatory: 0,
+                        adrenal: 0,
+                        postPill: 0
+                    };
+
+                    // Question 0: Breakout location
+                    if (answers[0] === 'jawline') { scores.adrenal += 1; scores.insulin += 1; }
+                    else if (answers[0] === 'cheeks') { scores.inflammatory += 2; }
+                    else if (answers[0] === 'scattered') { scores.postPill += 1; }
+                    else if (answers[0] === 'back') { scores.insulin += 2; }
+
+                    // Question 1: Type of breakouts
+                    if (answers[1] === 'cysts') { scores.insulin += 1; scores.adrenal += 1; }
+                    else if (answers[1] === 'whiteheads') { scores.inflammatory += 2; }
+                    else if (answers[1] === 'oily_sheen') { scores.insulin += 2; }
+                    else if (answers[1] === 'sudden') { scores.postPill += 2; }
+
+                    // Question 2: Skin oiliness
+                    if (answers[2] === 'very_oily') { scores.insulin += 2; }
+                    else if (answers[2] === 'stress_oily') { scores.adrenal += 2; }
+                    else if (answers[2] === 'dry_dehydrated') { scores.inflammatory += 2; }
+                    else if (answers[2] === 'normal') { scores.postPill += 1; }
+
+                    // Question 3: Birth control
+                    if (answers[3] === 'stopped_recent') { scores.postPill += 4; }
+
+                    // Question 4: Flare patterns
+                    if (answers[4] === 'period') { scores.insulin += 1; scores.postPill += 1; }
+                    else if (answers[4] === 'stress') { scores.adrenal += 2; }
+                    else if (answers[4] === 'food') { scores.inflammatory += 2; }
+                    else if (answers[4] === 'constant') { scores.inflammatory += 1; scores.insulin += 1; }
+
+                    // Question 5: Digestion
+                    if (answers[5] === 'bloating' || answers[5] === 'reflux') { scores.inflammatory += 2; }
+                    else if (answers[5] === 'occasional_stress') { scores.adrenal += 1; }
+
+                    // Question 6: Cravings & blood sugar
+                    if (answers[6] === 'sugar' || answers[6] === 'crashes') { scores.insulin += 2; }
+                    else if (answers[6] === 'salty') { scores.adrenal += 1; }
+
+                    // Question 7: Stress levels
+                    if (answers[7] === 'chronic' || answers[7] === 'high') { scores.adrenal += 2; }
+
+                    // Question 8: Sleep patterns
+                    if (answers[8] === 'waking' || answers[8] === 'restless') { scores.adrenal += 2; }
+                    else if (answers[8] === 'unrefreshed') { scores.inflammatory += 1; }
+
+                    // Question 9: Skin healing
+                    if (answers[9] === 'slow' || answers[9] === 'pitted') { scores.inflammatory += 2; }
+                    else if (answers[9] === 'quick') { scores.insulin += 1; }
+
+                    // Question 10: Other hormonal signs
+                    if (answers[10] === 'irregular_periods_hair') { scores.insulin += 2; }
+                    else if (answers[10] === 'painful_periods') { scores.inflammatory += 1; }
+
+                    // Question 11: Goal
+                    if (answers[11] === 'cystic') { scores.insulin += 1; scores.adrenal += 1; }
+                    else if (answers[11] === 'gut_redness') { scores.inflammatory += 2; }
+                    else if (answers[11] === 'post_pill') { scores.postPill += 2; }
+                    else if (answers[11] === 'scars') { scores.inflammatory += 1; }
+
+                    // Determine primary type
+                    const maxScore = Math.max(...Object.values(scores));
+                    const primaryType = Object.keys(scores).find(key => scores[key] === maxScore);
+
+                    return {
+                        primary: primaryType,
+                        scores: scores,
+                        confidence: maxScore >= 3 ? 'high' : maxScore >= 2 ? 'medium' : 'low'
+                    };
+                }
+            }
+        }
+
+        // Track page view
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.WebhookManager) {
+                window.WebhookManager.trackConversion('assessment_page_view', {
+                    page: 'glowclear-acne-assessment',
+                    source: 'landing_page'
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

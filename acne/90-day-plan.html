@@ -1,0 +1,885 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>90-Day Acne Complete Transformation - $45</title>
+    <meta name="description"
+        content="Transform your Acne in 90 days. A holistic, luxury wellness protocol designed for your body.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'forest': {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            800: '#166534',
+                            900: '#0f3922', // Deep luxury green
+                        },
+                        'sage': {
+                            100: '#E6EBE6',
+                            200: '#CDD6CD',
+                            500: '#8DA38D',
+                        },
+                        'terracotta': {
+                            500: '#C77D63', // Warm accent
+                            600: '#A85D45',
+                        },
+                        'cream': '#FDFCF8',
+                        'sand': '#F4F1EA',
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(22, 101, 52, 0.1)',
+                        'glow': '0 0 20px rgba(199, 125, 99, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom aesthetics */
+        body {
+            background-color: #FDFCF8;
+            color: #0f3922;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        /* Smooth reveal animation classes */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: revealUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-300 {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes revealUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive width handling */
+        html,
+        body {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+    </style>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/webhook-manager.js"></script>
+    <script src="../js/flutterwave-integration.js"></script>
+    <script src="../js/tracking.js"></script>
+</head>
+
+<body class="antialiased relative overflow-x-hidden">
+
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-40 mix-blend-overlay"></div>
+
+    <div class="blob bg-sage-200 w-96 h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="blob bg-terracotta-500 w-80 h-80 rounded-full top-20 right-0 translate-x-1/3 opacity-20"></div>
+
+    <header class="fixed w-full top-0 z-40 glass-panel border-b border-sage-200/50 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-forest-900 rounded-full flex items-center justify-center shadow-lg">
+                        <span class="text-sand font-serif italic text-xl">P</span>
+                    </div>
+                    <span class="text-lg font-serif font-bold tracking-tight text-forest-900 hidden md:block">Acne
+                        Transformation</span>
+                </div>
+                <div>
+                    <span
+                        class="inline-flex items-center gap-2 bg-forest-50 border border-forest-100 px-3 md:px-4 py-1.5 rounded-full text-xs font-medium tracking-wide text-forest-800 uppercase">
+                        <span class="w-2 h-2 rounded-full bg-terracotta-500 animate-pulse"></span>
+                        <span class="md:hidden">Offer Active</span>
+                        <span class="hidden md:inline">Assessment Offer Active</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-24 pb-16 px-4 md:px-6" x-data="salesPage()">
+
+        <section class="max-w-6xl mx-auto mb-20 md:mb-32">
+            <div class="grid md:grid-cols-12 gap-12 items-center">
+
+                <div class="md:col-span-7 space-y-8 relative">
+                    <div class="inline-block border-b border-terracotta-500/30 pb-1">
+                        <span
+                            class="font-sans text-terracotta-600 font-medium tracking-widest text-sm uppercase">Private
+                            Member Portal Access</span>
+                    </div>
+
+                    <h1 class="text-4xl md:text-7xl font-serif font-medium leading-[1.1] text-forest-900 reveal-up">
+                        Your body is <span class="italic text-terracotta-600">screaming</span> for
+                        help.<br>
+                        <span class="italic text-forest-800/80">We finally listened.</span>
+                    </h1>
+
+                    <p class="text-xl text-gray-600 font-light leading-relaxed max-w-lg reveal-up delay-100">
+                        Unlock your <strong>private smart-personalized dashboard</strong> — daily Western meals,
+                        cycle-synced protocols, and herbal rituals crafted <em>specifically</em> for <strong
+                            x-text="acneType">your Acne type</strong>. Not a PDF. A living system that adapts with you.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4 reveal-up delay-200">
+                        <button @click="scrollToOrder()"
+                            class="group relative overflow-hidden bg-forest-900 text-sand px-8 py-5 rounded-full font-sans font-medium transition-all hover:shadow-soft hover:-translate-y-1">
+                            <span class="relative z-10 flex items-center gap-2">
+                                <span x-show="pricingLoaded" x-cloak
+                                    x-text="'Begin Your Transformation - $' + price.toLocaleString()"></span>
+                                <span x-show="!pricingLoaded">Loading...</span>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div class="flex items-center gap-4 px-4">
+                            <div class="flex -space-x-3">
+                                <img class="w-10 h-10 rounded-full border-2 border-cream object-cover"
+                                    src="../images/acne/avatar_1.png" alt="User">
+                                <img class="w-10 h-10 rounded-full border-2 border-cream object-cover"
+                                    src="../images/acne/avatar_2.png" alt="User">
+                                <img class="w-10 h-10 rounded-full border-2 border-cream object-cover"
+                                    src="../images/acne/avatar_3.png" alt="User">
+                            </div>
+                            <div class="text-sm text-forest-800">
+                                <span class="block font-bold">500+ Women</span>
+                                <span class="opacity-80">Restored balance</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-5 relative reveal-up delay-300">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-tr from-sage-200 to-terracotta-500 rounded-[2rem] opacity-20 blur-2xl transform rotate-3">
+                    </div>
+
+                    <div class="glass-panel relative rounded-[2rem] p-8 md:p-10 shadow-soft border-t border-white/80">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <p class="text-gray-500 text-sm uppercase tracking-wide font-medium">Assessment
+                                    Exclusive</p>
+                                <!-- Loaded State -->
+                                <div class="flex items-baseline gap-3 mt-1" x-show="pricingLoaded" x-cloak>
+                                    <span class="text-3xl md:text-5xl font-serif text-forest-900"
+                                        x-text="'$' + price.toLocaleString()"></span>
+                                    <span
+                                        class="text-lg md:text-xl text-gray-400 line-through decoration-terracotta-500 decoration-2"
+                                        x-text="'$' + originalPrice.toLocaleString()"></span>
+                                </div>
+                                <!-- Loading State -->
+                                <div class="flex items-baseline gap-3 mt-1" x-show="!pricingLoaded">
+                                    <span
+                                        class="text-3xl md:text-5xl font-serif text-forest-900 animate-pulse bg-gray-200 rounded w-32 h-10 inline-block"></span>
+                                </div>
+                            </div>
+                            <div
+                                class="bg-terracotta-50 text-terracotta-600 px-3 py-1 rounded-full text-xs font-bold border border-terracotta-100">
+                                -40% OFF
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <div
+                                    class="w-6 h-6 rounded-full bg-forest-50 flex items-center justify-center text-forest-800 text-xs">
+                                    ✓</div>
+                                <span>Smart-Personalized Daily Meal Dashboard</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <div
+                                    class="w-6 h-6 rounded-full bg-forest-50 flex items-center justify-center text-forest-800 text-xs">
+                                    ✓</div>
+                                <span>Morning & Evening Herbal Tea Rituals</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <div
+                                    class="w-6 h-6 rounded-full bg-forest-50 flex items-center justify-center text-forest-800 text-xs">
+                                    ✓</div>
+                                <span>Cycle-Synced Movement Protocols</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-forest-50 rounded-xl p-4 flex items-center justify-between border border-forest-100/50">
+                            <div class="text-xs text-forest-800">
+                                <span class="block font-bold mb-1">Offer Expires In:</span>
+                                <div class="flex gap-2 font-mono text-lg">
+                                    <span x-text="timeLeft.hours"></span>h :
+                                    <span x-text="timeLeft.minutes"></span>m :
+                                    <span x-text="timeLeft.seconds"></span>s
+                                </div>
+                            </div>
+                            <div class="h-8 w-px bg-forest-200"></div>
+                            <div class="text-right">
+                                <span class="text-xs text-forest-600 block">Instant Portal Access</span>
+                                <span class="text-xs text-forest-600 block">Login in 60 seconds</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="flex justify-center mb-20">
+            <div class="h-24 w-px bg-gradient-to-b from-transparent via-terracotta-200 to-transparent"></div>
+        </div>
+
+        <section class="max-w-5xl mx-auto mb-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif text-forest-900 mb-4">Your Private Healing Command Center
+                </h2>
+                <p class="text-gray-500">A living dashboard that knows your <span x-text="acneType"
+                        class="font-bold"></span>, tracks your progress, and adapts <em>daily</em>.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div
+                    class="md:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-soft transition-all duration-500">
+                    <div
+                        class="absolute top-0 right-0 w-32 h-32 bg-sage-100 rounded-bl-full -mr-8 -mt-8 opacity-50 transition-transform group-hover:scale-110">
+                    </div>
+                    <div class="relative z-10">
+                        <span class="text-3xl mb-4 block">🥗</span>
+                        <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Smart-Personalized Nutrition
+                            Portal
+                        </h3>
+                        <p class="text-gray-600 mb-4 text-sm leading-relaxed">Wake up to a <strong>new meal plan every
+                                day</strong> — Jollof, Moi Moi, Egusi — all hormone-balancing recipes using ingredients
+                            from your local market. Your <strong x-text="acneType"></strong> dashboard knows exactly
+                            what to feed you.</p>
+                        <div class="inline-block bg-sand px-3 py-1 rounded-md text-xs font-medium text-forest-800"
+                            data-price-static>
+                            Valued at $45</div>
+                    </div>
+                </div>
+
+                <div class="bg-forest-900 rounded-3xl p-8 shadow-sm relative overflow-hidden text-cream">
+                    <div
+                        class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5">
+                    </div>
+                    <span class="text-3xl mb-4 block">🍵</span>
+                    <h3 class="text-xl font-serif font-bold mb-2">Morning & Evening Herbal Rituals</h3>
+                    <p class="text-forest-100 mb-4 text-sm">Your dashboard reminds you <strong>when</strong> to drink
+                        your teas, <strong>which</strong> blends balance <strong
+                            x-text="acneType.split(' ')[0]"></strong>, and tracks your consistency. No more forgetting.
+                    </p>
+                    <div class="inline-block bg-white/10 px-3 py-1 rounded-md text-xs font-medium" data-price-static>
+                        Valued at $35
+                    </div>
+                </div>
+
+                <div
+                    class="bg-terracotta-50 rounded-3xl p-8 shadow-sm border border-terracotta-100 hover:border-terracotta-200 transition-colors">
+                    <span class="text-3xl mb-4 block">🚶‍♀️</span>
+                    <h3 class="text-xl font-serif font-bold text-terracotta-900 mb-2">Phase-Synced Movement Tracker</h3>
+                    <p class="text-terracotta-800 mb-4 text-sm">Daily walking protocols that know your cycle phase.
+                        6,000 steps in the morning, gentle strolls in the evening — your dashboard tracks every minute.
+                    </p>
+                    <div class="inline-block bg-white px-3 py-1 rounded-md text-xs font-medium text-terracotta-700"
+                        data-price-static>
+                        Valued at $27</div>
+                </div>
+
+                <div
+                    class="md:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-soft transition-all duration-500">
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        <div class="flex-1">
+                            <span class="text-3xl mb-4 block">📊</span>
+                            <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Body Data & Progress Tracking
+                            </h3>
+                            <p class="text-gray-600 mb-4 text-sm">Log your weight, cycles, symptoms — watch your
+                                transformation unfold in real-time. Plus direct WhatsApp access to Acne specialists who
+                                actually care.</p>
+                            <div class="inline-block bg-sand px-3 py-1 rounded-md text-xs font-medium text-forest-800"
+                                data-price-static>
+                                Valued at $90</div>
+                        </div>
+                        <div class="hidden md:block w-px h-32 bg-gray-100"></div>
+                        <div class="md:w-1/3 pt-2">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Total Value</p>
+                            <p class="text-3xl font-serif text-gray-300 line-through" data-price-static>$197</p>
+                            <p class="text-3xl md:text-4xl font-serif text-forest-800 mt-1" x-show="pricingLoaded"
+                                x-cloak x-text="'$' + price.toLocaleString()"></p>
+                            <p class="text-3xl md:text-4xl font-serif text-forest-800 mt-1 animate-pulse bg-gray-200 rounded w-24 h-8"
+                                x-show="!pricingLoaded"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why It Works Section -->
+        <section class="max-w-4xl mx-auto mb-24 px-4">
+            <div class="text-center mb-12">
+                <span class="text-terracotta-600 font-bold tracking-widest text-xs uppercase mb-2 block">The
+                    Science</span>
+                <h2 class="text-3xl font-serif text-forest-900">Why This Protocol Works</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-forest-50 p-8 rounded-3xl border border-forest-100">
+                    <h3 class="text-xl font-bold text-forest-900 mb-4">Root Cause Targeting</h3>
+                    <p class="text-gray-700 leading-relaxed text-sm">
+                        Most treatments just mask symptoms. We target the biological root of your <span
+                            x-text="acneType"></span>
+                        by stabilizing insulin, reducing inflammation, and regulating cortisol. When the root heals,
+                        symptoms vanish.
+                    </p>
+                </div>
+                <div class="bg-sage-100/50 p-8 rounded-3xl border border-sage-200">
+                    <h3 class="text-xl font-bold text-forest-900 mb-4">Metabolic Synergy</h3>
+                    <p class="text-gray-700 leading-relaxed text-sm">
+                        Diet alone isn't enough. Supplements alone aren't enough. By combining metabolic nutrition with
+                        clinical-grade supplementation and cycle-syncing, we create a multiplier effect that accelerates
+                        healing.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cost of Inaction -->
+        <section class="max-w-3xl mx-auto mb-24 px-4 text-center">
+            <div class="bg-white border border-red-100 shadow-sm rounded-3xl p-8 md:p-12">
+                <h2 class="text-2xl font-serif text-gray-900 mb-4">⚠️ Every Day You Wait, Your Body Struggles More</h2>
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    Right now, while you're reading this, your insulin is spiking. Your inflammation is building. Your
+                    cycles are getting more irregular. <strong>Acne doesn't pause.</strong> It compounds.
+                </p>
+                <p class="font-medium text-forest-800 italic">
+                    "The women who transform are the ones who decide <u>today</u> — not tomorrow."
+                </p>
+            </div>
+        </section>
+
+
+        <section class="max-w-6xl mx-auto mb-24 bg-sand/30 rounded-[3rem] p-8 md:p-16 relative">
+            <div
+                class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-8 bg-white px-6 py-2 rounded-full shadow-sm border border-gray-100">
+                <span class="text-sm font-bold text-forest-900 tracking-widest uppercase">Real Stories</span>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-50/50">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="../images/acne/testimonial_adunni.png"
+                            class="w-12 h-12 rounded-full object-cover grayscale opacity-80" alt="Adunni">
+                        <div>
+                            <h4 class="font-serif font-bold text-gray-900">Adunni K.</h4>
+                            <p class="text-xs text-gray-500 uppercase tracking-wide">Lagos</p>
+                        </div>
+                    </div>
+                    <p class="font-serif italic text-lg text-gray-800 mb-4 leading-relaxed">"I lost 18kg in 90 days. But
+                        more importantly, I got my period back after 10 months of silence. I feel like myself again."
+                    </p>
+                    <div class="h-px w-full bg-gray-100 my-4"></div>
+                    <p class="text-xs font-bold text-forest-600">✓ 18kg Lost • Cycles Restored</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-50/50 md:-mt-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="../images/acne/testimonial_chioma.png"
+                            class="w-12 h-12 rounded-full object-cover grayscale opacity-80" alt="Chioma">
+                        <div>
+                            <h4 class="font-serif font-bold text-gray-900">Chioma O.</h4>
+                            <p class="text-xs text-gray-500 uppercase tracking-wide">Abuja</p>
+                        </div>
+                    </div>
+                    <p class="font-serif italic text-lg text-gray-800 mb-4 leading-relaxed">"My insulin resistance is
+                        under control. No more midday crashes. My skin is glowing. This was the best investment I ever
+                        made."</p>
+                    <div class="h-px w-full bg-gray-100 my-4"></div>
+                    <p class="text-xs font-bold text-forest-600">✓ Clear Skin • Stable Energy</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-50/50">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="../images/acne/testimonial_anna.png"
+                            class="w-12 h-12 rounded-full object-cover grayscale opacity-80" alt="Anna">
+                        <div>
+                            <h4 class="font-serif font-bold text-gray-900">Anna O.</h4>
+                            <p class="text-xs text-gray-500 uppercase tracking-wide">Port Harcourt</p>
+                        </div>
+                    </div>
+                    <p class="font-serif italic text-lg text-gray-800 mb-4 leading-relaxed">"Finally pregnant after 3
+                        years of trying! This program didn't just help my Acne, it gave me my life back."</p>
+                    <div class="h-px w-full bg-gray-100 my-4"></div>
+                    <p class="text-xs font-bold text-forest-600">✓ Pregnant • Hormones Balanced</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-3xl mx-auto mb-24 px-4">
+            <h2 class="text-3xl font-serif text-center mb-10 text-forest-900">Common Questions</h2>
+            <div class="space-y-4">
+                <template x-for="(faq, index) in [
+                    {q: 'How quickly will I see results?', a: 'Most women feel a shift in energy within 2 weeks. Physical changes usually begin around week 4.'},
+                    {q: 'Is this suitable for my Acne type?', a: 'Yes. The protocol adapts to ' + acneType + ' specifically.'},
+                    {q: 'What if I don\'t see results?', a: 'We offer a full 30-day money-back guarantee. We are that confident in this protocol.'},
+                    {q: 'Are the meals expensive to prepare?', a: 'No. We focus on accessible organic ingredients found in any local market.'}
+                ]">
+                    <div x-data="{ open: false }" class="border-b border-gray-200 pb-4">
+                        <button @click="open = !open"
+                            class="w-full text-left flex justify-between items-center py-2 group">
+                            <span
+                                class="text-lg font-medium text-gray-800 group-hover:text-terracotta-600 transition-colors"
+                                x-text="faq.q"></span>
+                            <span class="text-2xl font-light text-terracotta-500" x-text="open ? '−' : '+'"></span>
+                        </button>
+                        <div x-show="open" x-collapse
+                            class="text-gray-600 leading-relaxed mt-2 pl-4 border-l-2 border-terracotta-100"
+                            x-text="faq.a"></div>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <div
+                class="max-w-4xl mx-auto bg-gradient-to-r from-terracotta-500 to-terracotta-600 rounded-2xl p-1 shadow-lg overflow-hidden">
+                <div class="bg-white/95 backdrop-blur rounded-xl p-8 text-center relative overflow-hidden">
+                    <div
+                        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-terracotta-500 to-transparent">
+                    </div>
+
+                    <h2 class="text-2xl font-serif font-bold text-gray-900 mb-2">The doors are closing soon.</h2>
+                    <p class="text-gray-600 mb-6">Assessment pricing expires in:</p>
+
+                    <div class="flex justify-center gap-4 text-forest-900 mb-8">
+                        <div class="flex flex-col">
+                            <span x-text="timeLeft.hours"
+                                class="text-3xl font-bold font-mono bg-sage-100 px-3 py-2 rounded-lg"></span>
+                            <span class="text-[10px] uppercase tracking-wider mt-1 text-gray-500">Hours</span>
+                        </div>
+                        <span class="text-2xl font-bold mt-2">:</span>
+                        <div class="flex flex-col">
+                            <span x-text="timeLeft.minutes"
+                                class="text-3xl font-bold font-mono bg-sage-100 px-3 py-2 rounded-lg"></span>
+                            <span class="text-[10px] uppercase tracking-wider mt-1 text-gray-500">Mins</span>
+                        </div>
+                        <span class="text-2xl font-bold mt-2">:</span>
+                        <div class="flex flex-col">
+                            <span x-text="timeLeft.seconds"
+                                class="text-3xl font-bold font-mono bg-sage-100 px-3 py-2 rounded-lg"></span>
+                            <span class="text-[10px] uppercase tracking-wider mt-1 text-gray-500">Secs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="order-section" class="max-w-3xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+                <div class="bg-forest-900 p-8 text-center">
+                    <h2 class="text-2xl md:text-3xl font-serif text-white mb-2">Secure Your Spot</h2>
+                    <p class="text-forest-200 text-sm">Safe, encrypted, and guaranteed.</p>
+                </div>
+
+                <div class="p-8 md:p-12">
+                    <form @submit.prevent="processPayment()" class="space-y-6">
+                        <div class="bg-sand/50 rounded-xl p-6 mb-6 border border-sand">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="font-bold text-gray-800">90-Day Transformation Protocol</span>
+                                <span class="font-bold text-forest-800" x-show="pricingLoaded" x-cloak x-text="'$' + price.toLocaleString()"></span>
+                            </div>
+                            <ul class="space-y-2 text-sm text-gray-600">
+                                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Private member portal (instant access)</li>
+                                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Smart-personalized daily meal plans</li>
+                                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Herbal rituals + movement tracking</li>
+                                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> WhatsApp specialist support</li>
+                            </ul>
+                        </div>
+
+                        <!-- Pre-filled confirmation card (if data exists from assessment) -->
+                        <div x-show="customerPrefilled" class="space-y-4">
+                            <div class="bg-forest-50/50 rounded-xl p-5 border border-forest-100">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-bold text-forest-800 uppercase tracking-wider">Your Details</span>
+                                    <button type="button" @click="customerPrefilled = false" class="text-xs text-terracotta-600 hover:text-terracotta-700 font-medium underline">Edit</button>
+                                </div>
+                                <div class="space-y-2 text-sm text-gray-700">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                        <span x-text="customerData.name"></span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                        <span x-text="customerData.email"></span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                        <span x-text="customerData.phone"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Editable form (shown if no prefill or user clicks Edit) -->
+                        <div x-show="!customerPrefilled" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Full Name</label>
+                                <input type="text" x-model="customerData.name" required
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-forest-500 transition-all outline-none"
+                                    placeholder="Jane Doe">
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Email Address</label>
+                                    <input type="email" x-model="customerData.email" required
+                                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-forest-500 transition-all outline-none"
+                                        placeholder="jane@example.com">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Phone</label>
+                                    <input type="tel" x-model="customerData.phone" required
+                                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-forest-500 transition-all outline-none"
+                                        placeholder="+1 (555) 000-0000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" :disabled="isProcessing || offerExpired"
+                            class="w-full bg-forest-900 hover:bg-forest-800 text-sand font-medium text-lg py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed mt-4">
+                            <span x-show="!isProcessing && pricingLoaded && !offerExpired" x-cloak
+                                x-text="'Pay $' + price.toLocaleString() + ' — Instant Access'"></span>
+                            <span x-show="!isProcessing && !pricingLoaded" class="animate-pulse">Loading...</span>
+                            <span x-show="offerExpired && !isProcessing">Offer Expired — Contact Us</span>
+                            <span x-show="isProcessing" class="flex items-center justify-center gap-2">
+                                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                Processing...
+                            </span>
+                        </button>
+
+                        <!-- Trust Signals at Payment Moment -->
+                        <div class="space-y-3 pt-2">
+                            <div class="flex items-center justify-center gap-6 text-xs text-gray-500">
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                                    256-bit SSL Encrypted
+                                </span>
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                    30-Day Money-Back
+                                </span>
+                            </div>
+                            <div class="flex justify-center items-center gap-4 opacity-60 grayscale hover:grayscale-0 transition-all">
+                                <span class="text-xs text-gray-400">Secured by</span>
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Flutterwave_Logo.png"
+                                    alt="Flutterwave" class="h-5">
+                            </div>
+                            <p class="text-center text-xs text-gray-400">Join 500+ women who transformed their Acne</p>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-gray-50 p-6 border-t border-gray-100">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <p class="text-sm text-gray-500">Need something smaller? <a href="30-day-plan.html"
+                            class="text-forest-700 font-semibold hover:underline">View Quick Start Plan</a></p>
+                        <a href="https://wa.me/2348133149989?text=Hi%2C%20I%20have%20a%20question%20about%20the%2090-day%20Acne%20plan"
+                            target="_blank"
+                            class="inline-flex items-center gap-2 text-sm text-green-700 hover:text-green-800 font-medium transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.316 0-4.458-.764-6.186-2.056l-.432-.332-3.29 1.103 1.103-3.29-.332-.432A9.955 9.955 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+                            Chat before buying
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Floating WhatsApp Button -->
+        <div class="fixed bottom-6 right-6 z-40">
+            <a href="https://wa.me/2348133149989?text=Hi%2C%20I%20just%20saw%20the%20Acne%20treatment%20plan%20and%20I%20have%20a%20question"
+                target="_blank"
+                class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.316 0-4.458-.764-6.186-2.056l-.432-.332-3.29 1.103 1.103-3.29-.332-.432A9.955 9.955 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+                <span class="text-sm font-medium hidden sm:inline">Chat with Specialist</span>
+            </a>
+        </div>
+
+        <section class="text-center py-12">
+            <div
+                class="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-sm border border-gray-100">
+                <span class="text-2xl">🛡️</span>
+                <span class="text-sm font-medium text-gray-600">30-Day Money Back Guarantee — No Questions Asked</span>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-forest-900 py-12 text-center">
+        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span class="text-sand font-serif italic text-xl">P</span>
+        </div>
+        <p class="text-forest-200/60 text-sm">© <span id="footer-year"></span> Acne Transformation. All rights reserved.
+        </p>
+    </footer>
+
+    <script>
+        document.getElementById('footer-year').textContent = new Date().getFullYear();
+    </script>
+    <script>
+        function salesPage() {
+            return {
+                isProcessing: false,
+                customerData: {
+                    name: '',
+                    email: '',
+                    phone: ''
+                },
+                timeLeft: {
+                    hours: '47',
+                    minutes: '59',
+                    seconds: '59'
+                },
+                acneType: 'Acne',
+                price: 0,
+                originalPrice: 0,
+                discountRate: 0.40,
+                pricingLoaded: false,
+                offerExpired: false,
+                customerPrefilled: false, // Track if we have pre-filled data
+
+                init() {
+                    this.loadAcneType();
+                    this.loadPricing();
+                    this.startCountdown();
+                    this.trackPageView();
+                    this.prefillCustomerData();
+                },
+
+                calculateValues() {
+                    // Formula: Price = Original * (1 - Rate)  => Original = Price / (1 - Rate)
+                    this.originalPrice = Math.round((this.price / (1 - this.discountRate)) / 100) * 100;
+                },
+
+                async loadPricing() {
+                    try {
+                        const response = await fetch('../backend/api/get-pricing.php');
+                        const result = await response.json();
+                        if (result.success && result.data.plans.acne) {
+                            const plans = result.data.plans.acne;
+                            if (plans['90-day']) {
+                                this.price = Number(plans['90-day'].price);
+                            }
+                            this.calculateValues();
+                        }
+                    } catch (e) {
+                        console.error('Failed to load pricing', e);
+                        // Fallback to sensible defaults if API fails
+                        this.price = 45;
+                        this.calculateValues();
+                    } finally {
+                        this.pricingLoaded = true;
+                    }
+                },
+
+                loadAcneType() {
+                    const data = localStorage.getItem('acneAssessmentData');
+                    if (data) {
+                        try {
+                            const parsed = JSON.parse(data);
+                            const typeMap = {
+                                'insulin': 'Insulin-Resistant Acne',
+                                'inflammatory': 'Inflammatory Acne',
+                                'adrenal': 'Adrenal Acne',
+                                'postPill': 'Post-Pill Acne'
+                            };
+                            if (parsed.acneType && parsed.acneType.primary) {
+                                this.acneType = typeMap[parsed.acneType.primary] || 'Acne';
+                            }
+                        } catch (e) {
+                            console.error('Error parsing assessment data', e);
+                        }
+                    }
+                },
+
+                prefillCustomerData() {
+                    const assessmentData = localStorage.getItem('acneAssessmentData');
+                    if (assessmentData) {
+                        const data = JSON.parse(assessmentData);
+                        if (data.contactInfo) {
+                            this.customerData.name = data.contactInfo.name || '';
+                            this.customerData.email = data.contactInfo.email || '';
+                            this.customerData.phone = data.contactInfo.phone || '';
+                            // Mark as pre-filled if we have all three fields
+                            if (this.customerData.name && this.customerData.email && this.customerData.phone) {
+                                this.customerPrefilled = true;
+                            }
+                        }
+                    }
+                },
+
+                startCountdown() {
+                    // Persistent timer — stored in localStorage so it doesn't reset on page reload
+                    const TIMER_KEY = 'acne_90day_offer_end';
+                    let endTime = localStorage.getItem(TIMER_KEY);
+                    if (!endTime || Number(endTime) < Date.now()) {
+                        endTime = Date.now() + (48 * 60 * 60 * 1000);
+                        localStorage.setItem(TIMER_KEY, endTime.toString());
+                    } else {
+                        endTime = Number(endTime);
+                    }
+                    const updateCountdown = () => {
+                        const now = Date.now();
+                        const distance = endTime - now;
+                        if (distance > 0) {
+                            this.timeLeft.hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                            this.timeLeft.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                            this.timeLeft.seconds = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                        } else {
+                            this.timeLeft.hours = '00';
+                            this.timeLeft.minutes = '00';
+                            this.timeLeft.seconds = '00';
+                            this.offerExpired = true;
+                        }
+                    };
+                    updateCountdown();
+                    setInterval(updateCountdown, 1000);
+                },
+
+                trackPageView() {
+                    // Fire Meta Pixel ViewContent event
+                    if (window.WellnessTracking) {
+                        window.WellnessTracking.trackViewContent('90-Day Acne Plan', this.price || 45, 'USD');
+                    }
+
+                    if (window.WebhookManager) {
+                        window.WebhookManager.trackSalesVisit({
+                            page: '90-day-plan',
+                            plan: '90-day',
+                            price: 45,
+                            source: 'results_page',
+                            acneType: this.acneType
+                        });
+
+                        // Schedule nurture follow-up for non-buyers after 30s on page
+                        setTimeout(() => {
+                            window.WebhookManager.scheduleAbandonmentNurture();
+                        }, 30000);
+
+                        // Also fire on page exit
+                        window.addEventListener('beforeunload', () => {
+                            window.WebhookManager.scheduleAbandonmentNurture();
+                        }, { once: true });
+                    }
+                },
+
+                scrollToOrder() {
+                    document.getElementById('order-section').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                },
+
+                async processPayment() {
+                    this.isProcessing = true;
+                    try {
+                        if (!window.FlutterwaveIntegration) throw new Error('Payment system not loaded');
+                        const errors = window.FlutterwaveIntegration.validateCustomerData(this.customerData);
+                        if (errors.length > 0) {
+                            alert('Please fix the following errors:\n' + errors.join('\n'));
+                            return;
+                        }
+                        this.customerData.phone = this.customerData.phone;
+                        const baseAmount = this.price; // Dynamic Price
+                        const totalAmount = baseAmount;
+                        const description = '90-Day Acne Complete Transformation';
+
+                        // Fire Meta Pixel InitiateCheckout event
+                        if (window.WellnessTracking) {
+                            window.WellnessTracking.trackInitiateCheckout('90-Day Acne Plan', totalAmount, 'USD');
+                        }
+
+                        const paymentData = {
+                            plan: '90-day',
+                            amount: totalAmount,
+                            title: '90-Day Acne Complete Transformation',
+                            description: description,
+                            customer: this.customerData,
+                            category: 'acne',
+                            meta: { acne_type: this.acneType }
+                        };
+                        await window.FlutterwaveIntegration.processPayment(paymentData);
+                    } catch (error) {
+                        console.error('Payment error:', error);
+                        alert('Payment processing failed: ' + error.message);
+                    } finally {
+                        this.isProcessing = false;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

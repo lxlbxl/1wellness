@@ -1,0 +1,42 @@
+[
+    {
+        "webhook_id": "68cd85f5a6a45",
+        "event": "assessment.created",
+        "payload": {
+            "event": "assessment.created",
+            "timestamp": "2025-11-26T02:48:16+00:00",
+            "data": {
+                "id": "assess_69266a70c820c",
+                "type": "assessment",
+                "original_data": {
+                    "email": "baba_tope@yahoo.com",
+                    "name": "Babatope Lawal",
+                    "phone": "07036268000",
+                    "assessment_data": [
+                        "mild",
+                        "body",
+                        "10plus_years",
+                        "environment",
+                        "combination",
+                        "natural",
+                        "significant",
+                        "intermediate",
+                        "high",
+                        "heal_scars"
+                    ],
+                    "assessment_type": "acne",
+                    "url": "http:\/\/localhost:8000\/acne\/assessment.html",
+                    "form_type": "assessment"
+                },
+                "saved_data": {
+                    "assessment_id": "assess_69266a70c820c",
+                    "email": "baba_tope@yahoo.com",
+                    "type": "acne"
+                }
+            }
+        },
+        "status": "pending",
+        "attempts": 0,
+        "created_at": "2025-11-26 02:48:16"
+    }
+]

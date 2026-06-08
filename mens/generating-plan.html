@@ -1,0 +1,349 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generating Your Personal Protocol...</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'forest': {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            800: '#166534',
+                            900: '#0f3922',
+                        },
+                        'sage': {
+                            100: '#E6EBE6',
+                            200: '#CDD6CD',
+                            500: '#8DA38D',
+                        },
+                        'terracotta': {
+                            500: '#C77D63',
+                            600: '#A85D45',
+                        },
+                        'cream': '#FDFCF8',
+                        'sand': '#F4F1EA',
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(22, 101, 52, 0.1)',
+                        'glow': '0 0 20px rgba(199, 125, 99, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FDFCF8;
+            color: #0f3922;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .loader-bar {
+            transition: width 0.5s ease-out;
+        }
+    </style>
+</head>
+
+<body class="antialiased relative min-h-screen overflow-hidden flex flex-col" x-data="generator()">
+
+    <!-- Ambient Background -->
+    <div class="fixed inset-0 bg-grain pointer-events-none z-0 opacity-40 mix-blend-overlay"></div>
+    <div class="blob bg-sage-200 w-96 h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="blob bg-terracotta-500 w-80 h-80 rounded-full bottom-0 right-0 translate-x-1/3 opacity-10"></div>
+
+    <!-- Header -->
+    <header class="absolute w-full top-0 z-40 p-6">
+        <div class="max-w-6xl mx-auto flex items-center gap-3">
+            <div class="w-10 h-10 bg-forest-900 rounded-full flex items-center justify-center shadow-lg">
+                <span class="text-sand font-serif italic text-xl">P</span>
+            </div>
+            <span class="text-lg font-serif font-bold tracking-tight text-forest-900">Vitality Transformation</span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10">
+        <div
+            class="glass-panel p-8 md:p-12 rounded-[2.5rem] shadow-soft max-w-xl w-full text-center border border-white/60">
+
+            <!-- Loading State -->
+            <div x-show="!completed && !error" class="space-y-8">
+                <div class="w-24 h-24 mx-auto relative">
+                    <div class="absolute inset-0 bg-forest-50 rounded-full animate-pulse"></div>
+                    <div class="absolute inset-0 border-4 border-forest-100 rounded-full"></div>
+                    <div
+                        class="absolute inset-0 border-4 border-forest-900 rounded-full border-t-transparent animate-spin">
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center text-3xl">🧠</div>
+                </div>
+
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-serif font-bold text-forest-900 mb-2">
+                        Analyzing Your Profile...
+                    </h1>
+                    <p class="text-terracotta-600 font-medium tracking-wide uppercase text-xs">
+                        Building your custom protocol
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <p class="text-gray-600 text-lg font-light" x-text="statusMessage"></p>
+                    <div class="w-full bg-forest-100 rounded-full h-2 overflow-hidden">
+                        <div class="bg-forest-900 h-full loader-bar shadow-glow" :style="`width: ${progress}%`"></div>
+                    </div>
+                </div>
+
+                <div class="text-xs text-gray-400 font-medium uppercase tracking-widest">
+                    Est. wait time: 45-90 seconds
+                </div>
+            </div>
+
+            <!-- Success State -->
+            <div x-show="completed" style="display: none;" class="space-y-8 animate-fade-in-up">
+                <div
+                    class="w-24 h-24 bg-forest-50 text-forest-900 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner border border-forest-100">
+                    ✓
+                </div>
+
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-serif font-bold text-forest-900 mb-4">
+                        Your Protocol is Ready!
+                    </h1>
+                    <p class="text-gray-600 leading-relaxed">
+                        We've generated a personalized 90-day action plan specifically for your <strong
+                            x-text="mensType" class="text-terracotta-600"></strong> type.
+                        It includes your meal plans, supplement guide, herbal protocols, daily routines, and more.
+                    </p>
+                </div>
+
+                <div class="bg-white/50 p-1 rounded-2xl">
+                    <a id="downloadBtn" :href="downloadUrl" :download="downloadFilename"
+                        class="block w-full bg-forest-900 hover:bg-forest-800 text-sand font-bold text-lg py-5 rounded-xl shadow-glow transition-all transform hover:-translate-y-1 relative overflow-hidden group">
+                        <span class="relative z-10 flex items-center justify-center gap-2">
+                            Download PDF Now
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+
+                <div class="text-sm text-gray-500" x-show="emailSent">
+                    <p>A copy has also been sent to <span x-text="email" class="font-bold text-forest-800"></span>.</p>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div x-show="error" style="display: none;" class="space-y-6">
+                <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto text-3xl">
+                    😕
+                </div>
+                <h2 class="text-2xl font-serif font-bold text-red-800">Connection Interrupted</h2>
+                <p class="text-gray-600" x-text="errorMessage"></p>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button @click="retry()"
+                        class="bg-forest-900 hover:bg-forest-800 text-sand font-bold px-8 py-3 rounded-xl shadow-md transition-all transform hover:-translate-y-0.5">
+                        Try Again
+                    </button>
+                    <a href="mailto:support@1wellness.club"
+                        class="bg-white border border-gray-200 px-6 py-3 rounded-xl text-forest-900 font-bold hover:shadow-md transition-all text-center">
+                        Contact Support
+                    </a>
+                </div>
+
+                <p class="text-xs text-gray-400" x-show="retryCount > 0">
+                    Attempt <span x-text="retryCount"></span> failed. You can try again or contact support.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="p-6 text-center text-forest-900/40 text-xs">
+        &copy; <span x-data x-text="new Date().getFullYear()"></span> Vitality Transformation. Secure & private.
+    </footer>
+
+    <script>
+        // API URL — uses the PHP backend (same server, no separate Node.js process needed)
+        const API_BASE_URL = '../backend/api';
+
+        const GENERATION_TIMEOUT_MS = 120; // 2 minutes
+
+        function generator() {
+            return {
+                progress: 0,
+                statusMessage: 'Connecting to AI engine...',
+                completed: false,
+                error: false,
+                errorMessage: 'We couldn\'t generate your PDF right now. Please try again or contact support.',
+                downloadUrl: '',
+                downloadFilename: 'My_90Day_Vitality_Protocol.pdf',
+                email: '',
+                mensType: '',
+                emailSent: false,
+                retryCount: 0,
+                abortController: null,
+
+                init() {
+                    this.startProgressAnimation();
+                    this.startGeneration();
+                },
+
+                startProgressAnimation() {
+                    const messages = [
+                        "Analyzing your hormone profile...",
+                        "Identifying your Vitality root cause...",
+                        "Structuring your 12-week phased plan...",
+                        "Creating your personalized meal plan...",
+                        "Compiling herbal protocols & supplements...",
+                        "Building daily routines for your type...",
+                        "Generating your tracking workbook...",
+                        "Finalizing your premium PDF..."
+                    ];
+
+                    let step = 0;
+                    this._interval = setInterval(() => {
+                        if (this.completed || this.error) {
+                            clearInterval(this._interval);
+                            return;
+                        }
+                        this.progress += Math.floor(Math.random() * 3) + 1;
+                        if (this.progress > 92) this.progress = 92;
+
+                        const threshold = (step + 1) * (90 / messages.length);
+                        if (this.progress > threshold && step < messages.length) {
+                            this.statusMessage = messages[step];
+                            step++;
+                        }
+                    }, 1200);
+                },
+
+                async startGeneration() {
+                    try {
+                        const assessmentData = JSON.parse(localStorage.getItem('mensAssessmentData') || '{}');
+                        const urlParams = new URLSearchParams(window.location.search);
+                        this.email = urlParams.get('email') || assessmentData.contactInfo?.email || 'your email';
+
+                        const typeMap = {
+                            'insulin': 'Insulin-Resistant',
+                            'inflammatory': 'Inflammatory',
+                            'adrenal': 'Adrenal',
+                            'postPill': 'Post-Pill'
+                        };
+                        if (assessmentData.mensType && assessmentData.mensType.primary) {
+                            this.mensType = typeMap[assessmentData.mensType.primary] || 'Vitality';
+                        } else {
+                            this.mensType = 'Vitality';
+                        }
+
+                        const clientName = urlParams.get('name') || assessmentData.contactInfo?.name || 'Friend';
+                        this.downloadFilename = `${clientName.replace(/\s+/g, '_')}_90Day_Vitality_Protocol.pdf`;
+
+                        const payload = {
+                            email: this.email,
+                            name: clientName,
+                            assessment: assessmentData,
+                        };
+
+                        // Create abort controller for timeout
+                        this.abortController = new AbortController();
+                        const timeoutId = setTimeout(() => {
+                            this.abortController.abort();
+                        }, GENERATION_TIMEOUT_MS);
+
+                        const response = await fetch(`${API_BASE_URL}/generate-plan.php`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload),
+                            signal: this.abortController.signal,
+                        });
+
+                        clearTimeout(timeoutId);
+
+                        if (!response.ok) {
+                            const errData = await response.json().catch(() => ({}));
+                            throw new Error(errData.error || `Server error (${response.status})`);
+                        }
+
+                        const blob = await response.blob();
+                        this.downloadUrl = window.URL.createObjectURL(blob);
+
+                        // Store for thank-you page
+                        localStorage.setItem('mensProtocolDownloadUrl', this.downloadUrl);
+                        localStorage.setItem('mensProtocolFilename', this.downloadFilename);
+                        localStorage.setItem('mensProtocolEmail', this.email);
+                        localStorage.setItem('mensProtocolType', this.mensType);
+
+                        this.completed = true;
+                        this.progress = 100;
+                        this.statusMessage = 'Complete!';
+
+                        // Auto-download handling (with a small timeout to allow Alpine to update the DOM href)
+                        setTimeout(() => {
+                            const dlBtn = document.getElementById('downloadBtn');
+                            if (dlBtn && dlBtn.href) dlBtn.click();
+                        }, 500);
+
+                    } catch (e) {
+                        console.error('Generation error:', e);
+                        if (e.name === 'AbortError') {
+                            this.errorMessage = 'The generation took longer than expected. This can happen with complex profiles. Please try again.';
+                        } else {
+                            this.errorMessage = e.message || 'We couldn\'t generate your PDF. Please try again or contact support.';
+                        }
+                        this.error = true;
+                    }
+                },
+
+                retry() {
+                    this.retryCount++;
+                    this.error = false;
+                    this.completed = false;
+                    this.progress = 0;
+                    this.statusMessage = 'Retrying connection...';
+                    this.startProgressAnimation();
+                    this.startGeneration();
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

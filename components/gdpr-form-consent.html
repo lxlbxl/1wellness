@@ -1,0 +1,159 @@
+<!-- GDPR Form Consent Component -->
+<!-- Include this component in your forms to ensure GDPR compliance -->
+
+<!-- Consent Checkbox Section - Add before form submit button -->
+<div class="gdpr-consent-section bg-gray-50 rounded-xl p-6 mb-6">
+    <h4 class="text-lg font-semibold text-gray-900 mb-4">
+        <i class="fas fa-shield-check text-brand-600 mr-2"></i>
+        Your Privacy & Consent
+    </h4>
+
+    <!-- Required Consent -->
+    <div class="space-y-4">
+        <label class="flex items-start gap-3 cursor-pointer group">
+            <input type="checkbox" required name="consent_terms"
+                class="w-5 h-5 mt-0.5 rounded border-gray-300 text-brand-600 focus:ring-brand-500 required-consent" />
+            <span class="text-gray-700">
+                I have read and agree to the
+                <a href="/gdpr/terms-of-service.html" target="_blank" class="text-brand-600 hover:underline">Terms of
+                    Service</a>
+                and
+                <a href="/gdpr/privacy-policy.html" target="_blank" class="text-brand-600 hover:underline">Privacy
+                    Policy</a>
+                *
+            </span>
+        </label>
+
+        <!-- Health Data Consent (for health assessments) -->
+        <label class="flex items-start gap-3 cursor-pointer group" id="health-consent-label">
+            <input type="checkbox" required name="consent_health_data"
+                class="w-5 h-5 mt-0.5 rounded border-gray-300 text-brand-600 focus:ring-brand-500 required-consent" />
+            <span class="text-gray-700">
+                I consent to the processing of my health information to receive personalized wellness recommendations.
+                I understand this data is protected under GDPR as special category data. *
+            </span>
+        </label>
+
+        <!-- Optional Marketing Consent -->
+        <label class="flex items-start gap-3 cursor-pointer group">
+            <input type="checkbox" name="consent_marketing"
+                class="w-5 h-5 mt-0.5 rounded border-gray-300 text-brand-600 focus:ring-brand-500 optional-consent" />
+            <span class="text-gray-700">
+                I would like to receive wellness tips, product updates, and special offers via email.
+                I can unsubscribe at any time.
+            </span>
+        </label>
+
+        <!-- Optional SMS Consent -->
+        <label class="flex items-start gap-3 cursor-pointer group" id="sms-consent-label">
+            <input type="checkbox" name="consent_sms"
+                class="w-5 h-5 mt-0.5 rounded border-gray-300 text-brand-600 focus:ring-brand-500 optional-consent" />
+            <span class="text-gray-700">
+                I would like to receive order updates and wellness tips via SMS/WhatsApp.
+                Message rates may apply.
+            </span>
+        </label>
+    </div>
+
+    <!-- Privacy Notice -->
+    <div class="mt-4 pt-4 border-t border-gray-200">
+        <p class="text-sm text-gray-600">
+            <i class="fas fa-lock text-brand-500 mr-2"></i>
+            <strong>Your data is protected:</strong> We use industry-standard encryption and security measures to
+            protect your information.
+            Your health data is never shared with third parties without your explicit consent.
+        </p>
+        <p class="text-sm text-gray-500 mt-2">
+            <a href="/gdpr/privacy-policy.html" target="_blank" class="text-brand-600 hover:underline">Learn more about
+                your data rights</a>
+        </p>
+    </div>
+</div>
+
+<!-- Hidden fields for consent tracking -->
+<input type="hidden" name="consent_timestamp" id="consent-timestamp" />
+<input type="hidden" name="consent_version" value="1.0" />
+<input type="hidden" name="consent_ip" id="consent-ip" />
+
+<!-- Consent tracking script -->
+<script>
+    (function () {
+        // Set consent timestamp
+        document.getElementById('consent-timestamp').value = new Date().toISOString();
+
+        // Try to get IP (optional, may not work in all environments)
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('consent-ip').value = data.ip;
+            })
+            .catch(() => {
+                // IP tracking failed, will be handled server-side
+            });
+
+        // Show/hide health consent based on form type
+        const form = document.querySelector('form');
+        if (form) {
+            const formAction = form.action || '';
+            const isHealthForm = formAction.includes('assessment') ||
+                formAction.includes('health') ||
+                document.querySelector('input[name="health_data"]');
+
+            if (!isHealthForm) {
+                const healthLabel = document.getElementById('health-consent-label');
+                if (healthLabel) {
+                    healthLabel.style.display = 'none';
+                    const healthInput = healthLabel.querySelector('input');
+                    if (healthInput) healthInput.required = false;
+                }
+            }
+        }
+
+        // Validate required consents on submit
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function (e) {
+                const requiredConsents = form.querySelectorAll('.required-consent:checked');
+                const requiredCheckboxes = form.querySelectorAll('.required-consent');
+
+                if (requiredConsents.length < requiredCheckboxes.length) {
+                    e.preventDefault();
+                    alert('Please accept the required terms and conditions to continue.');
+                    return false;
+                }
+            });
+        });
+    })();
+</script>
+
+<style>
+    /* GDPR Consent Section Styles */
+    .gdpr-consent-section {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .gdpr-consent-section input[type="checkbox"] {
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .gdpr-consent-section input[type="checkbox"]:hover {
+        transform: scale(1.1);
+    }
+
+    .gdpr-consent-section label {
+        transition: all 0.2s;
+    }
+
+    .gdpr-consent-section label:hover {
+        color: #16a34a;
+    }
+
+    .gdpr-consent-section a {
+        text-decoration: underline;
+    }
+
+    .gdpr-consent-section a:hover {
+        text-decoration: none;
+    }
+</style>

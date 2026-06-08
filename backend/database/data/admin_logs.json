@@ -1,0 +1,119 @@
+[
+    {
+        "id": 1,
+        "admin_id": 1,
+        "action": "login",
+        "details": "Admin logged in",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Trae\/1.100.3 Chrome\/132.0.6834.210 Electron\/34.5.1 Safari\/537.36",
+        "created_at": "2025-09-19 15:41:19"
+    },
+    {
+        "id": 2,
+        "admin_id": 1,
+        "action": "logout",
+        "details": "Admin logged out",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Trae\/1.100.3 Chrome\/132.0.6834.210 Electron\/34.5.1 Safari\/537.36",
+        "created_at": "2025-09-19 16:22:02"
+    },
+    {
+        "id": 3,
+        "admin_id": 1,
+        "action": "login",
+        "details": "Admin logged in",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Trae\/1.100.3 Chrome\/132.0.6834.210 Electron\/34.5.1 Safari\/537.36",
+        "created_at": "2025-09-19 16:22:08"
+    },
+    {
+        "id": 4,
+        "admin_id": 1,
+        "action": "login",
+        "details": "Admin logged in",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Trae\/1.100.3 Chrome\/132.0.6834.210 Electron\/34.5.1 Safari\/537.36",
+        "created_at": "2025-09-19 16:25:32"
+    },
+    {
+        "id": 5,
+        "admin_id": 1,
+        "action": "login",
+        "details": "Admin logged in",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Trae\/1.100.3 Chrome\/132.0.6834.210 Electron\/34.5.1 Safari\/537.36",
+        "created_at": "2025-09-22 09:56:25"
+    },
+    {
+        "id": 6,
+        "admin_id": 1,
+        "action": "login",
+        "details": "Admin logged in",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Trae\/1.104.3 Chrome\/138.0.7204.251 Electron\/37.6.1 Safari\/537.36",
+        "created_at": "2025-11-13 01:16:36"
+    },
+    {
+        "id": 7,
+        "admin_id": 1,
+        "action": "logout",
+        "details": "Admin logged out",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Trae\/1.104.3 Chrome\/138.0.7204.251 Electron\/37.6.1 Safari\/537.36",
+        "created_at": "2025-11-13 01:20:57"
+    },
+    {
+        "id": 8,
+        "admin_id": 1,
+        "action": "login",
+        "details": "Admin logged in",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Trae\/1.104.3 Chrome\/138.0.7204.251 Electron\/37.6.1 Safari\/537.36",
+        "created_at": "2025-11-13 01:21:09"
+    },
+    {
+        "id": 9,
+        "admin_id": 1,
+        "action": "login",
+        "details": "Admin logged in",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/141.0.0.0 Safari\/537.36",
+        "created_at": "2025-11-23 13:55:09"
+    },
+    {
+        "id": 10,
+        "admin_id": 1,
+        "action": "login",
+        "details": "Admin logged in",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/141.0.0.0 Safari\/537.36",
+        "created_at": "2025-11-23 14:13:31"
+    },
+    {
+        "id": 11,
+        "admin_id": 1,
+        "action": "login",
+        "details": "Admin logged in",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/141.0.0.0 Safari\/537.36",
+        "created_at": "2025-11-23 14:31:21"
+    },
+    {
+        "id": 12,
+        "admin_id": 1,
+        "action": "logout",
+        "details": "Admin logged out",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/141.0.0.0 Safari\/537.36",
+        "created_at": "2025-11-24 13:52:57"
+    },
+    {
+        "id": 13,
+        "admin_id": 1,
+        "action": "login",
+        "details": "Admin logged in",
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/141.0.0.0 Safari\/537.36",
+        "created_at": "2025-11-24 13:53:10"
+    }
+]

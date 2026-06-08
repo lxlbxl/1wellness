@@ -1,0 +1,72 @@
+@layer base {
+    body {
+        background: #FDFCF8;
+        color: #2C3E35;
+        font-family: "Inter", sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #C7D1C3;
+    border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #A4B4A6;
+}
+
+/* Navigation active states */
+.nav-link.active {
+    background: #2C3E35;
+    color: white;
+    box-shadow: 0 20px 25px -5px rgba(44, 62, 53, 0.2);
+    transform: translateX(4px);
+}
+
+.nav-link.active i {
+    color: white;
+}
+
+.mobile-nav-link.active {
+    color: white;
+    transform: scale(1.1);
+    opacity: 1 !important;
+}
+
+.mobile-nav-link.active .active-dot {
+    display: block;
+}
+
+.view-section {
+    display: none;
+}
+
+.view-section.active {
+    display: block;
+}

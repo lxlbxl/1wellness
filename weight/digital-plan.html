@@ -1,0 +1,435 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weight Loss Digital Protocol - $5,000</title>
+    <meta name="description"
+        content="Start your Weight Loss transformation with our Digital Protocol. Comprehensive meal plans and guides without the supplements.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'forest': {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#16a34a', // Legacy map
+                            600: '#16a34a', // Legacy map
+                            700: '#15803d', // Legacy map
+                            800: '#166534',
+                            900: '#0f3922', // Deep luxury green
+                        },
+                        'sage': {
+                            100: '#E6EBE6',
+                            200: '#CDD6CD',
+                            500: '#8DA38D',
+                        },
+                        'terracotta': {
+                            500: '#C77D63', // Warm accent
+                            600: '#A85D45',
+                        },
+                        'cream': '#FDFCF8',
+                        'sand': '#F4F1EA',
+                        // Compatibility mapping
+                        primary: {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#166534',
+                            600: '#14532d',
+                            700: '#0f3922',
+                            800: '#0f3922',
+                            900: '#051f11'
+                        }
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(22, 101, 52, 0.1)',
+                        'glow': '0 0 20px rgba(199, 125, 99, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FDFCF8;
+            color: #0f3922;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+    </style>
+
+    <!-- Webhook Manager & Flutterwave Integration -->
+    <script src="../js/config.js"></script>
+    <script src="../js/webhook-manager.js"></script>
+    <script src="../js/flutterwave-integration.js"></script>
+    <script src="../js/tracking.js"></script>
+</head>
+
+<body class="antialiased relative min-h-screen">
+
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-40 mix-blend-overlay"></div>
+    <div class="blob bg-sage-200 w-96 h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="blob bg-terracotta-500 w-80 h-80 rounded-full bottom-0 right-0 translate-x-1/3 opacity-10"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-40 glass-panel border-b border-sage-200/50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-forest-900 rounded-full flex items-center justify-center shadow-lg">
+                        <span class="text-sand font-serif italic text-xl">P</span>
+                    </div>
+                    <span class="text-lg font-serif font-bold tracking-tight text-forest-900">Weight Loss Digital
+                        Protocol</span>
+                </div>
+                <div class="text-sm text-gray-600">
+                    <span
+                        class="bg-forest-100 text-forest-800 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase">Digital
+                        Only Offer</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-16 px-4 md:px-6" x-data="digitalPage()">
+        <!-- Hero Section -->
+        <section class="text-center mb-16 max-w-4xl mx-auto">
+            <div
+                class="inline-block border border-terracotta-200 bg-terracotta-50 rounded-full px-6 py-2 mb-6 shadow-sm">
+                <p class="text-terracotta-800 font-bold text-xs tracking-widest uppercase flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-terracotta-500 animate-pulse"></span>
+                    Immediate Access • No Shipping Wait
+                </p>
+            </div>
+
+            <h1 class="text-3xl md:text-6xl font-serif font-bold text-forest-900 mb-6 leading-[1.1]">
+                Manage Your Weight Loss With The <br>
+                <span class="italic text-terracotta-600">Herbal & Nutritional Approach</span>
+            </h1>
+
+            <p class="text-xl text-gray-600 mb-10 leading-relaxed font-light max-w-2xl mx-auto">
+                The complete digital guide to balancing your hormones naturally using ancient herbal wisdom and modern
+                nutritional science.
+            </p>
+
+            <!-- Price & Offer Card -->
+            <div
+                class="glass-panel p-10 rounded-[2.5rem] shadow-soft mb-12 border border-white/60 relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+                <div
+                    class="absolute top-0 right-0 w-64 h-64 bg-sage-100 rounded-full blur-3xl opacity-50 -mr-32 -mt-32">
+                </div>
+
+                <div class="relative z-10 text-center mb-10">
+                    <div
+                        class="inline-block bg-forest-900 text-sand px-4 py-1 rounded text-xs font-bold uppercase tracking-widest mb-4">
+                        Limited Time Offer</div>
+                    <div class="flex items-center justify-center gap-4 align-baseline mb-2">
+                        <span class="text-gray-400 text-xl line-through decoration-red-400 font-light">$15,000</span>
+                        <span class="text-6xl font-serif font-bold text-forest-900">$5,000</span>
+                    </div>
+                    <div class="text-terracotta-600 font-medium tracking-wide text-sm uppercase">One-Time Payment -
+                        Lifetime Access</div>
+                </div>
+
+                <button @click="scrollToOrder()"
+                    class="w-full md:max-w-md mx-auto block bg-forest-900 hover:bg-forest-800 text-sand font-bold text-xl px-8 py-5 rounded-full transition-all duration-300 transform hover:scale-105 shadow-glow relative z-10 mb-8">
+                    Download Instant Access Now →
+                </button>
+
+                <div
+                    class="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-xs font-bold tracking-widest text-forest-800/60 uppercase">
+                    <span class="flex items-center gap-2">
+                        <span class="text-forest-600">✓</span> Instant PDF Delivery
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <span class="text-forest-600">✓</span> Meal Plans Included
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <span class="text-forest-600">✓</span> Keep Forever
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- What You Get -->
+        <section class="mb-20 max-w-5xl mx-auto">
+            <h2 class="text-3xl font-serif font-bold text-center text-forest-900 mb-12">
+                Your Complete Digital Protocol Includes:
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Module 1 -->
+                <div
+                    class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-soft transition-shadow">
+                    <div
+                        class="w-16 h-16 bg-sage-100 rounded-2xl flex items-center justify-center mb-6 text-3xl shadow-inner">
+                        📋
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-forest-900 mb-3">Complete Meal Plan</h3>
+                    <p class="text-gray-500 font-light text-sm leading-relaxed mb-auto">Detailed Weight Loss-friendly meal plan
+                        with local organic ingredients and recipes.</p>
+                    <div
+                        class="mt-6 text-xs text-terracotta-600 font-bold uppercase tracking-widest bg-terracotta-50 px-3 py-1 rounded-full">
+                        Value: $8,000</div>
+                </div>
+
+                <!-- Module 2 -->
+                <div
+                    class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-soft transition-shadow">
+                    <div
+                        class="w-16 h-16 bg-sage-100 rounded-2xl flex items-center justify-center mb-6 text-3xl shadow-inner">
+                        📚
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-forest-900 mb-3">Herbal & Guide</h3>
+                    <p class="text-gray-500 font-light text-sm leading-relaxed mb-auto">
+                        Know exactly which herbs to use for your specific type, including dosage and timing protocols.
+                    </p>
+                    <div
+                        class="mt-6 text-xs text-terracotta-600 font-bold uppercase tracking-widest bg-terracotta-50 px-3 py-1 rounded-full">
+                        Value: $5,000</div>
+                </div>
+
+                <!-- Module 3 -->
+                <div
+                    class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-soft transition-shadow">
+                    <div
+                        class="w-16 h-16 bg-sage-100 rounded-2xl flex items-center justify-center mb-6 text-3xl shadow-inner">
+                        📊
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-forest-900 mb-3">Symptom Tracker</h3>
+                    <p class="text-gray-500 font-light text-sm leading-relaxed mb-auto">Printable templates to track
+                        your monthly cycle, key symptoms, and progress.</p>
+                    <div
+                        class="mt-6 text-xs text-terracotta-600 font-bold uppercase tracking-widest bg-terracotta-50 px-3 py-1 rounded-full">
+                        Value: $2,000</div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <div class="bg-forest-50 rounded-2xl p-8 inline-block shadow-inner border border-forest-100">
+                    <div class="text-2xl font-serif font-bold text-forest-900 mb-2">Total Value: <span
+                            class="line-through decoration-red-400 opacity-50">$15,000</span></div>
+                    <div class="text-3xl text-terracotta-600 font-bold mb-2">Your Price Today: $5,000</div>
+                    <div class="text-xs text-forest-800 font-bold uppercase tracking-widest">You Save: $10 (66% OFF)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Form -->
+        <section id="order-section" class="mb-12">
+            <div class="max-w-3xl mx-auto">
+                <div class="glass-panel rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-white/60">
+                    <div class="text-center mb-10">
+                        <h2 class="text-3xl font-serif font-bold text-forest-900 mb-6">
+                            Start Your Journey Now
+                        </h2>
+                        <div class="flex items-baseline justify-center gap-4">
+                            <span class="text-5xl font-serif font-bold text-forest-900">$5,000</span>
+                            <span class="text-gray-400 line-through">$15,000</span>
+                        </div>
+                    </div>
+
+                    <form @submit.prevent="processPayment()" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Full
+                                    Name *</label>
+                                <input type="text" x-model="customerData.name" required
+                                    class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:border-forest-500 outline-none transition-all"
+                                    placeholder="Enter your full name">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Email
+                                    Address *</label>
+                                <input type="email" x-model="customerData.email" required
+                                    class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:border-forest-500 outline-none transition-all"
+                                    placeholder="For file delivery">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Phone
+                                Number *</label>
+                            <input type="tel" x-model="customerData.phone" required
+                                class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-forest-500 focus:border-forest-500 outline-none transition-all"
+                                placeholder="e.g., +1 (555) 000-000045678">
+                        </div>
+
+                        <div class="bg-sage-50 rounded-xl p-6 border border-sage-100">
+                            <h3 class="font-serif font-bold text-forest-900 mb-4 text-sm uppercase tracking-wide">
+                                Included in purchase:</h3>
+                            <ul class="text-sm text-gray-600 space-y-3">
+                                <li class="flex items-center gap-2"><span class="text-forest-500 font-bold">✓</span> PDF
+                                    Meal Plan & Shopping List</li>
+                                <li class="flex items-center gap-2"><span class="text-forest-500 font-bold">✓</span>
+                                    Weight Loss Lifestyle Guide</li>
+                                <li class="flex items-center gap-2"><span class="text-forest-500 font-bold">✓</span>
+                                    Printable Trackers</li>
+                                <li class="flex items-center gap-2"><span class="text-forest-500 font-bold">✓</span>
+                                    Email Delivery within 5 minutes</li>
+                            </ul>
+                        </div>
+
+                        <button type="submit" :disabled="isProcessing"
+                            class="w-full font-bold text-xl py-5 rounded-full transition-all duration-300 shadow-lg relative overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed"
+                            :class="isProcessing ? 'bg-gray-400' : 'bg-forest-900 hover:bg-forest-800 text-sand'">
+                            <span class="relative z-10" x-show="!isProcessing">Pay & Download - $5,000 →</span>
+                            <span class="relative z-10 flex items-center justify-center gap-2" x-show="isProcessing">
+                                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                Processing...
+                            </span>
+                        </button>
+
+                        <div class="text-center">
+                            <p class="text-xs text-gray-400 flex items-center justify-center gap-1">
+                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                                </svg>
+                                Secured by Flutterwave
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-forest-900 border-t border-forest-800 py-12 text-center">
+        <p class="text-forest-300/40 text-sm">© 2026 1wellness Loss Solutions. All rights reserved.</p>
+    </footer>
+
+    <!-- Page Logic (Strictly Preserved) -->
+    <script>
+        function digitalPage() {
+            return {
+                isProcessing: false,
+                customerData: {
+                    name: '',
+                    email: '',
+                    phone: ''
+                },
+
+                init() {
+                    this.prefillCustomerData();
+                    this.trackPageView();
+                },
+
+                prefillCustomerData() {
+                    const assessmentData = localStorage.getItem('weightAssessmentData');
+                    if (assessmentData) {
+                        const data = JSON.parse(assessmentData);
+                        if (data.contactInfo) {
+                            this.customerData.name = data.contactInfo.name || '';
+                            this.customerData.email = data.contactInfo.email || '';
+                            this.customerData.phone = data.contactInfo.phone || '';
+                        }
+                    }
+                },
+
+                trackPageView() {
+                    if (window.WebhookManager) {
+                        window.WebhookManager.trackSalesVisit({
+                            page: 'digital-plan',
+                            plan: 'digital',
+                            price: 5000,
+                            source: 'downsell',
+                            category: 'weight'
+                        });
+                    }
+                },
+
+                scrollToOrder() {
+                    const el = document.getElementById('order-section');
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth' });
+                    }
+                },
+
+                async processPayment() {
+                    this.isProcessing = true;
+
+                    try {
+                        if (!window.FlutterwaveIntegration) {
+                            throw new Error('Payment system not loaded');
+                        }
+
+                        const errors = window.FlutterwaveIntegration.validateCustomerData(this.customerData);
+                        if (errors.length > 0) {
+                            alert('Please fix errors:\n' + errors.join('\n'));
+                            return;
+                        }
+
+                        this.customerData.phone = this.customerData.phone;
+
+                        const paymentData = {
+                            plan: 'digital',
+                            amount: 5000,
+                            title: 'Weight Loss Digital Protocol',
+                            description: 'Complete Digital Guide & Meal Plan',
+                            customer: this.customerData,
+                            category: 'weight'
+                        };
+
+                        await window.FlutterwaveIntegration.processPayment(paymentData);
+
+                    } catch (error) {
+                        console.error('Payment error:', error);
+                        alert('Payment failed: ' + error.message);
+                    } finally {
+                        this.isProcessing = false;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

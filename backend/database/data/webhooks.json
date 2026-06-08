@@ -1,0 +1,18 @@
+[
+    {
+        "id": "68cd85f5a6a45",
+        "name": "Test",
+        "url": "https:\/\/n8n.webhook.com\/test",
+        "method": "POST",
+        "events": [
+            "assessment.created"
+        ],
+        "headers": [],
+        "active": true,
+        "created_at": "2025-09-19 16:33:57",
+        "updated_at": "2025-09-19 16:33:57",
+        "last_triggered": null,
+        "success_count": 0,
+        "failure_count": 0
+    }
+]

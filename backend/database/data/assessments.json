@@ -1,0 +1,41 @@
+[
+    {
+        "id": "assess_69266a70c820c",
+        "user_id": 1,
+        "email": "baba_tope@yahoo.com",
+        "name": "Babatope Lawal",
+        "phone": "07036268000",
+        "assessment_type": "acne",
+        "assessment_data": [
+            "mild",
+            "body",
+            "10plus_years",
+            "environment",
+            "combination",
+            "natural",
+            "significant",
+            "intermediate",
+            "high",
+            "heal_scars"
+        ],
+        "score": 0,
+        "recommendations": [],
+        "tracking_data": {
+            "utm_source": "",
+            "utm_medium": "",
+            "utm_campaign": "",
+            "utm_term": "",
+            "utm_content": "",
+            "device_type": "",
+            "browser": "",
+            "os": "",
+            "screen_resolution": ""
+        },
+        "ip_address": "::1",
+        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/141.0.0.0 Safari\/537.36",
+        "referrer": "",
+        "source_url": "http:\/\/localhost:8000\/acne\/assessment.html",
+        "created_at": "2025-11-26 02:48:16",
+        "updated_at": "2025-11-26 02:48:16"
+    }
+]

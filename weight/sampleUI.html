@@ -1,0 +1,577 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>90-Day Weight Loss Complete Transformation - $45</title>
+    <meta name="description" content="Transform your Weight Loss in 90 days. A holistic, luxury wellness protocol designed for your body.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'forest': {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            800: '#166534',
+                            900: '#0f3922', // Deep luxury green
+                        },
+                        'sage': {
+                            100: '#E6EBE6',
+                            200: '#CDD6CD',
+                            500: '#8DA38D',
+                        },
+                        'terracotta': {
+                            500: '#C77D63', // Warm accent
+                            600: '#A85D45',
+                        },
+                        'cream': '#FDFCF8',
+                        'sand': '#F4F1EA',
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(22, 101, 52, 0.1)',
+                        'glow': '0 0 20px rgba(199, 125, 99, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom aesthetics */
+        body {
+            background-color: #FDFCF8;
+            color: #0f3922;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        [x-cloak] { display: none !important; }
+        
+        /* Smooth reveal animation classes */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: revealUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+
+        @keyframes revealUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/webhook-manager.js"></script>
+    <script src="../js/flutterwave-integration.js"></script>
+</head>
+
+<body class="antialiased relative overflow-x-hidden">
+    
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-40 mix-blend-overlay"></div>
+
+    <div class="blob bg-sage-200 w-96 h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="blob bg-terracotta-500 w-80 h-80 rounded-full top-20 right-0 translate-x-1/3 opacity-20"></div>
+
+    <header class="fixed w-full top-0 z-40 glass-panel border-b border-sage-200/50 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-forest-900 rounded-full flex items-center justify-center shadow-lg">
+                        <span class="text-sand font-serif italic text-xl">P</span>
+                    </div>
+                    <span class="text-lg font-serif font-bold tracking-tight text-forest-900 hidden md:block">Weight Loss Transformation</span>
+                </div>
+                <div>
+                    <span class="inline-flex items-center gap-2 bg-forest-50 border border-forest-100 px-4 py-1.5 rounded-full text-xs font-medium tracking-wide text-forest-800 uppercase">
+                        <span class="w-2 h-2 rounded-full bg-terracotta-500 animate-pulse"></span>
+                        Assessment Offer Active
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-28 pb-20 px-4 md:px-6" x-data="salesPage()">
+        
+        <section class="max-w-6xl mx-auto mb-20 md:mb-32">
+            <div class="grid md:grid-cols-12 gap-12 items-center">
+                
+                <div class="md:col-span-7 space-y-8 relative">
+                    <div class="inline-block border-b border-terracotta-500/30 pb-1">
+                        <span class="font-sans text-terracotta-600 font-medium tracking-widest text-sm uppercase">Holistic Recovery Protocol</span>
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-7xl font-serif font-medium leading-[1.1] text-forest-900 reveal-up">
+                        Reclaim your body.<br>
+                        <span class="italic text-forest-800/80">Reset your life.</span>
+                    </h1>
+
+                    <p class="text-xl text-gray-600 font-light leading-relaxed max-w-lg reveal-up delay-100">
+                        The definitive 90-day system to balance hormones, restore cycles, and silence inflammation. Personalized to your unique biochemistry.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4 reveal-up delay-200">
+                        <button @click="scrollToOrder()"
+                            class="group relative overflow-hidden bg-forest-900 text-sand px-8 py-5 rounded-full font-sans font-medium transition-all hover:shadow-soft hover:-translate-y-1">
+                            <span class="relative z-10 flex items-center gap-2">
+                                Begin Your Transformation
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                            </span>
+                        </button>
+                        
+                        <div class="flex items-center gap-4 px-4">
+                            <div class="flex -space-x-3">
+                                <img class="w-10 h-10 rounded-full border-2 border-cream object-cover" src="https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=portrait%20woman%20one&image_size=square" alt="User">
+                                <img class="w-10 h-10 rounded-full border-2 border-cream object-cover" src="https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=portrait%20woman%20two&image_size=square" alt="User">
+                                <img class="w-10 h-10 rounded-full border-2 border-cream object-cover" src="https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=portrait%20woman%20three&image_size=square" alt="User">
+                            </div>
+                            <div class="text-sm text-forest-800">
+                                <span class="block font-bold">500+ Women</span>
+                                <span class="opacity-80">Restored balance</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-5 relative reveal-up delay-300">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-sage-200 to-terracotta-500 rounded-[2rem] opacity-20 blur-2xl transform rotate-3"></div>
+                    
+                    <div class="glass-panel relative rounded-[2rem] p-8 md:p-10 shadow-soft border-t border-white/80">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <p class="text-gray-500 text-sm uppercase tracking-wide font-medium">Assessment Exclusive</p>
+                                <div class="flex items-baseline gap-3 mt-1">
+                                    <span class="text-5xl font-serif text-forest-900">$45k</span>
+                                    <span class="text-xl text-gray-400 line-through decoration-terracotta-500 decoration-2">$75k</span>
+                                </div>
+                            </div>
+                            <div class="bg-terracotta-50 text-terracotta-600 px-3 py-1 rounded-full text-xs font-bold border border-terracotta-100">
+                                -40% OFF
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <div class="w-6 h-6 rounded-full bg-forest-50 flex items-center justify-center text-forest-800 text-xs">✓</div>
+                                <span>Complete 90-Day Meal Plan</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <div class="w-6 h-6 rounded-full bg-forest-50 flex items-center justify-center text-forest-800 text-xs">✓</div>
+                                <span>Doctor-Approved Supplement Guide</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-gray-700">
+                                <div class="w-6 h-6 rounded-full bg-forest-50 flex items-center justify-center text-forest-800 text-xs">✓</div>
+                                <span>Private Coaching Community</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-forest-50 rounded-xl p-4 flex items-center justify-between border border-forest-100/50">
+                            <div class="text-xs text-forest-800">
+                                <span class="block font-bold mb-1">Offer Expires In:</span>
+                                <div class="flex gap-2 font-mono text-lg">
+                                    <span x-text="timeLeft.hours"></span>h :
+                                    <span x-text="timeLeft.minutes"></span>m :
+                                    <span x-text="timeLeft.seconds"></span>s
+                                </div>
+                            </div>
+                            <div class="h-8 w-px bg-forest-200"></div>
+                            <div class="text-right">
+                                <span class="text-xs text-forest-600 block">Instant Access</span>
+                                <span class="text-xs text-forest-600 block">Digital Delivery</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="flex justify-center mb-20">
+            <div class="h-24 w-px bg-gradient-to-b from-transparent via-terracotta-200 to-transparent"></div>
+        </div>
+
+        <section class="max-w-5xl mx-auto mb-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif text-forest-900 mb-4">A Complete Ecosystem for Healing</h2>
+                <p class="text-gray-500">Everything has been prepared for you. No guessing, just healing.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-soft transition-all duration-500">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-sage-100 rounded-bl-full -mr-8 -mt-8 opacity-50 transition-transform group-hover:scale-110"></div>
+                    <div class="relative z-10">
+                        <span class="text-3xl mb-4 block">🥗</span>
+                        <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Metabolic Meal Plans</h3>
+                        <p class="text-gray-600 mb-4 text-sm leading-relaxed">Not a diet, but a nourishment protocol. Custom meal plans designed for your specific Weight Loss type (Inflammatory, Insulin Resistant, etc) with organic ingredients.</p>
+                        <div class="inline-block bg-sand px-3 py-1 rounded-md text-xs font-medium text-forest-800">Valued at $25,000</div>
+                    </div>
+                </div>
+
+                <div class="bg-forest-900 rounded-3xl p-8 shadow-sm relative overflow-hidden text-cream">
+                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+                    <span class="text-3xl mb-4 block">💊</span>
+                    <h3 class="text-xl font-serif font-bold mb-2">Supplement Protocol</h3>
+                    <p class="text-forest-100 mb-4 text-sm">Stop wasting money. Get exact dosages and timing for the supplements that actually move the needle.</p>
+                    <div class="inline-block bg-white/10 px-3 py-1 rounded-md text-xs font-medium">Valued at $15,000</div>
+                </div>
+
+                <div class="bg-terracotta-50 rounded-3xl p-8 shadow-sm border border-terracotta-100 hover:border-terracotta-200 transition-colors">
+                    <span class="text-3xl mb-4 block">🏃‍♀️</span>
+                    <h3 class="text-xl font-serif font-bold text-terracotta-900 mb-2">Cycle-Sync Moves</h3>
+                    <p class="text-terracotta-800 mb-4 text-sm">Workouts that respect your cortisol levels. Burn fat without burning out your adrenals.</p>
+                    <div class="inline-block bg-white px-3 py-1 rounded-md text-xs font-medium text-terracotta-700">Valued at $12,000</div>
+                </div>
+
+                <div class="md:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-soft transition-all duration-500">
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        <div class="flex-1">
+                            <span class="text-3xl mb-4 block">👩‍⚕️</span>
+                            <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Clinical Support System</h3>
+                            <p class="text-gray-600 mb-4 text-sm">Direct access to Weight Loss specialists and a private WhatsApp sisterhood. You are never doing this alone again.</p>
+                            <div class="inline-block bg-sand px-3 py-1 rounded-md text-xs font-medium text-forest-800">Valued at $80,000</div>
+                        </div>
+                        <div class="hidden md:block w-px h-32 bg-gray-100"></div>
+                        <div class="md:w-1/3 pt-2">
+                             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Total Value</p>
+                             <p class="text-3xl font-serif text-gray-300 line-through">$140k</p>
+                             <p class="text-4xl font-serif text-forest-800 mt-1">$45k</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-6xl mx-auto mb-24 bg-sand/30 rounded-[3rem] p-8 md:p-16 relative">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-8 bg-white px-6 py-2 rounded-full shadow-sm border border-gray-100">
+                <span class="text-sm font-bold text-forest-900 tracking-widest uppercase">Real Stories</span>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-50/50">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20headshot%20young%20Nigerian%20woman%20smiling%20confident%20natural%20lighting&image_size=square" class="w-12 h-12 rounded-full object-cover grayscale opacity-80" alt="Adunni">
+                        <div>
+                            <h4 class="font-serif font-bold text-gray-900">Adunni K.</h4>
+                            <p class="text-xs text-gray-500 uppercase tracking-wide">Lagos</p>
+                        </div>
+                    </div>
+                    <p class="font-serif italic text-lg text-gray-800 mb-4 leading-relaxed">"I lost 18kg in 90 days. But more importantly, I got my period back after 10 months of silence. I feel like myself again."</p>
+                    <div class="h-px w-full bg-gray-100 my-4"></div>
+                    <p class="text-xs font-bold text-forest-600">✓ 18kg Lost • Cycles Restored</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-50/50 md:-mt-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20headshot%20young%20African%20woman%20happy%20natural%20beauty&image_size=square" class="w-12 h-12 rounded-full object-cover grayscale opacity-80" alt="Chioma">
+                        <div>
+                            <h4 class="font-serif font-bold text-gray-900">Chioma O.</h4>
+                            <p class="text-xs text-gray-500 uppercase tracking-wide">Abuja</p>
+                        </div>
+                    </div>
+                    <p class="font-serif italic text-lg text-gray-800 mb-4 leading-relaxed">"My insulin resistance is under control. No more midday crashes. My skin is glowing. This was the best investment I ever made."</p>
+                    <div class="h-px w-full bg-gray-100 my-4"></div>
+                    <p class="text-xs font-bold text-forest-600">✓ Clear Skin • Stable Energy</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-50/50">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20headshot%20young%20woman%20glowing%20skin%20confident%20smile&image_size=square" class="w-12 h-12 rounded-full object-cover grayscale opacity-80" alt="Anna">
+                        <div>
+                            <h4 class="font-serif font-bold text-gray-900">Anna O.</h4>
+                            <p class="text-xs text-gray-500 uppercase tracking-wide">Port Harcourt</p>
+                        </div>
+                    </div>
+                    <p class="font-serif italic text-lg text-gray-800 mb-4 leading-relaxed">"Finally pregnant after 3 years of trying! This program didn't just help my Weight Loss, it gave me my life back."</p>
+                    <div class="h-px w-full bg-gray-100 my-4"></div>
+                    <p class="text-xs font-bold text-forest-600">✓ Pregnant • Hormones Balanced</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-3xl mx-auto mb-24 px-4">
+            <h2 class="text-3xl font-serif text-center mb-10 text-forest-900">Common Questions</h2>
+            <div class="space-y-4">
+                <template x-for="(faq, index) in [
+                    {q: 'How quickly will I see results?', a: 'Most women feel a shift in energy within 2 weeks. Physical changes usually begin around week 4.'},
+                    {q: 'Is this suitable for all types of Weight Loss?', a: 'Yes. The protocol adapts to Insulin, Inflammatory, Adrenal, and Post-Pill Weight Loss types.'},
+                    {q: 'What if I don\'t see results?', a: 'We offer a full 30-day money-back guarantee. We are that confident in this protocol.'},
+                    {q: 'Are the meals expensive to prepare?', a: 'No. We focus on accessible organic ingredients found in any local market.'}
+                ]">
+                    <div x-data="{ open: false }" class="border-b border-gray-200 pb-4">
+                        <button @click="open = !open" class="w-full text-left flex justify-between items-center py-2 group">
+                            <span class="text-lg font-medium text-gray-800 group-hover:text-terracotta-600 transition-colors" x-text="faq.q"></span>
+                            <span class="text-2xl font-light text-terracotta-500" x-text="open ? '−' : '+'"></span>
+                        </button>
+                        <div x-show="open" x-collapse class="text-gray-600 leading-relaxed mt-2 pl-4 border-l-2 border-terracotta-100" x-text="faq.a"></div>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <div class="max-w-4xl mx-auto bg-gradient-to-r from-terracotta-500 to-terracotta-600 rounded-2xl p-1 shadow-lg overflow-hidden">
+                <div class="bg-white/95 backdrop-blur rounded-xl p-8 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-terracotta-500 to-transparent"></div>
+                    
+                    <h2 class="text-2xl font-serif font-bold text-gray-900 mb-2">The doors are closing soon.</h2>
+                    <p class="text-gray-600 mb-6">Assessment pricing expires in:</p>
+                    
+                    <div class="flex justify-center gap-4 text-forest-900 mb-8">
+                        <div class="flex flex-col">
+                            <span x-text="timeLeft.hours" class="text-3xl font-bold font-mono bg-sage-100 px-3 py-2 rounded-lg"></span>
+                            <span class="text-[10px] uppercase tracking-wider mt-1 text-gray-500">Hours</span>
+                        </div>
+                        <span class="text-2xl font-bold mt-2">:</span>
+                        <div class="flex flex-col">
+                            <span x-text="timeLeft.minutes" class="text-3xl font-bold font-mono bg-sage-100 px-3 py-2 rounded-lg"></span>
+                            <span class="text-[10px] uppercase tracking-wider mt-1 text-gray-500">Mins</span>
+                        </div>
+                        <span class="text-2xl font-bold mt-2">:</span>
+                        <div class="flex flex-col">
+                            <span x-text="timeLeft.seconds" class="text-3xl font-bold font-mono bg-sage-100 px-3 py-2 rounded-lg"></span>
+                            <span class="text-[10px] uppercase tracking-wider mt-1 text-gray-500">Secs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="order-section" class="max-w-3xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+                <div class="bg-forest-900 p-8 text-center">
+                    <h2 class="text-2xl md:text-3xl font-serif text-white mb-2">Secure Your Spot</h2>
+                    <p class="text-forest-200 text-sm">Safe, encrypted, and guaranteed.</p>
+                </div>
+
+                <div class="p-8 md:p-12">
+                    <form @submit.prevent="processPayment()" class="space-y-6">
+                        <div class="bg-sand/50 rounded-xl p-6 mb-8 border border-sand">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="font-bold text-gray-800">90-Day Transformation Protocol</span>
+                                <span class="font-bold text-forest-800">$45</span>
+                            </div>
+                            <ul class="space-y-2 text-sm text-gray-600">
+                                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Meal Plans & Shopping Lists</li>
+                                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Supplement Guide</li>
+                                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Expert Chat Access</li>
+                            </ul>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Full Name</label>
+                                <input type="text" x-model="customerData.name" required
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-forest-500 transition-all outline-none"
+                                    placeholder="Jane Doe">
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Email Address</label>
+                                    <input type="email" x-model="customerData.email" required
+                                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-forest-500 transition-all outline-none"
+                                        placeholder="jane@example.com">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Phone</label>
+                                    <input type="tel" x-model="customerData.phone" required
+                                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-forest-500 transition-all outline-none"
+                                        placeholder="+1 (555) 000-0000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-2 border-dashed border-terracotta-200 bg-terracotta-50/30 rounded-xl p-4 mt-6">
+                            <label class="flex items-start gap-4 cursor-pointer group">
+                                <div class="relative flex items-center">
+                                    <input type="checkbox" x-model="orderBump"
+                                        class="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-terracotta-300 transition-all checked:bg-terracotta-500 checked:border-terracotta-500">
+                                    <svg class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none opacity-0 peer-checked:opacity-100 text-white" viewBox="0 0 14 14" fill="none">
+                                        <path d="M3 7L5.5 9.5L11.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <span class="block font-bold text-gray-900 text-sm group-hover:text-terracotta-700 transition-colors">Add Priority Processing & Insurance (+$2,000)</span>
+                                    <span class="block text-xs text-gray-500 mt-1">Jump the queue and get fully insured order processing.</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <button type="submit" :disabled="isProcessing"
+                            class="w-full bg-forest-900 hover:bg-forest-800 text-sand font-medium text-lg py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed mt-4">
+                            <span x-show="!isProcessing"
+                                x-text="'Pay $' + (45 + (orderBump ? 2000 : 0)).toLocaleString()"></span>
+                            <span x-show="isProcessing" class="flex items-center justify-center gap-2">
+                                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Processing...
+                            </span>
+                        </button>
+                        
+                        <div class="flex justify-center items-center gap-4 pt-2 opacity-60 grayscale hover:grayscale-0 transition-all">
+                             <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Flutterwave_Logo.png" alt="Flutterwave" class="h-6">
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="bg-gray-50 p-6 text-center border-t border-gray-100">
+                    <p class="text-sm text-gray-500">Need something smaller? <a href="30-day-plan.html" class="text-forest-700 font-semibold hover:underline">View 30-Day Plan</a></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center py-12">
+            <div class="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-sm border border-gray-100">
+                <span class="text-2xl">🛡️</span>
+                <span class="text-sm font-medium text-gray-600">30-Day Money Back Guarantee</span>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-forest-900 py-12 text-center">
+        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span class="text-sand font-serif italic text-xl">P</span>
+        </div>
+        <p class="text-forest-200/60 text-sm">© 2026 1wellness Loss Transformation. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function salesPage() {
+            return {
+                isProcessing: false,
+                orderBump: false,
+                customerData: {
+                    name: '',
+                    email: '',
+                    phone: ''
+                },
+                timeLeft: {
+                    hours: '47',
+                    minutes: '59',
+                    seconds: '59'
+                },
+
+                init() {
+                    this.startCountdown();
+                    this.trackPageView();
+                    this.prefillCustomerData();
+                },
+
+                prefillCustomerData() {
+                    const assessmentData = localStorage.getItem('weightAssessmentData');
+                    if (assessmentData) {
+                        const data = JSON.parse(assessmentData);
+                        if (data.contactInfo) {
+                            this.customerData.name = data.contactInfo.name || '';
+                            this.customerData.email = data.contactInfo.email || '';
+                            this.customerData.phone = data.contactInfo.phone || '';
+                        }
+                    }
+                },
+
+                startCountdown() {
+                    const endTime = new Date().getTime() + (48 * 60 * 60 * 1000);
+                    const updateCountdown = () => {
+                        const now = new Date().getTime();
+                        const distance = endTime - now;
+                        if (distance > 0) {
+                            this.timeLeft.hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                            this.timeLeft.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                            this.timeLeft.seconds = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                        }
+                    };
+                    updateCountdown();
+                    setInterval(updateCountdown, 1000);
+                },
+
+                trackPageView() {
+                    if (window.WebhookManager) {
+                        window.WebhookManager.trackSalesVisit({
+                            page: '90-day-plan',
+                            plan: '90-day',
+                            price: 45,
+                            source: 'results_page'
+                        });
+                    }
+                },
+
+                scrollToOrder() {
+                    document.getElementById('order-section').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                },
+
+                async processPayment() {
+                    this.isProcessing = true;
+                    try {
+                        if (!window.FlutterwaveIntegration) throw new Error('Payment system not loaded');
+                        const errors = window.FlutterwaveIntegration.validateCustomerData(this.customerData);
+                        if (errors.length > 0) {
+                            alert('Please fix the following errors:\n' + errors.join('\n'));
+                            return;
+                        }
+                        this.customerData.phone = this.customerData.phone;
+                        const baseAmount = 45;
+                        const bumpAmount = this.orderBump ? 2000 : 0;
+                        const totalAmount = baseAmount + bumpAmount;
+                        const description = this.orderBump ? '90-Day Weight Loss Complete Transformation + Priority Processing' : '90-Day Weight Loss Complete Transformation';
+                        const paymentData = {
+                            plan: '90-day',
+                            amount: totalAmount,
+                            title: '90-Day Weight Loss Complete Transformation',
+                            description: description,
+                            customer: this.customerData,
+                            category: 'weight',
+                            meta: { order_bump: this.orderBump }
+                        };
+                        await window.FlutterwaveIntegration.processPayment(paymentData);
+                    } catch (error) {
+                        console.error('Payment error:', error);
+                        alert('Payment processing failed: ' + error.message);
+                    } finally {
+                        this.isProcessing = false;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

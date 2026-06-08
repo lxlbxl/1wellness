@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitale Assessment — Identify Your Male Vitality Type | 1wellness</title>
+    <meta name="description"
+        content="Complete our comprehensive Vitale assessment to identify your unique male vitality type and receive a personalised restoration protocol.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Custom Tailwind Config — 1wellness Brand System -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        head:    ['"Syne"', 'sans-serif'],
+                        body:    ['"Lora"', 'Georgia', 'serif'],
+                        mono:    ['"DM Mono"', 'monospace'],
+                    },
+                    colors: {
+                        midnight: '#1A1A18',
+                        charcoal: '#2C2C2A',
+                        dusk:     '#6B6560',
+                        stone:    '#E8E0D5',
+                        canvas:   '#F9F5EE',
+                        cream:    '#FFFBF4',
+                        amber: {
+                            DEFAULT: '#D4860A',
+                            50:  '#FDF6E7',
+                            100: '#FAE9C4',
+                            400: '#E5A83C',
+                            500: '#D4860A',
+                            600: '#B36E06',
+                            700: '#8C5204',
+                        },
+                        forest: {
+                            DEFAULT: '#1D4532',
+                            50:  '#EBF4EE',
+                            100: '#C6DFD0',
+                            500: '#2E7A51',
+                            800: '#1D4532',
+                            900: '#122B1F',
+                        },
+                        sage: '#8FB89A',
+                        terra: '#C85A3C',
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%220.04%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'amber': '0 0 30px rgba(212,134,10,0.25)',
+                        'soft':  '0 20px 50px -10px rgba(26,26,24,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F9F5EE;
+            color: #2C2C2A;
+            font-family: 'Lora', Georgia, serif;
+        }
+
+        .glass-light {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(90px);
+            z-index: -1;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        [x-cloak] { display: none !important; }
+
+        html, body { max-width: 100vw; overflow-x: hidden; }
+        * { box-sizing: border-box; }
+
+        .answer-card {
+            transition: all 0.2s ease;
+        }
+        .answer-card.selected {
+            background: #FDF6E7;
+            border-color: #D4860A;
+            box-shadow: 0 0 0 1px #D4860A;
+        }
+        .answer-card:not(.selected):hover {
+            background: #FFFBF4;
+            border-color: #E8E0D5;
+        }
+    </style>
+
+    <!-- Webhook Manager -->
+    <script src="../js/config.js"></script>
+    <script src="../js/webhook-manager.js"></script>
+    <script src="../js/tracking.js"></script>
+</head>
+
+<body class="antialiased relative min-h-screen flex flex-col">
+
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-50 mix-blend-overlay"></div>
+    <div class="blob bg-amber-500 w-[400px] h-[400px] rounded-full top-0 right-0 translate-x-1/3 -translate-y-1/4 opacity-15"></div>
+    <div class="blob w-[350px] h-[350px] rounded-full bottom-0 left-0 -translate-x-1/3 translate-y-1/3" style="background:#1D4532; opacity:0.12;"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-40 glass-light border-b border-stone/60">
+        <div class="max-w-4xl mx-auto px-4 md:px-6 py-3 md:py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-midnight rounded-full flex items-center justify-center shadow-md">
+                        <span class="text-amber-400 font-display italic text-lg font-bold">V</span>
+                    </div>
+                    <div>
+                        <span class="block font-head font-800 text-sm tracking-tight text-midnight leading-none">Vitale</span>
+                        <span class="block font-mono text-[8px] tracking-[0.15em] text-dusk uppercase">by 1wellness</span>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-[10px] font-mono tracking-widest text-dusk uppercase">Vitality Assessment</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-20 md:pt-28 pb-10 md:pb-12 px-4" x-data="mensAssessment()" x-cloak>
+        <div class="max-w-3xl mx-auto">
+
+            <!-- Progress Bar -->
+            <div class="mb-8" x-show="!showContactForm">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-[10px] font-mono tracking-widest text-dusk uppercase">Progress</span>
+                    <span class="text-[10px] font-mono tracking-widest text-midnight uppercase"
+                        x-text="`Question ${currentQuestion + 1} of ${totalQuestions}`"></span>
+                </div>
+                <div class="w-full bg-stone/60 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-gradient-to-r from-amber-600 to-amber-400 h-1.5 rounded-full transition-all duration-500 ease-out"
+                        :style="`width: ${((currentQuestion + 1) / totalQuestions) * 100}%`"></div>
+                </div>
+            </div>
+
+            <!-- Assessment Panel -->
+            <div class="glass-light p-6 md:p-12 rounded-[2rem] shadow-soft relative overflow-hidden">
+
+                <!-- Question Display -->
+                <div x-show="!showResults && !showContactForm">
+                    <div class="mb-8 md:mb-10">
+                        <div class="inline-block border-b border-amber-500/30 pb-1 mb-4">
+                            <span class="font-mono text-amber-600 text-[10px] tracking-[0.2em] uppercase"
+                                x-text="`Question ${currentQuestion + 1}`"></span>
+                        </div>
+                        <h2 class="text-2xl md:text-4xl font-display text-midnight mb-3 leading-tight"
+                            x-text="questions[currentQuestion].question"></h2>
+                        <p class="text-dusk font-body text-base font-light border-l-2 border-amber-500/30 pl-4"
+                            x-text="questions[currentQuestion].description"></p>
+                    </div>
+
+                    <!-- Answer Options -->
+                    <div class="space-y-3 mb-10">
+                        <template x-for="(option, index) in questions[currentQuestion].options" :key="index">
+                            <label
+                                class="answer-card group flex items-center p-5 border rounded-2xl cursor-pointer relative overflow-hidden"
+                                :class="getSelectedAnswer() === option.value ? 'selected' : 'border-stone bg-white'"
+                                @click="selectAnswer(option.value)">
+
+                                <input type="radio" :name="`q_${currentQuestion}`" :value="option.value"
+                                    :checked="getSelectedAnswer() === option.value" class="sr-only">
+
+                                <div class="flex-1 relative z-10">
+                                    <div class="font-head font-600 text-midnight text-base"
+                                        x-text="option.text"></div>
+                                    <div class="text-sm text-dusk mt-0.5 font-body font-light" x-text="option.description"
+                                        x-show="option.description"></div>
+                                </div>
+
+                                <div class="ml-4 relative z-10">
+                                    <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200"
+                                        :class="getSelectedAnswer() === option.value ? 'border-amber-500 bg-amber-500' : 'border-stone group-hover:border-amber-300'">
+                                        <div class="w-2 h-2 bg-white rounded-full transition-transform duration-200"
+                                            :class="getSelectedAnswer() === option.value ? 'scale-100' : 'scale-0'">
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </template>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="flex justify-between items-center pt-6 border-t border-stone/50">
+                        <button type="button" @click="previousQuestion()"
+                            :class="currentQuestion > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+                            class="text-dusk font-head font-600 hover:text-midnight transition-colors flex items-center gap-2 text-xs tracking-widest uppercase">
+                            ← Back
+                        </button>
+
+                        <button type="button" @click="nextQuestion()" x-show="currentQuestion < totalQuestions - 1"
+                            :disabled="!getSelectedAnswer()"
+                            class="bg-midnight text-amber-400 px-6 md:px-8 py-3 rounded-full font-head font-700 transition-all hover:bg-charcoal disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg flex items-center gap-2 text-xs tracking-widest uppercase">
+                            Next
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </button>
+
+                        <button type="button" @click="submitAssessment()"
+                            x-show="currentQuestion === totalQuestions - 1"
+                            :disabled="!answers[currentQuestion] || isSubmitting"
+                            class="bg-amber-500 hover:bg-amber-400 text-midnight px-10 py-4 rounded-full font-head font-700 transition-all shadow-amber hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-40 disabled:transform-none text-xs tracking-widest uppercase">
+                            <span x-show="!isSubmitting">Analyse My Results →</span>
+                            <span x-show="isSubmitting" class="flex items-center gap-2">
+                                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Analysing...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contact Information Form (shown after assessment) -->
+                <div x-show="showContactForm" id="contactFormSection">
+                    <div class="text-center mb-10">
+                        <div class="w-16 h-16 bg-amber-500 text-midnight rounded-full flex items-center justify-center mx-auto mb-5 text-2xl font-bold shadow-amber">
+                            ✓
+                        </div>
+                        <h3 class="text-3xl font-display font-bold text-midnight mb-2">Analysis Complete</h3>
+                        <p class="text-dusk font-body font-light">Enter your details to reveal your Vitality type and personalised protocol.</p>
+                    </div>
+
+                    <form @submit.prevent="submitContactInfo()" class="space-y-6 max-w-lg mx-auto">
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-[10px] font-mono text-dusk uppercase tracking-widest mb-2">Full Name</label>
+                                <input type="text" x-model="contactInfo.name" required
+                                    class="w-full px-5 py-4 bg-white border border-stone rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all shadow-sm font-body text-midnight"
+                                    placeholder="John Okafor">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-mono text-dusk uppercase tracking-widest mb-2">Email Address</label>
+                                <input type="email" x-model="contactInfo.email" required
+                                    class="w-full px-5 py-4 bg-white border border-stone rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all shadow-sm font-body text-midnight"
+                                    placeholder="john@example.com">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-mono text-dusk uppercase tracking-widest mb-2">Phone Number (WhatsApp)</label>
+                                <input type="tel" x-model="contactInfo.phone" @input="contactError = ''" required
+                                    class="w-full px-5 py-4 bg-white border border-stone rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all shadow-sm font-body text-midnight"
+                                    :class="contactError ? 'border-red-300 ring-1 ring-red-200' : ''"
+                                    placeholder="+234 800 000 0000">
+                                <div x-show="contactError" class="mt-2 text-sm text-red-600 flex items-center gap-1 font-body">
+                                    <span x-text="contactError"></span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-mono text-dusk uppercase tracking-widest mb-2">Age Range</label>
+                                <div class="relative">
+                                    <select x-model="contactInfo.ageRange"
+                                        class="w-full px-5 py-4 bg-white border border-stone rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all shadow-sm appearance-none font-body text-midnight">
+                                        <option value="">Select your age range</option>
+                                        <option value="18-25">18–25 years</option>
+                                        <option value="26-35">26–35 years</option>
+                                        <option value="36-45">36–45 years</option>
+                                        <option value="46+">46+ years</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-dusk">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" :disabled="isSubmittingContact"
+                                class="w-full bg-midnight hover:bg-charcoal text-amber-400 font-head font-700 text-sm py-5 rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed tracking-widest uppercase">
+                                <span x-show="!isSubmittingContact">Reveal My Vitality Type →</span>
+                                <span x-show="isSubmittingContact" class="flex items-center justify-center gap-2">
+                                    <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Processing...
+                                </span>
+                            </button>
+                        </div>
+
+                        <p class="text-[10px] text-dusk text-center flex items-center justify-center gap-2 font-mono tracking-widest uppercase">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Your information is secure &amp; private
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div x-show="isSubmitting"
+                class="fixed inset-0 bg-canvas/80 backdrop-blur-sm z-50 flex items-center justify-center"
+                style="display: none;">
+                <div class="text-center">
+                    <div class="w-16 h-16 border-2 border-amber-500/20 border-t-amber-500 rounded-full animate-spin mx-auto mb-4"></div>
+                    <h3 class="text-xl font-display font-bold text-midnight">Identifying Your Type...</h3>
+                    <p class="text-dusk font-mono text-xs tracking-widest uppercase mt-2">Analysing your pattern</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-6 text-center text-dusk/50 text-[10px] font-mono tracking-widest uppercase">
+        <p>© <span id="footer-year"></span> Vitale by 1wellness. All rights reserved.</p>
+    </footer>
+
+    <!-- Assessment Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const y = document.getElementById('footer-year');
+            if (y) y.textContent = new Date().getFullYear();
+        });
+
+        function mensAssessment() {
+            return {
+                currentQuestion: 0,
+                totalQuestions: 12,
+                answers: {},
+                isSubmitting: false,
+                showContactForm: false,
+                showResults: false,
+                isSubmittingContact: false,
+                contactInfo: {
+                    name: '',
+                    email: '',
+                    phone: '',
+                    ageRange: ''
+                },
+                contactError: '',
+
+                // ── 12 Male Vitality Questions ──────────────────────────────
+                questions: [
+                    {
+                        question: "How would you describe your energy levels on a typical day?",
+                        description: "Think about your average day over the last 4–6 weeks",
+                        options: [
+                            { value: "high",     text: "High and sustained all day",          description: "I feel alert and capable from morning to night" },
+                            { value: "moderate", text: "Good in the morning, fades by afternoon", description: "Mid-afternoon slump is noticeable" },
+                            { value: "low",      text: "Consistently low — I push through fatigue", description: "Most tasks feel like a significant effort" },
+                            { value: "crashes",  text: "Unpredictable crashes throughout the day",  description: "Energy drops suddenly without warning" }
+                        ]
+                    },
+                    {
+                        question: "How is your sleep quality?",
+                        description: "Consider how rested you feel upon waking",
+                        options: [
+                            { value: "good",      text: "I sleep well and wake up rested" },
+                            { value: "light",     text: "Light sleep — I wake easily and often" },
+                            { value: "restless",  text: "Restless or broken sleep most nights",     description: "Multiple wake-ups or racing thoughts" },
+                            { value: "insomnia",  text: "Significant insomnia or non-restorative sleep", description: "I sleep but wake exhausted" }
+                        ]
+                    },
+                    {
+                        question: "How would you rate your current libido and sexual drive?",
+                        description: "Be honest — this is a key hormonal indicator",
+                        options: [
+                            { value: "normal",   text: "Normal — consistent and satisfactory" },
+                            { value: "reduced",  text: "Noticeably reduced compared to before",      description: "A gradual but clear decline" },
+                            { value: "low",      text: "Very low — rarely present",                  description: "Little to no spontaneous drive" },
+                            { value: "absent",   text: "Essentially absent",                          description: "Almost no libido" }
+                        ]
+                    },
+                    {
+                        question: "How is your ability to build and maintain muscle?",
+                        description: "Even with consistent training and adequate protein",
+                        options: [
+                            { value: "building",    text: "Building well — good gains and retention" },
+                            { value: "maintaining", text: "Maintaining but struggling to grow",       description: "Progress has stalled" },
+                            { value: "losing",      text: "Slowly losing muscle mass",               description: "Noticeably less defined or strong than before" },
+                            { value: "rapid_loss",  text: "Rapid or significant muscle loss",         description: "Visibly different physique without changing habits" }
+                        ]
+                    },
+                    {
+                        question: "How do you handle stress?",
+                        description: "Your nervous system's response to pressure",
+                        options: [
+                            { value: "well",     text: "Resilient — stress doesn't derail me" },
+                            { value: "moderate", text: "Manageable — I cope but feel the pressure" },
+                            { value: "poorly",   text: "Easily overwhelmed and anxious",             description: "Small stressors feel disproportionately heavy" },
+                            { value: "burnout",  text: "Chronically burned out",                     description: "Constant low-grade stress or emotional flatness" }
+                        ]
+                    },
+                    {
+                        question: "Where does your body preferentially store fat?",
+                        description: "Your dominant fat distribution pattern",
+                        options: [
+                            { value: "even",        text: "Evenly distributed — no specific area" },
+                            { value: "belly",       text: "Predominantly around the midsection",  description: "Visceral belly fat that feels stubborn" },
+                            { value: "chest",       text: "Chest and upper body",                 description: "Soft chest tissue or upper-back fat" },
+                            { value: "generalised", text: "Generalised — gaining all over",       description: "Weight increasing without a clear pattern" }
+                        ]
+                    },
+                    {
+                        question: "How is your mental sharpness and focus?",
+                        description: "Cognitive performance during work or demanding tasks",
+                        options: [
+                            { value: "sharp",    text: "Sharp — I focus well and think clearly" },
+                            { value: "variable", text: "Variable — good days and bad days",      description: "Unpredictable concentration" },
+                            { value: "foggy",    text: "Persistent brain fog",                   description: "Difficulty concentrating or recalling things" },
+                            { value: "severe",   text: "Significant cognitive decline",           description: "Memory issues, word-finding problems" }
+                        ]
+                    },
+                    {
+                        question: "How long does it take you to recover after physical exercise?",
+                        description: "Return to full readiness between sessions",
+                        options: [
+                            { value: "fast",     text: "24 hours or less — I bounce back quickly" },
+                            { value: "normal",   text: "48 hours — normal soreness",               description: "Standard DOMS, resolved by next session" },
+                            { value: "slow",     text: "72+ hours — lingering soreness and fatigue", description: "Still sore when I should be ready" },
+                            { value: "very_slow", text: "Days of exhaustion after moderate exercise", description: "Exercise feels like it depletes me" }
+                        ]
+                    },
+                    {
+                        question: "How would you describe your mood over the last month?",
+                        description: "Your general emotional baseline",
+                        options: [
+                            { value: "positive",   text: "Positive and stable" },
+                            { value: "variable",   text: "Variable — irritable or low at times",   description: "Mood fluctuates more than it used to" },
+                            { value: "flat",       text: "Emotionally flat or indifferent",         description: "Low motivation and reduced enjoyment" },
+                            { value: "depressed",  text: "Persistently low — anxious or depressed", description: "A significant and sustained change" }
+                        ]
+                    },
+                    {
+                        question: "Have you noticed any changes to your hair?",
+                        description: "Scalp hair thickness, growth rate, or hairline",
+                        options: [
+                            { value: "none",       text: "No noticeable change" },
+                            { value: "thinning",   text: "Gradual thinning or reduced density",    description: "Less volume than before" },
+                            { value: "receding",   text: "Receding hairline or crown thinning",    description: "Pattern hair loss accelerating" },
+                            { value: "significant", text: "Significant or rapid hair loss",         description: "Noticeable change over the last 6–12 months" }
+                        ]
+                    },
+                    {
+                        question: "How would you describe your motivation and drive?",
+                        description: "Your inner sense of purpose and ambition",
+                        options: [
+                            { value: "high",     text: "Strong — I feel driven and purposeful" },
+                            { value: "moderate", text: "Moderate — there, but I have to push myself" },
+                            { value: "low",      text: "Low — tasks feel like a struggle to start",   description: "Procrastination has increased significantly" },
+                            { value: "absent",   text: "Almost absent — I feel disconnected from goals", description: "Lost sense of direction or ambition" }
+                        ]
+                    },
+                    {
+                        question: "What is your primary concern right now?",
+                        description: "The symptom that troubles you most day-to-day",
+                        options: [
+                            { value: "energy",    text: "Energy and fatigue",                    description: "Getting through the day without crashing" },
+                            { value: "strength",  text: "Strength, muscle, and body composition", description: "Building or maintaining a capable physique" },
+                            { value: "drive",     text: "Mental drive, libido, and motivation",   description: "Reclaiming the ambition and desire I once had" },
+                            { value: "mood",      text: "Mood, focus, and mental clarity",        description: "Feeling sharp, stable, and positive again" }
+                        ]
+                    }
+                ],
+
+                // ── Navigation ──────────────────────────────────────────────
+                nextQuestion() {
+                    if (this.currentQuestion < this.totalQuestions - 1 && this.getSelectedAnswer()) {
+                        this.currentQuestion++;
+                    }
+                },
+
+                previousQuestion() {
+                    if (this.currentQuestion > 0) {
+                        this.currentQuestion--;
+                    }
+                },
+
+                selectAnswer(value) {
+                    this.answers[this.currentQuestion] = value;
+                    if (this.currentQuestion < this.totalQuestions - 1) {
+                        setTimeout(() => { this.nextQuestion(); }, 750);
+                    } else {
+                        setTimeout(() => { this.submitAssessment(); }, 750);
+                    }
+                },
+
+                getSelectedAnswer() {
+                    return this.answers[this.currentQuestion] || null;
+                },
+
+                // ── Submit Assessment ────────────────────────────────────────
+                async submitAssessment() {
+                    this.isSubmitting = true;
+                    try {
+                        const mensType = this.calculateVitalityType();
+                        this.assessmentData = {
+                            answers: this.answers,
+                            mensType: mensType,
+                            completedAt: new Date().toISOString()
+                        };
+                        this.showContactForm = true;
+                        this.showResults = true;
+                        setTimeout(() => { this.scrollToContactForm(); }, 300);
+                    } catch (error) {
+                        console.error('Assessment error:', error);
+                        alert('There was an error processing your assessment. Please try again.');
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                },
+
+                // ── Submit Contact Info ──────────────────────────────────────
+                async submitContactInfo() {
+                    this.isSubmittingContact = true;
+                    this.contactError = '';
+                    try {
+                        const fullData = {
+                            ...this.assessmentData,
+                            contactInfo: this.contactInfo
+                        };
+
+                        if (window.WebhookManager) {
+                            await window.WebhookManager.submitAssessment(fullData);
+                        }
+
+                        localStorage.setItem('mensAssessmentData', JSON.stringify(fullData));
+                        window.location.href = 'results.html';
+
+                    } catch (error) {
+                        console.error('Contact submission error:', error);
+                        let errorMessage = '';
+                        if (error.message && error.message.includes('WhatsApp')) {
+                            errorMessage = error.message;
+                        } else if (error.message) {
+                            try {
+                                const errorData = JSON.parse(error.message);
+                                if (errorData.error) errorMessage = errorData.error;
+                            } catch (e) {
+                                if (error.message.includes('WhatsApp')) errorMessage = error.message;
+                            }
+                        }
+                        this.contactError = errorMessage || error.message || 'There was an error submitting your information. Please check your details and try again.';
+                    } finally {
+                        this.isSubmittingContact = false;
+                    }
+                },
+
+                // ── Scroll helper ────────────────────────────────────────────
+                scrollToContactForm() {
+                    const el = document.getElementById('contactFormSection');
+                    if (!el) return;
+                    const rect = el.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    const target = rect.top + scrollTop - 20;
+                    try {
+                        window.scrollTo({ top: target, behavior: 'smooth' });
+                    } catch (e) {
+                        window.scrollTo(0, target);
+                    }
+                },
+
+                // ── Vitality Type Scoring ────────────────────────────────────
+                // Q0 = energy, Q1 = sleep, Q2 = libido, Q3 = muscle, Q4 = stress
+                // Q5 = fat pattern, Q6 = focus, Q7 = recovery, Q8 = mood
+                // Q9 = hair, Q10 = motivation, Q11 = primary concern
+                calculateVitalityType() {
+                    const a = this.answers;
+                    let scores = { cortisol: 0, androgen: 0, mitochondrial: 0, inflammatory: 0 };
+
+                    // ── CORTISOL indicators ──────────────────────────────────
+                    // Stress → main driver
+                    if (a[4] === 'burnout') scores.cortisol += 3;
+                    if (a[4] === 'poorly')  scores.cortisol += 2;
+                    // Poor sleep driven by stress
+                    if (a[1] === 'restless' || a[1] === 'insomnia') scores.cortisol += 2;
+                    // Belly fat (cortisol drives visceral)
+                    if (a[5] === 'belly') scores.cortisol += 2;
+                    // Mood/flatness from cortisol
+                    if (a[8] === 'flat' || a[8] === 'variable') scores.cortisol += 1;
+                    // Energy crashes typical of cortisol dysregulation
+                    if (a[0] === 'crashes') scores.cortisol += 1;
+                    // Primary concern: mood/focus
+                    if (a[11] === 'mood') scores.cortisol += 1;
+
+                    // ── ANDROGEN DEFICIT indicators ──────────────────────────
+                    // Libido → strongest signal
+                    if (a[2] === 'absent')  scores.androgen += 3;
+                    if (a[2] === 'low')     scores.androgen += 2;
+                    if (a[2] === 'reduced') scores.androgen += 1;
+                    // Muscle loss
+                    if (a[3] === 'rapid_loss') scores.androgen += 3;
+                    if (a[3] === 'losing')     scores.androgen += 2;
+                    // Low motivation (testosterone drives ambition)
+                    if (a[10] === 'absent') scores.androgen += 2;
+                    if (a[10] === 'low')    scores.androgen += 1;
+                    // Hair loss (DHT-related)
+                    if (a[9] === 'significant') scores.androgen += 1;
+                    if (a[9] === 'receding')    scores.androgen += 1;
+                    // Primary concern
+                    if (a[11] === 'drive')    scores.androgen += 1;
+                    if (a[11] === 'strength') scores.androgen += 1;
+
+                    // ── MITOCHONDRIAL DRAIN indicators ───────────────────────
+                    // Persistent low energy / crashes
+                    if (a[0] === 'low')     scores.mitochondrial += 3;
+                    if (a[0] === 'crashes') scores.mitochondrial += 2;
+                    // Very slow recovery
+                    if (a[7] === 'very_slow') scores.mitochondrial += 3;
+                    if (a[7] === 'slow')      scores.mitochondrial += 2;
+                    // Brain fog
+                    if (a[6] === 'severe') scores.mitochondrial += 2;
+                    if (a[6] === 'foggy')  scores.mitochondrial += 1;
+                    // Non-restorative sleep
+                    if (a[1] === 'insomnia') scores.mitochondrial += 1;
+                    // Primary concern
+                    if (a[11] === 'energy') scores.mitochondrial += 1;
+
+                    // ── INFLAMMATORY indicators ──────────────────────────────
+                    // Mood disruption (cytokines affect brain)
+                    if (a[8] === 'depressed') scores.inflammatory += 3;
+                    if (a[8] === 'flat')      scores.inflammatory += 1;
+                    // Generalised weight gain
+                    if (a[5] === 'generalised') scores.inflammatory += 2;
+                    if (a[5] === 'chest')       scores.inflammatory += 1;
+                    // Slow recovery (inflammation disrupts repair)
+                    if (a[7] === 'very_slow') scores.inflammatory += 2;
+                    if (a[7] === 'slow')      scores.inflammatory += 1;
+                    // Brain fog from neuroinflammation
+                    if (a[6] === 'severe') scores.inflammatory += 1;
+                    if (a[6] === 'foggy')  scores.inflammatory += 1;
+                    // Gradual energy decline
+                    if (a[0] === 'moderate') scores.inflammatory += 1;
+
+                    // Determine dominant type
+                    const maxScore = Math.max(...Object.values(scores));
+                    // If tie, resolve by primary concern
+                    let primaryType = Object.keys(scores).find(k => scores[k] === maxScore);
+                    const tiedTypes = Object.keys(scores).filter(k => scores[k] === maxScore);
+                    if (tiedTypes.length > 1) {
+                        const concernMap = {
+                            energy:   'mitochondrial',
+                            strength: 'androgen',
+                            drive:    'androgen',
+                            mood:     'cortisol'
+                        };
+                        primaryType = concernMap[a[11]] || tiedTypes[0];
+                    }
+
+                    return {
+                        primary: primaryType,
+                        scores: scores,
+                        confidence: maxScore >= 4 ? 'high' : maxScore >= 2 ? 'medium' : 'low'
+                    };
+                }
+            }
+        }
+
+        // Track page view
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.WebhookManager) {
+                window.WebhookManager.trackConversion('assessment_page_view', {
+                    page: 'vitale-mens-assessment',
+                    source: 'landing_page'
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

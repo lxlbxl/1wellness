@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise Your Data Rights - 1wellness</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #14532d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../" class="flex items-center gap-2">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-br from-brand-500 to-brand-700 rounded-full flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-serif font-bold text-gray-900">1wellness</span>
+                </a>
+                <a href="../" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+            <h1 class="text-4xl font-serif font-bold text-gray-900 mb-4">Exercise Your Data Rights</h1>
+            <p class="text-gray-600 mb-8">Submit a request to access, modify, or delete your personal data</p>
+
+            <div class="prose prose-lg max-w-none">
+                <div class="bg-brand-50 border-l-4 border-brand-500 p-4 mb-8">
+                    <p class="text-brand-800 font-medium">
+                        <i class="fas fa-shield-check mr-2"></i>
+                        Under GDPR, you have the right to access, rectify, erase, restrict, or port your personal data.
+                        Use this form to submit your request.
+                    </p>
+                </div>
+
+                <!-- Your Rights Information -->
+                <section class="mb-10">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Your GDPR Rights</h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h3 class="font-semibold text-gray-900 mb-2">
+                                <i class="fas fa-eye text-brand-600 mr-2"></i>
+                                Right of Access
+                            </h3>
+                            <p class="text-sm text-gray-600">Request a copy of all personal data we hold about you</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h3 class="font-semibold text-gray-900 mb-2">
+                                <i class="fas fa-pen text-brand-600 mr-2"></i>
+                                Right to Rectification
+                            </h3>
+                            <p class="text-sm text-gray-600">Request correction of inaccurate or incomplete data</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h3 class="font-semibold text-gray-900 mb-2">
+                                <i class="fas fa-trash text-brand-600 mr-2"></i>
+                                Right to Erasure
+                            </h3>
+                            <p class="text-sm text-gray-600">Request deletion of your personal data ("right to be
+                                forgotten")</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h3 class="font-semibold text-gray-900 mb-2">
+                                <i class="fas fa-ban text-brand-600 mr-2"></i>
+                                Right to Restriction
+                            </h3>
+                            <p class="text-sm text-gray-600">Request limitation on how we process your data</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h3 class="font-semibold text-gray-900 mb-2">
+                                <i class="fas fa-file-export text-brand-600 mr-2"></i>
+                                Right to Data Portability
+                            </h3>
+                            <p class="text-sm text-gray-600">Receive your data in a structured, machine-readable format
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl">
+                            <h3 class="font-semibold text-gray-900 mb-2">
+                                <i class="fas fa-hand-paper text-brand-600 mr-2"></i>
+                                Right to Object
+                            </h3>
+                            <p class="text-sm text-gray-600">Object to certain types of processing (e.g., direct
+                                marketing)</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Request Form -->
+                <section class="mb-10">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Submit Your Request</h2>
+                    <form id="rights-request-form" class="space-y-6">
+                        <!-- Contact Information -->
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="font-semibold text-gray-900 mb-4">Your Contact Information</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                                    <input type="text" name="full_name" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                                    <input type="email" name="email" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                    <input type="tel" name="phone"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Account ID (if
+                                        known)</label>
+                                    <input type="text" name="account_id"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                                        placeholder="Helps us locate your data faster" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Request Type -->
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="font-semibold text-gray-900 mb-4">Type of Request *</h3>
+                            <div class="space-y-3">
+                                <label class="flex items-start gap-3 cursor-pointer">
+                                    <input type="radio" name="request_type" value="access" required
+                                        class="w-5 h-5 mt-0.5 text-brand-600 focus:ring-brand-500" />
+                                    <div>
+                                        <span class="font-medium text-gray-900">Access Request</span>
+                                        <p class="text-sm text-gray-600">I want to see all the data you have about me
+                                        </p>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 cursor-pointer">
+                                    <input type="radio" name="request_type" value="rectification" required
+                                        class="w-5 h-5 mt-0.5 text-brand-600 focus:ring-brand-500" />
+                                    <div>
+                                        <span class="font-medium text-gray-900">Rectification Request</span>
+                                        <p class="text-sm text-gray-600">I need to correct inaccurate data about me</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 cursor-pointer">
+                                    <input type="radio" name="request_type" value="erasure" required
+                                        class="w-5 h-5 mt-0.5 text-brand-600 focus:ring-brand-500" />
+                                    <div>
+                                        <span class="font-medium text-gray-900">Erasure Request</span>
+                                        <p class="text-sm text-gray-600">I want my personal data deleted</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 cursor-pointer">
+                                    <input type="radio" name="request_type" value="restriction" required
+                                        class="w-5 h-5 mt-0.5 text-brand-600 focus:ring-brand-500" />
+                                    <div>
+                                        <span class="font-medium text-gray-900">Restriction Request</span>
+                                        <p class="text-sm text-gray-600">I want to limit how you process my data</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 cursor-pointer">
+                                    <input type="radio" name="request_type" value="portability" required
+                                        class="w-5 h-5 mt-0.5 text-brand-600 focus:ring-brand-500" />
+                                    <div>
+                                        <span class="font-medium text-gray-900">Data Portability Request</span>
+                                        <p class="text-sm text-gray-600">I want my data in a portable format</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 cursor-pointer">
+                                    <input type="radio" name="request_type" value="objection" required
+                                        class="w-5 h-5 mt-0.5 text-brand-600 focus:ring-brand-500" />
+                                    <div>
+                                        <span class="font-medium text-gray-900">Objection Request</span>
+                                        <p class="text-sm text-gray-600">I object to certain processing of my data</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Request Details -->
+                        <div class="bg-gray-50 p-6 rounded-xl">
+                            <h3 class="font-semibold text-gray-900 mb-4">Request Details *</h3>
+                            <textarea name="details" rows="5" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                                placeholder="Please describe your request in detail. For rectification requests, please specify what information needs to be corrected and what it should be changed to."></textarea>
+                        </div>
+
+                        <!-- Identity Verification -->
+                        <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-xl">
+                            <h3 class="font-semibold text-gray-900 mb-2">
+                                <i class="fas fa-id-card text-yellow-600 mr-2"></i>
+                                Identity Verification
+                            </h3>
+                            <p class="text-sm text-gray-700 mb-4">
+                                To protect your privacy, we may need to verify your identity before processing your
+                                request.
+                                We may request additional information such as a copy of your ID or account verification.
+                            </p>
+                            <label class="flex items-start gap-3">
+                                <input type="checkbox" name="identity_consent" required
+                                    class="w-5 h-5 mt-0.5 text-brand-600 focus:ring-brand-500" />
+                                <span class="text-sm text-gray-700">I understand that I may need to provide additional
+                                    verification to complete this request *</span>
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex items-center gap-4">
+                            <button type="submit"
+                                class="px-8 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl transition-colors">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                Submit Request
+                            </button>
+                            <p class="text-sm text-gray-500">We will respond within 30 days</p>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Response Timeline -->
+                <section class="mb-10">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">What Happens Next?</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="font-bold text-brand-600">1</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Request Received</h3>
+                                <p class="text-sm text-gray-600">You'll receive an acknowledgment email within 48 hours
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="font-bold text-brand-600">2</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Identity Verification</h3>
+                                <p class="text-sm text-gray-600">We may contact you to verify your identity</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="font-bold text-brand-600">3</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Request Processing</h3>
+                                <p class="text-sm text-gray-600">We'll process your request within 30 days</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="font-bold text-brand-600">4</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Response Delivered</h3>
+                                <p class="text-sm text-gray-600">You'll receive our response via secure email</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contact Information -->
+                <section>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Need Help?</h2>
+                    <div class="bg-gray-50 p-6 rounded-xl">
+                        <p class="text-gray-700 mb-4"><strong>Data Protection Officer Contact:</strong></p>
+                        <div class="space-y-2 text-gray-600">
+                            <p><i class="fas fa-envelope text-brand-500 mr-2"></i>Email: dpo@1wellness.club</p>
+                            <p><i class="fas fa-globe text-brand-500 mr-2"></i>Website: www.1wellness.club</p>
+                            <p><i class="fas fa-clock text-brand-500 mr-2"></i>Response time: Within 30 days</p>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-4">
+                            You also have the right to lodge a complaint with your local data protection authority.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500">&copy; 2025 1wellness. All rights reserved.</p>
+                <div class="flex gap-6 text-sm">
+                    <a href="privacy-policy.html" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="terms-of-service.html" class="hover:text-white transition-colors">Terms of Service</a>
+                    <a href="cookie-policy.html" class="hover:text-white transition-colors">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('rights-request-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            // In production, this would send to your backend
+            console.log('Rights Request Submitted:', data);
+
+            // Show success message
+            alert('Thank you for submitting your request. We will respond within 30 days. You may be contacted for identity verification.');
+
+            // Reset form
+            this.reset();
+        });
+    </script>
+</body>
+
+</html>

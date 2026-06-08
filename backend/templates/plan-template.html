@@ -1,0 +1,570 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>90-Day PCOS Protocol — {{NAME}}</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Outfit', 'Segoe UI', sans-serif;
+            color: #1a202c;
+            line-height: 1.7;
+            font-size: 14px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            background: #fff;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; line-height: 1.3; }
+        h1 { font-size: 42px; }
+        h2 { font-size: 26px; color: #0f3922; }
+        h3 { font-size: 18px; color: #0f3922; }
+        p { margin-bottom: 12px; }
+
+        /* ===== PRINT / PDF ===== */
+        @media print {
+            @page { margin: 0.6in; size: A4; }
+            .page-break { page-break-after: always; }
+            .no-break { page-break-inside: avoid; }
+        }
+
+        /* ===== COLORS ===== */
+        :root {
+            --forest-900: #0f3922;
+            --forest-800: #166534;
+            --forest-100: #dcece3;
+            --forest-50: #f2f8f5;
+            --terracotta: #C77D63;
+            --terracotta-dark: #A85D45;
+            --sand: #F4F1EA;
+            --cream: #FDFCF8;
+            --sage: #8DA38D;
+        }
+
+        /* ===== LAYOUT HELPERS ===== */
+        .page { padding: 40px 48px; }
+        .accent-bar { width: 60px; height: 4px; background: var(--terracotta); border-radius: 2px; }
+        .section-header { border-bottom: 3px solid var(--terracotta); padding-bottom: 8px; margin-bottom: 28px; display: inline-block; }
+
+        /* ===== COVER PAGE ===== */
+        .cover {
+            height: 1050px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        .cover-bar-top { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--forest-900); }
+        .cover-bar-bottom { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--terracotta); }
+        .cover-badge {
+            display: inline-block; background: var(--forest-50); color: var(--forest-900);
+            padding: 8px 24px; border-radius: 50px; font-size: 11px; font-weight: 700;
+            letter-spacing: 3px; text-transform: uppercase; margin-bottom: 24px;
+        }
+        .cover h1 { color: var(--forest-900); margin-bottom: 12px; font-size: 52px; }
+        .cover .subtitle { font-size: 22px; color: var(--terracotta); font-style: italic; font-family: 'Playfair Display', serif; }
+        .profile-box {
+            background: var(--forest-50); padding: 40px; border-radius: 24px;
+            border: 1px solid var(--forest-100); margin-top: 40px; width: 100%; max-width: 500px;
+        }
+        .profile-box h2 { margin-bottom: 20px; font-size: 22px; }
+        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; text-align: left; }
+        .profile-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #888; font-weight: 700; margin-bottom: 4px; }
+        .profile-value { font-size: 18px; font-weight: 700; color: var(--forest-900); }
+        .cover-footer { margin-top: auto; padding-bottom: 24px; font-size: 11px; color: #aaa; letter-spacing: 1px; }
+
+        /* ===== CONTENT SECTIONS ===== */
+        .content-block { white-space: pre-line; line-height: 1.9; color: #444; }
+
+        /* ===== PHASE CARDS ===== */
+        .phase-card {
+            border-left: 5px solid var(--forest-900); background: linear-gradient(135deg, var(--forest-50) 0%, #fff 100%);
+            border-radius: 16px; padding: 28px; margin-bottom: 24px;
+        }
+        .phase-number {
+            background: var(--forest-900); color: #fff; width: 44px; height: 44px;
+            border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 700; margin-right: 16px; flex-shrink: 0;
+        }
+        .phase-header { display: flex; align-items: center; margin-bottom: 16px; }
+        .phase-meta { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #888; font-weight: 700; }
+
+        /* ===== WEEKLY ACTION TABLE ===== */
+        .week-table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 13px; }
+        .week-table th {
+            background: var(--forest-900); color: #fff; padding: 10px 14px;
+            text-align: left; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .week-table td { padding: 10px 14px; border-bottom: 1px solid #eee; vertical-align: top; }
+        .week-table tr:nth-child(even) td { background: var(--forest-50); }
+        .week-table .week-num { font-weight: 700; color: var(--forest-900); white-space: nowrap; }
+        .week-table .milestone { font-style: italic; color: var(--terracotta-dark); font-size: 12px; }
+
+        /* ===== ROUTINE CARDS ===== */
+        .routine-card {
+            border-radius: 16px; padding: 24px; margin-bottom: 16px;
+        }
+        .routine-morning { background: linear-gradient(135deg, #FFF8F0 0%, #fff 100%); border: 1px solid #FDEBD0; }
+        .routine-afternoon { background: linear-gradient(135deg, var(--forest-50) 0%, #fff 100%); border: 1px solid var(--forest-100); }
+        .routine-evening { background: linear-gradient(135deg, #F0F0FF 0%, #fff 100%); border: 1px solid #E0E0F0; }
+        .routine-title { font-size: 16px; font-weight: 700; color: var(--terracotta); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
+        .routine-table { width: 100%; font-size: 13px; }
+        .routine-table td { padding: 8px 12px; vertical-align: top; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .routine-time { font-weight: 700; color: var(--forest-900); white-space: nowrap; width: 80px; }
+        .routine-why { font-size: 11px; color: var(--sage); font-style: italic; }
+
+        /* ===== MEAL PLAN ===== */
+        .meal-day {
+            background: var(--forest-50); border-radius: 16px; padding: 20px; margin-bottom: 16px;
+            border: 1px solid var(--forest-100);
+        }
+        .meal-day-header {
+            font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700;
+            color: var(--forest-900); margin-bottom: 12px; padding-bottom: 8px;
+            border-bottom: 2px solid var(--terracotta);
+        }
+        .meal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .meal-item { background: #fff; border-radius: 10px; padding: 14px; }
+        .meal-type { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--terracotta); font-weight: 700; margin-bottom: 4px; }
+        .meal-name { font-weight: 600; color: var(--forest-900); font-size: 14px; margin-bottom: 4px; }
+        .meal-desc { font-size: 12px; color: #666; line-height: 1.5; }
+        .meal-benefit { font-size: 11px; color: var(--sage); font-style: italic; margin-top: 4px; }
+
+        /* ===== SUPPLEMENT & HERB CARDS ===== */
+        .supp-card {
+            background: #fff; border: 1px solid #eee; border-radius: 14px;
+            padding: 18px; margin-bottom: 12px; display: flex; gap: 14px;
+        }
+        .supp-icon {
+            width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center; font-size: 20px;
+        }
+        .supp-icon-supplement { background: #EBF5FB; }
+        .supp-icon-herb { background: #E8F8F5; }
+        .supp-name { font-weight: 700; color: var(--forest-900); font-size: 15px; margin-bottom: 2px; }
+        .supp-yoruba { font-size: 11px; color: var(--sage); font-style: italic; }
+        .supp-detail { font-size: 12px; color: #555; margin-top: 6px; line-height: 1.6; }
+        .supp-dosage { display: inline-block; background: var(--forest-50); padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; color: var(--forest-900); margin-right: 6px; }
+        .supp-timing { display: inline-block; background: #FFF5EB; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; color: var(--terracotta-dark); }
+        .supp-benefit { font-size: 12px; color: #444; margin-top: 6px; }
+        .supp-caution { font-size: 11px; color: #c0392b; margin-top: 4px; font-style: italic; }
+
+        /* ===== LIFESTYLE TIPS ===== */
+        .tip-card {
+            display: flex; gap: 14px; align-items: flex-start;
+            padding: 14px; border-bottom: 1px solid #f0f0f0;
+        }
+        .tip-category {
+            display: inline-block; background: var(--forest-900); color: #fff;
+            padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+        }
+        .tip-text { font-weight: 600; color: var(--forest-900); font-size: 14px; }
+        .tip-detail { font-size: 12px; color: #666; margin-top: 2px; line-height: 1.5; }
+
+        /* ===== TRACKING TABLE ===== */
+        .track-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .track-table th {
+            background: var(--forest-900); color: #fff; padding: 10px 14px;
+            text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .track-table td { padding: 10px 14px; border-bottom: 1px solid #eee; }
+        .track-table tr:nth-child(even) td { background: var(--forest-50); }
+
+        /* ===== ENCOURAGEMENT ===== */
+        .encouragement-box {
+            background: linear-gradient(135deg, var(--forest-50) 0%, #FFF8F0 50%, var(--forest-50) 100%);
+            border: 2px solid var(--forest-100); border-radius: 24px; padding: 40px;
+            text-align: center;
+        }
+        .encouragement-box .quote-mark { font-size: 60px; color: var(--terracotta); line-height: 1; opacity: 0.4; }
+        .encouragement-box p { font-size: 15px; color: #333; line-height: 1.9; max-width: 600px; margin: 0 auto 16px; }
+
+        /* ===== DISCLAIMER ===== */
+        .disclaimer {
+            margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee;
+            text-align: center; font-size: 11px; color: #999;
+        }
+        .disclaimer strong { color: var(--forest-900); }
+
+        /* ===== TWO-COL GRID UTILITY ===== */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==================== PAGE 1: COVER ==================== -->
+    <div class="cover page-break">
+        <div class="cover-bar-top"></div>
+        <div class="cover-bar-bottom"></div>
+
+        <div class="cover-badge">Personalized Protocol</div>
+        <h1>90-Day PCOS<br>Transformation</h1>
+        <div class="accent-bar" style="margin: 20px auto;"></div>
+        <p class="subtitle">Prepared exclusively for {{NAME}}</p>
+
+        <div class="profile-box">
+            <h2>Your Profile</h2>
+            <div class="profile-grid">
+                <div>
+                    <p class="profile-label">Primary Type</p>
+                    <p class="profile-value">{{PCOS_TYPE}}</p>
+                </div>
+                <div>
+                    <p class="profile-label">Protocol Duration</p>
+                    <p class="profile-value">90 Days</p>
+                </div>
+                <div>
+                    <p class="profile-label">Age</p>
+                    <p class="profile-value">{{AGE}}</p>
+                </div>
+                <div>
+                    <p class="profile-label">Start Date</p>
+                    <p class="profile-value">{{DATE}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cover-footer">
+            Generated by 1wellness AI &bull; {{DATE}} &bull; Confidential &bull; For {{NAME}} only
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 2: TABLE OF CONTENTS ==================== -->
+    <div class="page page-break">
+        <h2 class="section-header">What's Inside Your Protocol</h2>
+        <p style="color: #666; margin-bottom: 28px; font-size: 15px;">
+            This is not a generic guide — every page was generated specifically for your <strong style="color: var(--forest-900);">{{PCOS_TYPE}} PCOS</strong> type.
+            Here's what you'll find inside:
+        </p>
+        <div style="background: var(--forest-50); border-radius: 16px; padding: 28px; border: 1px solid var(--forest-100);">
+            <table style="width: 100%; font-size: 14px; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid var(--forest-100);">
+                    <td style="padding: 14px 0; font-weight: 700; color: var(--forest-900);">📋 Treatment Strategy & Root Cause</td>
+                    <td style="padding: 14px 0; text-align: right; color: #888;">Understand your hormonal landscape</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--forest-100);">
+                    <td style="padding: 14px 0; font-weight: 700; color: var(--forest-900);">🎯 Your 90-Day Goals</td>
+                    <td style="padding: 14px 0; text-align: right; color: #888;">Clear, measurable targets</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--forest-100);">
+                    <td style="padding: 14px 0; font-weight: 700; color: var(--forest-900);">📅 3-Phase Journey + 12-Week Breakdown</td>
+                    <td style="padding: 14px 0; text-align: right; color: #888;">Progressive week-by-week actions</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--forest-100);">
+                    <td style="padding: 14px 0; font-weight: 700; color: var(--forest-900);">⏰ Daily Routines (Morning, Afternoon, Evening)</td>
+                    <td style="padding: 14px 0; text-align: right; color: #888;">Timed action steps with reasons</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--forest-100);">
+                    <td style="padding: 14px 0; font-weight: 700; color: var(--forest-900);">🍽️ 7-Day Nigerian Meal Plan</td>
+                    <td style="padding: 14px 0; text-align: right; color: #888;">Hormone-balancing home cooking</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--forest-100);">
+                    <td style="padding: 14px 0; font-weight: 700; color: var(--forest-900);">💊 Supplement Guide</td>
+                    <td style="padding: 14px 0; text-align: right; color: #888;">Dosages, timing & benefits</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--forest-100);">
+                    <td style="padding: 14px 0; font-weight: 700; color: var(--forest-900);">🌿 Herbal Protocols</td>
+                    <td style="padding: 14px 0; text-align: right; color: #888;">Traditional & science-backed remedies</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--forest-100);">
+                    <td style="padding: 14px 0; font-weight: 700; color: var(--forest-900);">🧘 Lifestyle Modifications</td>
+                    <td style="padding: 14px 0; text-align: right; color: #888;">Sleep, stress, movement & more</td>
+                </tr>
+                <tr>
+                    <td style="padding: 14px 0; font-weight: 700; color: var(--forest-900);">📊 Progress Tracking Guide</td>
+                    <td style="padding: 14px 0; text-align: right; color: #888;">What to monitor and when</td>
+                </tr>
+            </table>
+        </div>
+        <div style="margin-top: 32px; background: linear-gradient(135deg, #FFF8F0, #fff); border: 1px solid #FDEBD0; border-radius: 16px; padding: 24px; text-align: center;">
+            <p style="font-size: 15px; color: var(--terracotta-dark); font-weight: 600; margin: 0;">
+                💡 Tip: Print this document and keep it where you'll see it daily.<br>
+                <span style="font-weight: 400; font-size: 13px; color: #888;">Consistency is the secret ingredient to your transformation.</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 3: EXECUTIVE SUMMARY + ROOT CAUSE ==================== -->
+    <div class="page page-break">
+        <h2 class="section-header">Treatment Strategy</h2>
+
+        <div style="background: linear-gradient(135deg, var(--forest-50), #fff); border-radius: 16px; padding: 24px; border-left: 5px solid var(--terracotta); margin-bottom: 28px;">
+            <p style="font-size: 16px; color: #333; line-height: 2; margin: 0;">{{SUMMARY}}</p>
+        </div>
+
+        <div style="background: var(--forest-50); padding: 24px; border-radius: 16px; border-left: 5px solid var(--forest-900); margin-bottom: 32px;">
+            <h3 style="margin-bottom: 12px;">Your 90-Day Goals</h3>
+            <ul style="list-style: none; padding: 0;">
+                {{GOALS}}
+            </ul>
+        </div>
+
+        <h3 style="font-size: 22px; margin-bottom: 12px;">Understanding Your Root Cause</h3>
+        <div class="accent-bar" style="margin-bottom: 20px;"></div>
+        <div class="content-block" style="font-size: 14px;">
+            {{ROOT_CAUSE}}
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 4-5: PHASE 1 ==================== -->
+    <div class="page page-break">
+        <h2 class="section-header">Your 3-Phase Journey</h2>
+
+        <div class="phase-card no-break">
+            <div class="phase-header">
+                <span class="phase-number">1</span>
+                <div>
+                    <p class="phase-meta">Days 1–30 &bull; {{PHASE_1_FOCUS}}</p>
+                    <h3 style="font-size: 20px;">{{PHASE_1_TITLE}}</h3>
+                </div>
+            </div>
+            <div class="content-block" style="margin-left: 60px; font-size: 14px;">
+                {{PHASE_1_DESCRIPTION}}
+            </div>
+        </div>
+
+        <h3 style="margin: 24px 0 12px; font-size: 16px;">Phase 1 — Weekly Breakdown</h3>
+        <table class="week-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Week</th>
+                    <th style="width: 120px;">Focus</th>
+                    <th>Action Steps</th>
+                    <th style="width: 180px;">Milestone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{PHASE_1_WEEKS}}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== PAGE 6: PHASE 2 ==================== -->
+    <div class="page page-break">
+        <div class="phase-card no-break">
+            <div class="phase-header">
+                <span class="phase-number">2</span>
+                <div>
+                    <p class="phase-meta">Days 31–60 &bull; {{PHASE_2_FOCUS}}</p>
+                    <h3 style="font-size: 20px;">{{PHASE_2_TITLE}}</h3>
+                </div>
+            </div>
+            <div class="content-block" style="margin-left: 60px; font-size: 14px;">
+                {{PHASE_2_DESCRIPTION}}
+            </div>
+        </div>
+
+        <h3 style="margin: 24px 0 12px; font-size: 16px;">Phase 2 — Weekly Breakdown</h3>
+        <table class="week-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Week</th>
+                    <th style="width: 120px;">Focus</th>
+                    <th>Action Steps</th>
+                    <th style="width: 180px;">Milestone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{PHASE_2_WEEKS}}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== PAGE 7: PHASE 3 ==================== -->
+    <div class="page page-break">
+        <div class="phase-card no-break">
+            <div class="phase-header">
+                <span class="phase-number">3</span>
+                <div>
+                    <p class="phase-meta">Days 61–90 &bull; {{PHASE_3_FOCUS}}</p>
+                    <h3 style="font-size: 20px;">{{PHASE_3_TITLE}}</h3>
+                </div>
+            </div>
+            <div class="content-block" style="margin-left: 60px; font-size: 14px;">
+                {{PHASE_3_DESCRIPTION}}
+            </div>
+        </div>
+
+        <h3 style="margin: 24px 0 12px; font-size: 16px;">Phase 3 — Weekly Breakdown</h3>
+        <table class="week-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Week</th>
+                    <th style="width: 120px;">Focus</th>
+                    <th>Action Steps</th>
+                    <th style="width: 180px;">Milestone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{PHASE_3_WEEKS}}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== PAGE 8: DAILY ROUTINES ==================== -->
+    <div class="page page-break">
+        <h2 class="section-header">Your Daily Routine</h2>
+        <p style="color: #666; margin-bottom: 24px;">Follow this daily rhythm to keep your hormones balanced and your energy steady. Each step is chosen specifically for your <strong style="color: var(--forest-900);">{{PCOS_TYPE}}</strong> type.</p>
+
+        <div class="routine-card routine-morning no-break">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+                <span style="font-size: 24px;">🌅</span>
+                <span class="routine-title">Morning Ritual</span>
+            </div>
+            <table class="routine-table">
+                {{MORNING_ROUTINE}}
+            </table>
+        </div>
+
+        <div class="routine-card routine-afternoon no-break">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+                <span style="font-size: 24px;">☀️</span>
+                <span class="routine-title">Afternoon Focus</span>
+            </div>
+            <table class="routine-table">
+                {{AFTERNOON_ROUTINE}}
+            </table>
+        </div>
+
+        <div class="routine-card routine-evening no-break">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+                <span style="font-size: 24px;">🌙</span>
+                <span class="routine-title">Evening Wind-Down</span>
+            </div>
+            <table class="routine-table">
+                {{EVENING_ROUTINE}}
+            </table>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 9-10: MEAL PLAN ==================== -->
+    <div class="page page-break">
+        <h2 class="section-header">7-Day Nigerian Meal Plan</h2>
+        <p style="color: #666; margin-bottom: 24px; font-style: italic;">Hormone-balancing, locally sourced meals designed for your {{PCOS_TYPE}} PCOS type</p>
+
+        {{MEAL_PLAN_DAYS_1_4}}
+    </div>
+
+    <div class="page page-break">
+        {{MEAL_PLAN_DAYS_5_7}}
+
+        <div style="margin-top: 24px; background: #FFF8F0; border: 1px solid #FDEBD0; border-radius: 14px; padding: 20px;">
+            <p style="font-size: 13px; color: var(--terracotta-dark); font-weight: 600; margin: 0 0 6px;">
+                🔄 Repeat & Rotate
+            </p>
+            <p style="font-size: 12px; color: #666; margin: 0;">
+                After week 1, rotate these meals or swap with similar hormone-friendly Nigerian dishes.
+                The key principles: protein first, low glycemic carbs, lots of vegetables, and healthy fats.
+                Listen to your body — adjust portions based on hunger and energy levels.
+            </p>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 11: SUPPLEMENTS ==================== -->
+    <div class="page page-break">
+        <h2 class="section-header">Supplement Guide</h2>
+        <p style="color: #666; margin-bottom: 24px;">These supplements are selected specifically for <strong style="color: var(--forest-900);">{{PCOS_TYPE}} PCOS</strong>. Always start one at a time to monitor tolerance.</p>
+
+        {{SUPPLEMENTS}}
+
+        <div style="margin-top: 20px; background: #FFF5F5; border: 1px solid #FECACA; border-radius: 14px; padding: 16px;">
+            <p style="font-size: 12px; color: #c0392b; margin: 0;">
+                ⚠️ <strong>Important:</strong> If you are on any medication, pregnant, or breastfeeding, consult your healthcare provider before starting any supplement. Start with one supplement at a time, spacing new additions 5-7 days apart.
+            </p>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 12: HERBAL PROTOCOLS ==================== -->
+    <div class="page page-break">
+        <h2 class="section-header">Herbal Protocols</h2>
+        <p style="color: #666; margin-bottom: 8px; font-style: italic;">Traditional & science-backed herbal remedies for your healing journey</p>
+        <p style="color: #888; margin-bottom: 24px; font-size: 12px;">These herbs have been used for generations in Nigerian and African traditional medicine. Modern research now validates many of their benefits for hormonal balance.</p>
+
+        {{HERBAL_PROTOCOLS}}
+
+        <div style="margin-top: 20px; background: var(--forest-50); border: 1px solid var(--forest-100); border-radius: 14px; padding: 16px;">
+            <p style="font-size: 12px; color: var(--forest-800); margin: 0;">
+                🌿 <strong>Sourcing Tip:</strong> Many of these herbs can be found at local markets across Nigeria. Look for organic, sun-dried preparations. If you can't find them locally, ask at traditional medicine shops or order from trusted herbal suppliers.
+            </p>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 13: LIFESTYLE + TRACKING ==================== -->
+    <div class="page page-break">
+        <h2 class="section-header">Lifestyle Modifications</h2>
+        <p style="color: #666; margin-bottom: 24px;">Small daily changes create massive hormonal shifts over 90 days. These are ranked by impact for your type.</p>
+
+        <div style="background: #fff; border: 1px solid #eee; border-radius: 16px; overflow: hidden;">
+            {{LIFESTYLE_TIPS}}
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 14: TRACKING ==================== -->
+    <div class="page page-break">
+        <h2 class="section-header">Progress Tracking Guide</h2>
+        <p style="color: #666; margin-bottom: 24px; font-style: italic;">What gets measured gets managed. Track these markers to see your transformation unfold.</p>
+
+        <table class="track-table">
+            <thead>
+                <tr>
+                    <th>What to Track</th>
+                    <th>Frequency</th>
+                    <th>How</th>
+                    <th>Why It Matters</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{TRACKING_GUIDANCE}}
+            </tbody>
+        </table>
+
+        <div style="margin-top: 32px; background: var(--forest-50); border-radius: 16px; padding: 24px; border: 1px solid var(--forest-100);">
+            <h3 style="font-size: 16px; margin-bottom: 12px;">📓 Quick Daily Check-In Template</h3>
+            <div style="font-size: 13px; color: #555; line-height: 2;">
+                <p style="margin-bottom: 4px;">☐ Energy Level (1-10): ____</p>
+                <p style="margin-bottom: 4px;">☐ Mood (1-10): ____</p>
+                <p style="margin-bottom: 4px;">☐ Sleep Quality (1-10): ____</p>
+                <p style="margin-bottom: 4px;">☐ Meals followed plan? Yes / Partially / No</p>
+                <p style="margin-bottom: 4px;">☐ Supplements taken? Yes / Partially / No</p>
+                <p style="margin-bottom: 4px;">☐ Movement today? Type: ____ Duration: ____</p>
+                <p style="margin-bottom: 4px;">☐ Any symptoms today? ____</p>
+                <p style="margin-bottom: 0;">☐ One win today: ____</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE 15: ENCOURAGEMENT + CLOSING ==================== -->
+    <div class="page">
+        <div class="encouragement-box">
+            <div class="quote-mark">"</div>
+            {{ENCOURAGEMENT}}
+            <div class="accent-bar" style="margin: 24px auto;"></div>
+            <p style="font-weight: 700; color: var(--forest-900); font-size: 16px; font-family: 'Playfair Display', serif;">
+                Your transformation starts today. We believe in you.
+            </p>
+        </div>
+
+        <!-- DISCLAIMER -->
+        <div class="disclaimer">
+            <p>This protocol was generated by <strong>1wellness AI</strong> specifically for <strong>{{NAME}}</strong> on {{DATE}}.</p>
+            <p style="margin-top: 8px;">
+                <strong>Medical Disclaimer:</strong> This document is a wellness guide and is not a substitute for professional medical advice,
+                diagnosis, or treatment. Always consult with a qualified healthcare provider before starting any new supplement,
+                herbal remedy, or dietary program, especially if you are on medication, pregnant, or nursing.
+            </p>
+            <p style="margin-top: 12px; font-size: 10px;">© {{YEAR}} 1wellness. All rights reserved. Confidential — not for redistribution.</p>
+        </div>
+    </div>
+
+</body>
+
+</html>

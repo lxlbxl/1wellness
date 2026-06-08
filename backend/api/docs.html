@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1wellness API Documentation</title>
+    <style>
+        :root {
+            --primary-color: #2563eb; /* Blue */
+            --sidebar-bg: #1e293b; /* Dark Slate */
+            --sidebar-text: #f1f5f9;
+            --code-bg: #1e1e1e;
+            --code-text: #d4d4d4;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            color: #334155;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            overflow-y: auto;
+            flex-shrink: 0;
+            padding: 20px 0;
+        }
+
+        nav h1 {
+            font-size: 1.2rem;
+            padding: 0 20px;
+            margin-bottom: 20px;
+            color: #fff;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 15px;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav li a {
+            display: block;
+            padding: 8px 20px;
+            color: #94a3b8;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        nav li a:hover, nav li a.active {
+            color: #fff;
+            background-color: #334155;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        nav .nav-section {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            padding: 20px 20px 5px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        /* Main Content */
+        main {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 50px;
+            color: #0f172a;
+        }
+        h2:first-of-type { margin-top: 0; }
+
+        h3 {
+            margin-top: 30px;
+            color: #1e293b;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        code {
+            background-color: #f1f5f9;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            color: #d63384;
+            font-size: 0.85em;
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            margin: 20px 0;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+
+        .get { background-color: #dbeafe; color: #1e40af; }
+        .post { background-color: #dcfce7; color: #166534; }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-new { background-color: #fce7f3; color: #be185d; }
+
+    </style>
+</head>
+<body>
+
+<nav>
+    <h1>1wellness API</h1>
+    <ul>
+        <li><a href="#intro">Introduction</a></li>
+        <li><a href="#auth">Authentication</a></li>
+        
+        <div class="nav-section">Reading Data</div>
+        <li><a href="#get-users">Users & Leads</a></li>
+        <li><a href="#get-sales">Sales Data</a></li>
+        <li><a href="#get-assessments">Assessments</a></li>
+        <li><a href="#get-single">Single Record</a></li>
+        
+        <div class="nav-section">Filtering</div>
+        <li><a href="#filtering">Search Examples</a></li>
+        
+        <div class="nav-section">Writing Data</div>
+        <li><a href="#post-update">Update Record</a></li>
+        <li><a href="#post-delete">Delete Record</a></li>
+        
+        <div class="nav-section">Guides</div>
+        <li><a href="#sync">Incremental Sync</a></li>
+    </ul>
+</nav>
+
+<main>
+    <div class="container">
+        
+        <section id="intro">
+            <h2>Introduction</h2>
+            <p>The 1wellness API is a bridge designed to connect your database with automation tools like n8n, Zapier, or Make. It supports retrieving, filtering, updating, and deleting records from your core tables.</p>
+            <p><strong>Base URL:</strong> <code>https://yourdomain.com/n8n-export.php</code></p>
+        </section>
+
+        <section id="auth">
+            <h2>Authentication</h2>
+            <p>All requests must be authenticated using the API key defined in your server configuration.</p>
+            <pre><code>X-API-KEY: your_secret_api_key</code></pre>
+        </section>
+
+        <section id="get-users">
+            <h2><span class="method get">GET</span> Users & Leads</h2>
+            <p>Retrieve a list of users. This endpoint includes computed fields to quickly identify customer value.</p>
+            
+            <pre><code>GET /n8n-export.php?type=users</code></pre>
+
+            <h3>Parameters</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>email</code></td>
+                        <td>Full email or wildcard (e.g., <code>*@gmail.com</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><code>phone</code> <span class="badge badge-new">New</span></td>
+                        <td>Full phone or wildcard (e.g., <code>*1234</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><code>exclude_buyers</code> <span class="badge badge-new">New</span></td>
+                        <td>If <code>1</code>, removes anyone who is present in the sales table.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Sample Output</h3>
+<pre>{
+    "id": 101,
+    "first_name": "Alice",
+    "email": "alice@example.com",
+    "is_buyer": 1  // Computed automatically
+}</pre>
+        </section>
+
+        <section id="get-sales">
+            <h2><span class="method get">GET</span> Sales Data</h2>
+            <p>Retrieve sales transactions. Supports filtering by date range and payment status.</p>
+            <pre><code>GET /n8n-export.php?type=sales</code></pre>
+        </section>
+
+        <section id="get-assessments">
+            <h2><span class="method get">GET</span> Assessments</h2>
+            <p>Retrieve health assessments submitted by users. You can fetch specific categories or all assessments.</p>
+            
+            <pre><code>GET /n8n-export.php?type=pcos_assessments</code></pre>
+
+            <h3>Supported Assessment Types</h3>
+            <p>Use these values for the <code>type</code> parameter:</p>
+            <ul>
+                <li><code>assessments</code> (Generic/All)</li>
+                <li><code>pcos_assessments</code></li>
+                <li><code>acne_assessments</code></li>
+                <li><code>weight_assessments</code></li>
+            </ul>
+
+            <h3>Specific Filters</h3>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><code>assessment_type</code></td>
+                        <td>Filter generic <code>assessments</code> table by type (e.g., 'pcos', 'acne').</td>
+                    </tr>
+                    <tr>
+                        <td><code>include_user</code></td>
+                        <td>If <code>1</code>, includes the full user profile who took the assessment.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>JSON Parsing</h3>
+            <p>Fields like <code>symptoms</code>, <code>lifestyle_factors</code>, and <code>diet_preferences</code> are stored as JSON strings in the database but are <strong>automatically parsed</strong> into objects in the API response.</p>
+
+            <h3>Sample Output</h3>
+<pre>{
+    "success": true,
+    "data": [
+        {
+            "id": 50,
+            "type": "pcos_assessments",
+            "symptoms": {
+                "irregular_periods": true,
+                "acne_severity": "moderate"
+            },
+            "diet_preferences": ["gluten_free", "dairy_free"],
+            "created_at": "2023-10-15..."
+        }
+    ]
+}</pre>
+        </section>
+
+        <section id="get-single">
+            <h2><span class="method get">GET</span> Single Record</h2>
+            <p>Fetch a specific record by its unique ID.</p>
+            <pre><code>GET /n8n-export.php?type=sales&id=550</code></pre>
+        </section>
+
+        <section id="filtering">
+            <h2>Filtering & Search Examples</h2>
+            
+            <h3>1. Get "Pure" Leads (Exclude Buyers)</h3>
+            <pre>curl -H "X-API-KEY: 123" "https://api.com/n8n-export.php?type=users&exclude_buyers=1"</pre>
+
+            <h3>2. Search by Phone Number</h3>
+            <pre>curl -H "X-API-KEY: 123" "https://api.com/n8n-export.php?type=users&phone=*5678"</pre>
+
+            <h3>3. Get PCOS Assessments with User Data</h3>
+            <pre>curl -H "X-API-KEY: 123" "https://api.com/n8n-export.php?type=pcos_assessments&include_user=1"</pre>
+        </section>
+
+        <section id="post-update">
+            <h2><span class="method post">POST</span> Update Record</h2>
+            <p>Modify an existing record. Send a JSON body with the <code>action: "update"</code> parameter.</p>
+            
+            <pre>POST /n8n-export.php</pre>
+            
+            <h3>JSON Body</h3>
+<pre>{
+    "action": "update",
+    "type": "users",
+    "id": 105,
+    "data": {
+        "status": "active",
+        "first_name": "Jane"
+    }
+}</pre>
+        </section>
+
+        <section id="post-delete">
+            <h2><span class="method post">POST</span> Delete Record</h2>
+            <pre>POST /n8n-export.php</pre>
+
+            <h3>JSON Body</h3>
+<pre>{
+    "action": "delete",
+    "type": "contacts",
+    "id": 404
+}</pre>
+        </section>
+
+        <section id="sync">
+            <h2>Incremental Sync</h2>
+            <p>To process only "new" records in n8n, use the <code>since_id</code> parameter.</p>
+            <pre>GET /n8n-export.php?type=sales&since_id=1050</pre>
+        </section>
+
+    </div>
+</main>
+
+<script>
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('nav li a');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 60) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').includes(current)) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

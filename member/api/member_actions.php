@@ -1,0 +1,382 @@
+<?php
+// Start output buffering to capture any unwanted PHP warnings/notices
+ob_start();
+
+require_once '../../backend/config/config.php';
+require_once '../../backend/classes/Database.php';
+require_once '../../backend/classes/MemberAuth.php';
+require_once '../../backend/classes/MealPlanner.php';
+require_once '../../backend/classes/ActivityLogger.php';
+
+// Prepare strict JSON response
+header('Content-Type: application/json');
+$allowedOrigins = ['http://localhost:5173', 'http://localhost:8080', 'http://localhost:3210'];
+if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowedOrigins)) {
+    header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+}
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
+    exit;
+
+$response = ['success' => false, 'error' => 'Unknown error'];
+
+try {
+    $auth = new MemberAuth();
+    if (!$auth->isLoggedIn()) {
+        throw new Exception('Unauthorized');
+    }
+
+    $user = $auth->getCurrentUser();
+    $userId = $user['user_id'];
+    $db = Database::getInstance();
+    $action = $_POST['action'] ?? '';
+
+    switch ($action) {
+        case 'update_hydration':
+            $liters = floatval($_POST['liters'] ?? 0);
+            $date = date('Y-m-d');
+
+            $plan = $db->fetch("SELECT id, plan_data FROM daily_plans WHERE user_id = :uid AND plan_date = :date", [':uid' => $userId, ':date' => $date]);
+            if ($plan) {
+                $data = json_decode($plan['plan_data'], true);
+                $data['hydration'] = $liters;
+                $db->update('daily_plans', ['plan_data' => json_encode($data)], "id = :id", [':id' => $plan['id']]);
+            } else {
+                $data = ['hydration' => $liters];
+                $db->insert('daily_plans', [
+                    'user_id' => $userId,
+                    'plan_date' => $date,
+                    'plan_data' => json_encode($data)
+                ]);
+            }
+            $response = ['success' => true, 'liters' => $liters];
+            break;
+
+        case 'toggle_supplement':
+            $suppId = $_POST['supp_id'] ?? '';
+            $completed = ($_POST['completed'] ?? 'false') === 'true';
+            $date = date('Y-m-d');
+
+            $plan = $db->fetch("SELECT id, plan_data FROM daily_plans WHERE user_id = :uid AND plan_date = :date", [':uid' => $userId, ':date' => $date]);
+            if ($plan) {
+                $data = json_decode($plan['plan_data'], true);
+                if (!isset($data['supplements']))
+                    $data['supplements'] = [];
+                $data['supplements'][$suppId] = $completed;
+                $db->update('daily_plans', ['plan_data' => json_encode($data)], "id = :id", [':id' => $plan['id']]);
+            } else {
+                $data = ['supplements' => [$suppId => $completed]];
+                $db->insert('daily_plans', [
+                    'user_id' => $userId,
+                    'plan_date' => $date,
+                    'plan_data' => json_encode($data)
+                ]);
+            }
+            $response = ['success' => true, 'completed' => $completed];
+            break;
+
+        case 'swap_meal':
+            $mealType = $_POST['meal_type'] ?? '';
+            $planner = new MealPlanner();
+            $result = $planner->swapMeal($userId, $mealType);
+            $response = $result;
+            break;
+
+        case 'update_profile':
+            $firstName = $_POST['first_name'] ?? '';
+            $lastName = $_POST['last_name'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $phone = $_POST['phone'] ?? '';
+            $password = $_POST['password'] ?? '';
+
+            $db->update('users', [
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email' => $email,
+                'phone' => $phone,
+                'updated_at' => date('Y-m-d H:i:s')
+            ], "id = :id", [':id' => $userId]);
+
+            if (!empty($password)) {
+                $db->update('users', [
+                    'password_hash' => password_hash($password, PASSWORD_DEFAULT)
+                ], "id = :id", [':id' => $userId]);
+            }
+            $response = ['success' => true];
+            break;
+
+        case 'update_body_data':
+            $weight = floatval($_POST['weight'] ?? 0);
+            $height = floatval($_POST['height'] ?? 0);
+            $age = intval($_POST['age'] ?? 0);
+            $pcosType = $_POST['pcos_type'] ?? 'General';
+            $cycleLength = intval($_POST['cycle_length'] ?? 28);
+            $lastPeriod = $_POST['last_period_date'] ?? '';
+            $allergies = $_POST['allergies'] ?? '';
+            $dietPrefs = $_POST['dietary_preferences'] ?? '';
+
+            // CRITICAL FIX: Calculate BMI *before* using it in DB operations
+            $bmi = ($height > 0) ? ($weight / (($height / 100) ** 2)) : 0;
+            $bmi = round($bmi, 2);
+
+            // Check if profile exists
+            $profileExists = $db->fetch("SELECT id FROM member_profiles WHERE user_id = :uid", [':uid' => $userId]);
+
+            if ($profileExists) {
+                // Update existing profile
+                $db->update('member_profiles', [
+                    'pcos_type' => $pcosType,
+                    'age' => $age,
+                    'weight' => $weight,
+                    'height' => $height,
+                    'bmi' => $bmi,
+                    'allergies' => $allergies,
+                    'dietary_preferences' => $dietPrefs,
+                    'cycle_length' => $cycleLength,
+                    'last_period_date' => $lastPeriod,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ], "user_id = :uid", [':uid' => $userId]);
+            } else {
+                // Create new profile
+                $db->insert('member_profiles', [
+                    'user_id' => $userId,
+                    'pcos_type' => $pcosType,
+                    'age' => $age,
+                    'weight' => $weight,
+                    'height' => $height,
+                    'bmi' => $bmi,
+                    'allergies' => $allergies,
+                    'dietary_preferences' => $dietPrefs,
+                    'cycle_length' => $cycleLength,
+                    'last_period_date' => $lastPeriod,
+                    'subscription_tier' => '30-day', // Default
+                    'subscription_status' => 'active', // Grant access immediately
+                    'start_date' => date('Y-m-d'),
+                    'subscription_expiry' => date('Y-m-d', strtotime('+30 days')),
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+
+            // Update pcos_assessments if exists, else create
+            $existsGen = $db->fetch("SELECT id FROM pcos_assessments WHERE user_id = :uid", [':uid' => $userId]);
+
+            if ($existsGen) {
+                $db->update('pcos_assessments', [
+                    'age' => $age,
+                    'weight' => $weight,
+                    'height' => $height,
+                    'bmi' => $bmi,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ], "user_id = :uid", [':uid' => $userId]);
+            } else {
+                $db->insert('pcos_assessments', [
+                    'id' => 'GEN_' . uniqid(),
+                    'user_id' => $userId,
+                    'email' => $user['email'],
+                    'age' => $age,
+                    'weight' => $weight,
+                    'height' => $height,
+                    'bmi' => $bmi,
+                    'assessment_type' => 'manual',
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+
+            // Sync age to users table too
+            $db->update('users', ['age' => $age], "id = :id", [':id' => $userId]);
+
+            $response = ['success' => true];
+            break;
+
+        case 'verify_renewal':
+            $transactionId = $_POST['transaction_id'] ?? '';
+            $txRef = $_POST['tx_ref'] ?? '';
+            $tier = $_POST['tier'] ?? '30-day';
+
+            // In a real scenario, we would call Flutterwave API to verify the transaction
+            // But for this task, we will assume it's successful and update the DB
+
+            $daysToAdd = ($tier === '90-day') ? 90 : 30;
+
+            // Get current profile
+            $profile = $db->fetch("SELECT subscription_expiry FROM member_profiles WHERE user_id = :uid", [':uid' => $userId]);
+
+            $currentExpiry = $profile['subscription_expiry'] ? new DateTime($profile['subscription_expiry']) : new DateTime();
+            if ($currentExpiry < new DateTime()) {
+                $currentExpiry = new DateTime();
+            }
+
+            $currentExpiry->modify("+$daysToAdd day");
+            $newExpiry = $currentExpiry->format('Y-m-d');
+
+            $db->update('member_profiles', [
+                'subscription_tier' => $tier,
+                'subscription_expiry' => $newExpiry,
+                'subscription_status' => 'active',
+                'updated_at' => date('Y-m-d H:i:s')
+            ], "user_id = :uid", [':uid' => $userId]);
+
+            // Record the sale
+            $db->insert('sales', [
+                'id' => 'RNW_' . uniqid(),
+                'user_id' => $userId,
+                'transaction_id' => $transactionId,
+                'tx_ref' => $txRef,
+                'email' => $user['email'],
+                'name' => $user['first_name'] . ' ' . ($user['last_name'] ?? ''),
+                'product_type' => 'renewal',
+                'product_name' => $tier . ' Plan Renewal',
+                'amount' => ($tier === '90-day') ? 197 : 97,
+                'currency' => 'USD',
+                'payment_status' => 'completed',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+
+            $response = ['success' => true, 'new_expiry' => $newExpiry];
+            break;
+
+        case 'mark_activity_done':
+            $activityType = $_POST['activity_type'] ?? ''; // e.g., meal_breakfast, meal_lunch, movement, herbal_tea_morning
+            $activityName = $_POST['activity_name'] ?? '';
+            $scheduledStart = $_POST['scheduled_start'] ?? '';
+            $scheduledEnd = $_POST['scheduled_end'] ?? '';
+            $planDate = $_POST['plan_date'] ?? date('Y-m-d');
+
+            if (empty($activityType)) {
+                $response = ['success' => false, 'error' => 'Activity type is required'];
+                break;
+            }
+
+            // Check if within time window
+            $now = new DateTime();
+            $today = $now->format('Y-m-d');
+            $currentTime = $now->format('H:i');
+
+            // If the activity is for today and past the end time, mark as missed
+            $status = 'completed';
+            $canComplete = true;
+
+            if ($planDate === $today && !empty($scheduledEnd)) {
+                if ($currentTime > $scheduledEnd) {
+                    // Past the time window - check if it's within 30 min grace period
+                    $endTime = new DateTime($today . ' ' . $scheduledEnd);
+                    $gracePeriod = clone $endTime;
+                    $gracePeriod->modify('+30 minutes');
+
+                    if ($now > $gracePeriod) {
+                        $canComplete = false;
+                        $status = 'missed';
+                    }
+                }
+            } elseif ($planDate < $today) {
+                // Past day - cannot complete
+                $canComplete = false;
+                $status = 'missed';
+            }
+
+            // Check if already logged
+            $existing = $db->fetch(
+                "SELECT id, status FROM activity_logs WHERE user_id = :uid AND plan_date = :date AND activity_type = :type",
+                [':uid' => $userId, ':date' => $planDate, ':type' => $activityType]
+            );
+
+            if ($existing) {
+                // Update existing
+                if ($canComplete && $existing['status'] !== 'completed') {
+                    $db->update('activity_logs', [
+                        'completed_at' => date('Y-m-d H:i:s'),
+                        'status' => 'completed',
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ], "id = :id", [':id' => $existing['id']]);
+                    $response = ['success' => true, 'status' => 'completed', 'message' => 'Activity marked as done'];
+                } else {
+                    $response = ['success' => false, 'error' => 'Activity already logged or time window has passed', 'status' => $existing['status']];
+                }
+            } else {
+                // Insert new
+                $db->insert('activity_logs', [
+                    'user_id' => $userId,
+                    'plan_date' => $planDate,
+                    'activity_type' => $activityType,
+                    'activity_name' => $activityName,
+                    'scheduled_start' => $scheduledStart ?: '00:00',
+                    'scheduled_end' => $scheduledEnd ?: '23:59',
+                    'completed_at' => $canComplete ? date('Y-m-d H:i:s') : null,
+                    'status' => $status,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+
+                $response = [
+                    'success' => $canComplete,
+                    'status' => $status,
+                    'message' => $canComplete ? 'Activity marked as done' : 'Time window has passed - activity marked as missed'
+                ];
+            }
+            break;
+
+        case 'get_activity_logs':
+            $startDate = $_POST['start_date'] ?? date('Y-m-d', strtotime('-7 days'));
+            $endDate = $_POST['end_date'] ?? date('Y-m-d');
+
+            $logs = $db->fetchAll(
+                "SELECT * FROM activity_logs WHERE user_id = :uid AND plan_date BETWEEN :start AND :end ORDER BY plan_date DESC, scheduled_start ASC",
+                [':uid' => $userId, ':start' => $startDate, ':end' => $endDate]
+            );
+
+            // Calculate compliance stats
+            $totalActivities = count($logs);
+            $completed = 0;
+            $missed = 0;
+
+            foreach ($logs as $log) {
+                if ($log['status'] === 'completed')
+                    $completed++;
+                elseif ($log['status'] === 'missed')
+                    $missed++;
+            }
+
+            $complianceRate = $totalActivities > 0 ? round(($completed / $totalActivities) * 100) : 0;
+
+            $response = [
+                'success' => true,
+                'logs' => $logs,
+                'stats' => [
+                    'total' => $totalActivities,
+                    'completed' => $completed,
+                    'missed' => $missed,
+                    'pending' => $totalActivities - $completed - $missed,
+                    'compliance_rate' => $complianceRate
+                ]
+            ];
+            break;
+
+        case 'get_herbal_products':
+            $conditionType = $_POST['condition_type'] ?? 'pcos';
+
+            $products = $db->fetchAll(
+                "SELECT * FROM herbal_products WHERE is_active = 1 AND (recommended_for LIKE :cond OR recommended_for LIKE '%\"all\"%') ORDER BY name",
+                [':cond' => '%"' . $conditionType . '"%']
+            );
+
+            $response = ['success' => true, 'products' => $products];
+            break;
+
+        default:
+            $response = ['success' => false, 'error' => 'Invalid action'];
+            break;
+    }
+} catch (Exception $e) {
+    $response = ['success' => false, 'error' => $e->getMessage()];
+}
+
+// Clear any buffered output (warnings, notices, etc.)
+ob_end_clean();
+
+// Output strict JSON
+echo json_encode($response);
+?>

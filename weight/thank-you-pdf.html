@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth overflow-x-hidden">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Download Your Weight Loss Protocol</title>
+    <meta name="description"
+        content="Thank you for your purchase! Download your Weight Loss transformation guide immediately.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'forest': {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#16a34a',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#0f3922',
+                        },
+                        'sage': {
+                            100: '#E6EBE6',
+                            200: '#CDD6CD',
+                            500: '#8DA38D',
+                        },
+                        'terracotta': {
+                            500: '#C77D63',
+                            600: '#A85D45',
+                        },
+                        'cream': '#FDFCF8',
+                        'sand': '#F4F1EA',
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(22, 101, 52, 0.1)',
+                        'glow': '0 0 20px rgba(199, 125, 99, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FDFCF8;
+            color: #0f3922;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+    </style>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/webhook-manager.js"></script>
+    <script src="../js/tracking.js"></script>
+</head>
+
+<body class="antialiased relative min-h-screen overflow-x-hidden w-full max-w-[100vw]">
+
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-40 mix-blend-overlay"></div>
+    <div class="blob bg-sage-200 w-96 h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="blob bg-terracotta-500 w-80 h-80 rounded-full top-1/2 right-0 translate-x-1/3 opacity-20"></div>
+
+    <header
+        class="fixed w-full max-w-[100vw] top-0 z-40 glass-panel border-b border-sage-200/50 overflow-hidden left-0 right-0">
+        <div class="max-w-6xl mx-auto px-4 py-3 md:py-4">
+            <div class="flex items-center justify-between gap-2 overflow-hidden">
+                <div class="flex items-center gap-2 md:gap-3 min-w-0">
+                    <div
+                        class="w-8 h-8 md:w-10 md:h-10 bg-forest-900 rounded-full flex items-center justify-center shadow-lg shrink-0">
+                        <span class="text-sand font-serif italic text-lg md:text-xl">P</span>
+                    </div>
+                    <span class="text-base md:text-lg font-serif font-bold tracking-tight text-forest-900 truncate">
+                        Transformation <span class="hidden sm:inline">Journey</span>
+                    </span>
+                </div>
+                <div class="shrink-0">
+                    <span
+                        class="bg-forest-100 text-forest-800 px-2.5 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold tracking-wide uppercase whitespace-nowrap">
+                        Download Ready
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-32 pb-20 px-4 md:px-6" x-data="thankYouPage()">
+        <section class="text-center mb-16">
+            <div class="max-w-3xl mx-auto">
+                <div
+                    class="w-24 h-24 bg-sage-100 text-forest-900 rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm text-4xl">
+                    📥
+                </div>
+
+                <h1 class="text-3xl md:text-5xl font-serif font-bold text-forest-900 mb-6 leading-[1.1]">
+                    Your Protocol is<br>
+                    <span class="italic text-terracotta-600">Ready for Download</span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed font-light">
+                    Success! You've taken the first step to healing. Your personalized 90-Day Weight Loss Protocol is ready
+                    below.
+                </p>
+
+                <!-- Order Summary & Download -->
+                <div
+                    class="glass-panel p-6 md:p-8 rounded-3xl shadow-soft mb-12 border border-white/60 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-forest-500"></div>
+                    <h2 class="text-2xl font-serif font-bold text-forest-900 mb-6">Your Details</h2>
+
+                    <div class="bg-forest-50/50 rounded-xl p-6 mb-6 border border-forest-100">
+                        <div class="grid md:grid-cols-2 gap-6 text-sm text-left px-2 md:px-12">
+                            <div class="flex justify-between md:block">
+                                <span class="text-gray-500 font-medium">Plan:</span>
+                                <span class="font-bold text-forest-900 ml-2 md:ml-0 md:block mt-1">90-Day PDF
+                                    Protocol</span>
+                            </div>
+                            <div class="flex justify-between md:block">
+                                <span class="text-gray-500 font-medium">Weight Loss Type:</span>
+                                <span class="font-bold text-forest-900 ml-2 md:ml-0 md:block mt-1"
+                                    x-text="orderDetails.weightType"></span>
+                            </div>
+                            <div class="flex justify-between md:block">
+                                <span class="text-gray-500 font-medium">Amount:</span>
+                                <span class="font-bold text-forest-900 ml-2 md:ml-0 md:block mt-1"
+                                    x-text="orderDetails.amount"></span>
+                            </div>
+                            <div class="flex justify-between md:block">
+                                <span class="text-gray-500 font-medium">Transaction ID:</span>
+                                <span class="font-mono text-xs text-forest-900 ml-2 md:ml-0 md:block mt-1"
+                                    x-text="orderDetails.transactionId"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-gradient-to-br from-forest-50 to-terracotta-50/30 rounded-2xl p-6 md:p-8 mb-6 border-2 border-forest-200 shadow-lg">
+                        <div class="text-center mb-5">
+                            <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Access Your Guide</h3>
+                            <p class="text-sm text-gray-600" x-show="hasDownload">Click below to download your
+                                comprehensive guide instantly.</p>
+                            <p class="text-sm text-red-500" x-show="!hasDownload">
+                                Your download link has expired. Please <a href="generating-plan.html"
+                                    class="underline font-bold">regenerate your plan</a>.
+                            </p>
+                        </div>
+
+                        <div class="text-center" x-show="hasDownload">
+                            <a :href="downloadUrl" :download="downloadFilename"
+                                class="inline-block bg-forest-900 hover:bg-forest-800 text-white px-10 py-5 rounded-full font-bold text-lg md:text-xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 hover:scale-105 w-full md:w-auto border-2 border-forest-700">
+                                Download PDF Now &darr;
+                            </a>
+                            <p class="text-xs text-gray-500 mt-4" x-show="orderDetails.email">
+                                A copy may also be sent to <span class="font-bold" x-text="orderDetails.email"></span>
+                            </p>
+                        </div>
+
+                        <div class="text-center" x-show="!hasDownload">
+                            <a href="generating-plan.html"
+                                class="inline-block bg-terracotta-600 hover:bg-terracotta-500 text-white px-10 py-5 rounded-full font-bold text-lg shadow-xl transition-all">
+                                Regenerate Your Plan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Next Steps -->
+                <div class="max-w-4xl mx-auto mt-16 text-left">
+                    <h2 class="text-2xl font-serif font-bold text-center text-forest-900 mb-8">What's Inside Your
+                        Protocol?</h2>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-50">
+                            <div class="text-2xl mb-3">🍽️</div>
+                            <h4 class="font-bold text-forest-900 mb-2">7-Day Meal Plan</h4>
+                            <p class="text-sm text-gray-600">Western meals specifically chosen for your Weight Loss type, with
+                                hormone-balancing benefits explained.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-50">
+                            <div class="text-2xl mb-3">💊</div>
+                            <h4 class="font-bold text-forest-900 mb-2">Supplement & Herb Guide</h4>
+                            <p class="text-sm text-gray-600">Exact dosages, timing, and reasons for each supplement and
+                                traditional herbal remedy.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-50">
+                            <div class="text-2xl mb-3">📅</div>
+                            <h4 class="font-bold text-forest-900 mb-2">12-Week Action Plan</h4>
+                            <p class="text-sm text-gray-600">Progressive weekly actions across 3 phases, plus daily
+                                routines and progress trackers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="text-center pb-12">
+            <div class="max-w-3xl mx-auto px-4">
+                <h2 class="text-xl font-serif font-bold text-forest-900 mb-3">Questions?</h2>
+                <p class="text-gray-600 mb-4">Our specialists are here to help you navigate your guide.</p>
+                <a href="https://wa.me/2348133149989" target="_blank"
+                    class="text-forest-600 font-bold hover:underline">Chat on WhatsApp</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-forest-900 text-sand py-12 text-center">
+        <div class="max-w-4xl mx-auto px-4">
+            <p class="text-forest-200/60 font-light text-sm mb-4">
+                © <span x-data x-text="new Date().getFullYear()"></span> 1wellness. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function thankYouPage() {
+            return {
+                orderDetails: {
+                    amount: '',
+                    transactionId: '',
+                    email: '',
+                    weightType: '',
+                },
+                downloadUrl: '',
+                downloadFilename: 'My_90Day_Weight Loss_Protocol.pdf',
+                hasDownload: false,
+
+                init() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    this.orderDetails.amount = '$' + parseInt(urlParams.get('amount') || '45').toLocaleString();
+                    this.orderDetails.transactionId = urlParams.get('transaction_id') || urlParams.get('tx_ref') || '';
+                    this.orderDetails.email = urlParams.get('email') || localStorage.getItem('weightProtocolEmail') || '';
+                    this.orderDetails.weightType = localStorage.getItem('weightProtocolType') || 'Weight Loss';
+
+                    // Retrieve download URL from localStorage (saved by generating-plan.html)
+                    this.downloadUrl = localStorage.getItem('weightProtocolDownloadUrl') || '';
+                    this.downloadFilename = localStorage.getItem('weightProtocolFilename') || 'My_90Day_Weight Loss_Protocol.pdf';
+                    this.hasDownload = !!this.downloadUrl;
+
+                    // Track conversion
+                    if (window.WebhookManager) {
+                        window.WebhookManager.trackConversion({
+                            page: 'thank-you-pdf',
+                            amount: urlParams.get('amount'),
+                            transactionId: this.orderDetails.transactionId
+                        });
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

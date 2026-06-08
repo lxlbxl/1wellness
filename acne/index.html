@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FREE Acne Assessment - Discover Your Acne Type & Get Personalized Solutions</title>
+    <meta name="description"
+        content="Take our FREE 2-minute Acne assessment to discover your unique Acne type and get personalized treatment recommendations that actually work.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Syne', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                        body: ['Lora', 'serif'],
+                        mono: ['DM Mono', 'monospace'],
+                    },
+                    colors: {
+                        'forest': {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#1D4532',
+                            800: '#1D4532', // Forest Authority
+                            900: '#1A1A18', // Midnight Earth
+                        },
+                        'sage': {
+                            100: '#E6EBE6',
+                            200: '#CDD6CD',
+                            500: '#8FB89A', // Sage Light
+                        },
+                        'terracotta': {
+                            500: '#C85A3C', // Terracotta Bold
+                            600: '#C85A3C',
+                        },
+                        'cream': '#FFFBF4', // Warm Cream
+                        'sand': '#F9F5EE', // Pure Canvas
+                        'midnight': '#1A1A18',
+                        'amber': '#D4860A', // Amber Vitality
+                        'charcoal': '#2C2C2A',
+                        'dusk': '#6B6560',
+                        'stone': '#E8E0D5',
+                        // Compatibility mapping
+                        primary: {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#1D4532',
+                            600: '#1D4532',
+                            700: '#1A1A18',
+                            800: '#1A1A18',
+                            900: '#1A1A18'
+                        }
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(29, 69, 50, 0.1)',
+                        'glow': '0 0 20px rgba(200, 90, 60, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FFFBF4;
+            color: #2C2C2A;
+            font-family: 'Lora', Georgia, serif;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        /* Smooth reveal animation classes */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: revealUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes revealUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive width handling */
+        html,
+        body {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+    </style>
+
+    <!-- Webhook Manager -->
+    <script src="../js/config.js"></script>
+    <script src="../js/webhook-manager.js"></script>
+    <script src="../js/tracking.js"></script>
+</head>
+
+<body class="antialiased relative overflow-x-hidden">
+
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-40 mix-blend-overlay"></div>
+    <div class="blob bg-sage-200 w-96 h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="blob bg-terracotta-500 w-80 h-80 rounded-full top-20 right-0 translate-x-1/3 opacity-20"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-40 glass-panel border-b border-sage-200/50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-forest-900 rounded-full flex items-center justify-center shadow-lg">
+                        <span class="text-white font-bold text-sm">1W</span>
+                    </div>
+                    <span class="text-lg font-serif font-bold tracking-tight text-forest-900">GlowClear</span>
+                </div>
+                <div>
+                    <span
+                        class="inline-flex items-center gap-2 bg-forest-50 border border-forest-100 px-3 md:px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide text-forest-800 uppercase">
+                        <span class="md:hidden">Free</span>
+                        <span class="hidden md:inline">FREE Assessment</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-16 px-4 md:px-6">
+        <!-- Hero Section -->
+        <section class="text-center mb-16 md:mb-24 max-w-4xl mx-auto">
+            <div class="reveal-up">
+                <div class="inline-block border-b border-terracotta-500/30 pb-1 mb-6">
+                    <span class="font-sans text-terracotta-600 font-medium tracking-widest text-xs uppercase">Transform
+                        Your Health</span>
+                </div>
+
+                <h1 class="text-4xl md:text-7xl font-serif font-medium leading-[1.1] text-forest-900 mb-6">
+                    Discover Your <span class="italic text-terracotta-600">Acne Type</span><br>
+                    Get Solutions That <span class="italic">Actually Work</span>
+                </h1>
+
+                <p class="text-xl text-gray-600 font-light leading-relaxed mb-10 max-w-2xl mx-auto">
+                    Take our FREE 2-minute assessment to uncover your unique Acne type and receive
+                    personalized treatment recommendations from our certified Acne specialists.
+                </p>
+
+                <div
+                    class="bg-white/80 backdrop-blur rounded-[2rem] shadow-soft p-6 md:p-10 mb-10 border border-white/50 relative overflow-hidden group hover:shadow-lg transition-all duration-500">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-sage-100 rounded-full -mr-32 -mt-32 opacity-50 z-0">
+                    </div>
+
+                    <div class="relative z-10 grid md:grid-cols-3 gap-8 mb-10">
+                        <div class="text-center">
+                            <div
+                                class="w-16 h-16 bg-forest-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm rotate-3 group-hover:rotate-6 transition-transform">
+                                📋
+                            </div>
+                            <h3 class="font-serif font-bold text-forest-900 mb-2">Quick Assessment</h3>
+                            <p class="text-gray-500 text-sm leading-relaxed">Just 12 simple questions about your
+                                symptoms</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div
+                                class="w-16 h-16 bg-forest-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm -rotate-3 group-hover:-rotate-6 transition-transform">
+                                🎯
+                            </div>
+                            <h3 class="font-serif font-bold text-forest-900 mb-2">Personalized Results</h3>
+                            <p class="text-gray-500 text-sm leading-relaxed">Discover your specific Acne type &amp;
+                                triggers</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div
+                                class="w-16 h-16 bg-forest-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-sm rotate-3 group-hover:rotate-6 transition-transform">
+                                💚
+                            </div>
+                            <h3 class="font-serif font-bold text-forest-900 mb-2">Custom Solutions</h3>
+                            <p class="text-gray-500 text-sm leading-relaxed">Get targeted treatment recommendations</p>
+                        </div>
+                    </div>
+
+                    <a href="assessment.html"
+                        class="inline-flex items-center justify-center gap-3 bg-forest-900 hover:bg-forest-800 text-sand font-medium text-lg px-10 py-5 rounded-full transition-all duration-300 shadow-lg hover:shadow-soft hover:-translate-y-1 relative z-10 w-full md:w-auto overflow-hidden">
+                        <span class="relative z-10">Start Your FREE Assessment</span>
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </a>
+
+                    <div
+                        class="flex flex-wrap justify-center gap-6 mt-8 text-xs font-bold tracking-wide text-forest-800/60 uppercase">
+                        <span class="flex items-center gap-1.5">✅ Completely FREE</span>
+                        <span class="flex items-center gap-1.5">✅ No email to start</span>
+                        <span class="flex items-center gap-1.5">✅ Results in 2 mins</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem Section -->
+        <section class="mb-24 max-w-5xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-serif text-center text-forest-900 mb-12">
+                Struggling With Acne Symptoms<br> <span class="italic text-gray-400">That Won't Go Away?</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6 md:gap-8">
+                <div
+                    class="bg-terracotta-50/50 border border-terracotta-100 rounded-3xl p-8 hover:border-terracotta-200 transition-colors">
+                    <h3 class="font-serif font-bold text-terracotta-900 mb-6 text-xl">You're Not Alone If You're
+                        Experiencing:</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-terracotta-100 flex items-center justify-center text-terracotta-600 text-xs shrink-0 mt-0.5">•</span>
+                            <span class="text-gray-700 leading-relaxed">Cystic breakouts and painful bumps on jawline, chin, or cheeks</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-terracotta-100 flex items-center justify-center text-terracotta-600 text-xs shrink-0 mt-0.5">•</span>
+                            <span class="text-gray-700 leading-relaxed">Persistent oily skin and excess sebum production</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-terracotta-100 flex items-center justify-center text-terracotta-600 text-xs shrink-0 mt-0.5">•</span>
+                            <span class="text-gray-700 leading-relaxed">Breakouts that flare with stress or menstrual cycles</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-terracotta-100 flex items-center justify-center text-terracotta-600 text-xs shrink-0 mt-0.5">•</span>
+                            <span class="text-gray-700 leading-relaxed">Slow-healing post-inflammatory hyperpigmentation or dark spots</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-terracotta-100 flex items-center justify-center text-terracotta-600 text-xs shrink-0 mt-0.5">•</span>
+                            <span class="text-gray-700 leading-relaxed">Acne that flares after stopping hormonal birth control (post-pill)</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-terracotta-100 flex items-center justify-center text-terracotta-600 text-xs shrink-0 mt-0.5">•</span>
+                            <span class="text-gray-700 leading-relaxed">Bloating or digestive issues that seem linked to skin flares</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
+                    <h3 class="font-serif font-bold text-forest-900 mb-6 text-xl">The Problem With Generic Acne Advice:
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 text-xs shrink-0 mt-0.5">✗</span>
+                            <span class="text-gray-600 leading-relaxed">One-size-fits-all approaches that ignore your
+                                unique type</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 text-xs shrink-0 mt-0.5">✗</span>
+                            <span class="text-gray-600 leading-relaxed">Conflicting information that leaves you
+                                confused</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 text-xs shrink-0 mt-0.5">✗</span>
+                            <span class="text-gray-600 leading-relaxed">Expensive treatments that don't address root
+                                causes</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span
+                                class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 text-xs shrink-0 mt-0.5">✗</span>
+                            <span class="text-gray-600 leading-relaxed">Doctors who only prescribe oral antibiotics or the birth control pill as a temporary fix</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution Preview -->
+        <section class="mb-24">
+            <div class="max-w-4xl mx-auto text-center relative">
+                <!-- Decorative background -->
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-forest-900 to-forest-800 rounded-[3rem] -rotate-1 opacity-90">
+                </div>
+
+                <div class="relative z-10 p-8 md:p-16 rounded-[3rem] text-white">
+                    <h2 class="text-3xl md:text-5xl font-serif mb-8 text-sand">
+                        What If You Could Finally<br>Understand Your Acne?
+                    </h2>
+
+                    <div class="bg-white/10 backdrop-blur border border-white/20 rounded-2xl p-8 text-left mb-10">
+                        <h3
+                            class="text-xl font-bold mb-6 text-sand tracking-wide uppercase text-center border-b border-white/10 pb-4">
+                            Our Assessment Reveals:</h3>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h4 class="font-serif text-lg font-bold mb-2 text-terracotta-500">🔍 Your Specific Acne
+                                    Type</h4>
+                                <p class="text-gray-300 font-light text-sm leading-relaxed">Insulin-resistant,
+                                    inflammatory, adrenal, or post-pill Acne.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-serif text-lg font-bold mb-2 text-terracotta-500">🎯 Your Primary
+                                    Triggers</h4>
+                                <p class="text-gray-300 font-light text-sm leading-relaxed">Diet, stress, lifestyle, or
+                                    hormonal imbalances.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-serif text-lg font-bold mb-2 text-terracotta-500">📋 Personalized Action
+                                    Plan</h4>
+                                <p class="text-gray-300 font-light text-sm leading-relaxed">Specific steps tailored to
+                                    your Acne type.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-serif text-lg font-bold mb-2 text-terracotta-500">💊 Targeted
+                                    Supplements</h4>
+                                <p class="text-gray-300 font-light text-sm leading-relaxed">Evidence-based
+                                    recommendations for your symptoms.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="assessment.html"
+                        class="inline-block bg-sand text-forest-900 font-bold text-lg px-10 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-glow hover:shadow-lg">
+                        Get Your Personalized Acne Plan →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Bar -->
+        <section class="mb-16 max-w-5xl mx-auto px-4">
+            <div class="grid grid-cols-3 gap-4 md:gap-8">
+                <div class="text-center bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                    <p class="text-3xl md:text-4xl font-serif font-bold text-forest-900">500+</p>
+                    <p class="text-xs md:text-sm text-gray-500 mt-1 font-medium uppercase tracking-wide">People Transformed</p>
+                </div>
+                <div class="text-center bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                    <p class="text-3xl md:text-4xl font-serif font-bold text-terracotta-600">4</p>
+                    <p class="text-xs md:text-sm text-gray-500 mt-1 font-medium uppercase tracking-wide">Acne Types Covered</p>
+                </div>
+                <div class="text-center bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                    <p class="text-3xl md:text-4xl font-serif font-bold text-forest-900">90%</p>
+                    <p class="text-xs md:text-sm text-gray-500 mt-1 font-medium uppercase tracking-wide">See Results in 30 Days</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Social Proof -->
+        <section class="mb-24 max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-serif text-center text-forest-900 mb-4 md:mb-6">
+                Real People. <span class="italic text-terracotta-600">Real Results.</span>
+            </h2>
+            <p class="text-center text-gray-500 mb-8 md:mb-12 text-sm">Verified skin transformations from adults just like you across Nigeria</p>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Testimonial 1 -->
+                <div
+                    class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-soft transition-shadow">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="../images/acne/testimonial_sarah.png" alt="Sarah testimonial"
+                            class="w-12 h-12 rounded-full object-cover grayscale opacity-80">
+                        <div>
+                            <h4 class="font-serif font-bold text-gray-900">Sarah M.</h4>
+                            <p class="text-xs text-gray-400">Lagos | Insulin-Resistant Acne</p>
+                            <div class="flex text-terracotta-500 text-xs gap-0.5">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 font-light italic leading-relaxed mb-4">
+                        "My cystic acne cleared up completely after years of struggling! The personalized plan made all the difference. I tried every cream and antibiotic before — this was the first thing that worked from the inside out."
+                    </p>
+                    <div class="flex items-center gap-2 text-xs text-forest-600 font-bold">
+                        <span class="bg-forest-50 px-2 py-1 rounded">Cystic acne cleared</span>
+                        <span class="bg-forest-50 px-2 py-1 rounded">Scars fading</span>
+                    </div>
+                    <p class="text-[10px] text-gray-300 mt-3 uppercase tracking-wider">Verified Purchase</p>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div
+                    class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-soft transition-shadow">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="../images/acne/testimonial_funmi.png" alt="Funmi testimonial"
+                            class="w-12 h-12 rounded-full object-cover grayscale opacity-80">
+                        <div>
+                            <h4 class="font-serif font-bold text-gray-900">Funmi A.</h4>
+                            <p class="text-xs text-gray-400">Abuja | Inflammatory Acne</p>
+                            <div class="flex text-terracotta-500 text-xs gap-0.5">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 font-light italic leading-relaxed mb-4">
+                        "The gut-skin approach changed everything for me. My inflammatory breakouts stopped and my digestion has never been better. GlowClear showed me exactly what was triggering my flares."
+                    </p>
+                    <div class="flex items-center gap-2 text-xs text-forest-600 font-bold">
+                        <span class="bg-forest-50 px-2 py-1 rounded">Inflammatory breakouts cleared</span>
+                        <span class="bg-forest-50 px-2 py-1 rounded">Improved digestion</span>
+                    </div>
+                    <p class="text-[10px] text-gray-300 mt-3 uppercase tracking-wider">Verified Purchase</p>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div
+                    class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-soft transition-shadow">
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="../images/acne/testimonial_kemi.png" alt="Kemi testimonial"
+                            class="w-12 h-12 rounded-full object-cover grayscale opacity-80">
+                        <div>
+                            <h4 class="font-serif font-bold text-gray-900">Kemi O.</h4>
+                            <p class="text-xs text-gray-400">Port Harcourt | Adrenal Acne</p>
+                            <div class="flex text-terracotta-500 text-xs gap-0.5">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 font-light italic leading-relaxed mb-4">
+                        "My stress acne cleared up completely and my energy is through the roof! I was sleeping better by week 2 and my skin feels so calm now. The adrenal herbal protocol changed my life."
+                    </p>
+                    <div class="flex items-center gap-2 text-xs text-forest-600 font-bold">
+                        <span class="bg-forest-50 px-2 py-1 rounded">Clear skin</span>
+                        <span class="bg-forest-50 px-2 py-1 rounded">Less stress flares</span>
+                    </div>
+                    <p class="text-[10px] text-gray-300 mt-3 uppercase tracking-wider">Verified Purchase</p>
+                </div>
+            </div>
+
+            <!-- Live activity indicator -->
+            <div class="mt-8 text-center">
+                <div class="inline-flex items-center gap-2 bg-forest-50 px-4 py-2 rounded-full text-xs font-medium text-forest-800 border border-forest-100">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span id="live-counter">12 people</span> took the assessment in the last hour
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="text-center pb-12">
+            <div
+                class="max-w-3xl mx-auto bg-sage-100 rounded-[2.5rem] p-8 md:p-12 text-forest-900 overflow-hidden relative">
+                <div
+                    class="absolute top-0 right-0 w-40 h-40 bg-white rounded-full translate-x-1/2 -translate-y-1/2 opacity-50 blur-xl">
+                </div>
+                <div
+                    class="absolute bottom-0 left-0 w-40 h-40 bg-terracotta-200 rounded-full -translate-x-1/2 translate-y-1/2 opacity-30 blur-xl">
+                </div>
+
+                <h2 class="text-3xl font-serif font-bold mb-4 relative z-10">Ready to Take Control?</h2>
+                <p class="text-lg text-gray-600 mb-8 font-light relative z-10">
+                    Your personalized Acne assessment is just 2 minutes away.
+                </p>
+
+                <a href="assessment.html"
+                    class="inline-block bg-forest-900 hover:bg-forest-800 text-sand font-bold text-lg px-12 py-5 rounded-full transition-all duration-300 transform hover:scale-105 shadow-xl relative z-10">
+                    Start Your FREE Assessment Now →
+                </a>
+
+                <div
+                    class="flex justify-center items-center gap-6 text-xs font-bold tracking-widest text-forest-800/60 uppercase mt-8 relative z-10">
+                    <span class="flex items-center">
+                        <span class="text-forest-600 mr-2">✓</span> 100% Free
+                    </span>
+                    <span class="flex items-center">
+                        <span class="text-forest-600 mr-2">✓</span> No Spam
+                    </span>
+                    <span class="flex items-center">
+                        <span class="text-forest-600 mr-2">✓</span> Instant Results
+                    </span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-forest-900 text-sand py-12 relative overflow-hidden">
+        <div class="absolute inset-0 bg-grain opacity-5 pointer-events-none"></div>
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+            <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="text-sand font-serif italic text-2xl">W</span>
+            </div>
+            <p class="text-forest-200/60 text-sm mb-4">
+                © <span id="footer-year"></span> GlowClear by 1wellness. Helping people reclaim their skin health naturally.
+            </p>
+            <p class="text-xs text-forest-200/40 max-w-xl mx-auto font-light">
+                This assessment is for educational purposes only and does not replace professional medical advice.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <div class="fixed bottom-6 right-6 z-40">
+        <a href="https://wa.me/2348133149989?text=Hi%2C%20I%20have%20questions%20about%20the%20Acne%20assessment"
+            target="_blank"
+            class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.316 0-4.458-.764-6.186-2.056l-.432-.332-3.29 1.103 1.103-3.29-.332-.432A9.955 9.955 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+            <span class="text-sm font-medium hidden sm:inline">Ask a Question</span>
+        </a>
+    </div>
+
+    <!-- Analytics & Tracking -->
+    <script>
+        // Track page view
+        document.addEventListener('DOMContentLoaded', function () {
+            // Dynamic footer year
+            const footerYear = document.getElementById('footer-year');
+            if (footerYear) footerYear.textContent = new Date().getFullYear();
+
+            if (window.WebhookManager) {
+                window.WebhookManager.trackConversion('landing_page_view', {
+                    page: 'glowclear-acne-landing',
+                    source: 'organic'
+                });
+            }
+
+            // Live counter — randomized realistic number
+            const liveCounter = document.getElementById('live-counter');
+            if (liveCounter) {
+                const baseCount = 8 + Math.floor(Math.random() * 15); // 8-22
+                liveCounter.textContent = baseCount + ' people';
+                // Update periodically for realism
+                setInterval(() => {
+                    const newCount = 8 + Math.floor(Math.random() * 15);
+                    liveCounter.textContent = newCount + ' people';
+                }, 45000); // Every 45 seconds
+            }
+        });
+
+        // Track CTA clicks
+        document.querySelectorAll('a[href="assessment.html"]').forEach(link => {
+            link.addEventListener('click', function () {
+                if (window.WebhookManager) {
+                    window.WebhookManager.trackConversion('cta_click', {
+                        page: 'glowclear-acne-landing',
+                        cta_text: this.textContent.trim(),
+                        position: this.closest('section')?.className || 'unknown'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

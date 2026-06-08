@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Vitale Results — Personalised Male Vitality Protocol | 1wellness</title>
+    <meta name="description"
+        content="Discover your personalised male vitality type and receive a targeted protocol designed for your specific hormonal pattern.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Custom Tailwind Config — 1wellness Brand System -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        head:    ['"Syne"', 'sans-serif'],
+                        body:    ['"Lora"', 'Georgia', 'serif'],
+                        mono:    ['"DM Mono"', 'monospace'],
+                    },
+                    colors: {
+                        midnight: '#1A1A18',
+                        charcoal: '#2C2C2A',
+                        dusk:     '#6B6560',
+                        stone:    '#E8E0D5',
+                        canvas:   '#F9F5EE',
+                        cream:    '#FFFBF4',
+                        amber: {
+                            DEFAULT: '#D4860A',
+                            50:  '#FDF6E7',
+                            100: '#FAE9C4',
+                            400: '#E5A83C',
+                            500: '#D4860A',
+                            600: '#B36E06',
+                            700: '#8C5204',
+                        },
+                        forest: {
+                            DEFAULT: '#1D4532',
+                            50:  '#EBF4EE',
+                            100: '#C6DFD0',
+                            500: '#2E7A51',
+                            800: '#1D4532',
+                            900: '#122B1F',
+                        },
+                        sage: '#8FB89A',
+                        terra: '#C85A3C',
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%220.04%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'amber': '0 0 30px rgba(212,134,10,0.25)',
+                        'soft':  '0 20px 50px -10px rgba(26,26,24,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F9F5EE;
+            color: #2C2C2A;
+            font-family: 'Lora', Georgia, serif;
+        }
+
+        .glass-light {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(90px);
+            z-index: -1;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .amber-line {
+            background: linear-gradient(90deg, #D4860A, #E5A83C, #D4860A);
+            height: 2px;
+        }
+
+        .protocol-card {
+            position: relative;
+        }
+        .protocol-card .lock-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 30%, rgba(26,26,24,0.88) 70%);
+            border-radius: inherit;
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem 1.25rem;
+        }
+
+        html, body { max-width: 100vw; overflow-x: hidden; }
+        * { box-sizing: border-box; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.7s ease forwards; }
+        .fade-up.d1 { animation-delay: 0.15s; opacity: 0; }
+        .fade-up.d2 { animation-delay: 0.30s; opacity: 0; }
+        .fade-up.d3 { animation-delay: 0.45s; opacity: 0; }
+    </style>
+
+    <!-- Webhook Manager -->
+    <script src="../js/config.js"></script>
+    <script src="../js/webhook-manager.js"></script>
+    <script src="../js/tracking.js"></script>
+</head>
+
+<body class="antialiased relative min-h-screen">
+
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-50 mix-blend-overlay"></div>
+    <div class="blob bg-amber-500 w-[500px] h-[500px] rounded-full top-0 right-0 translate-x-1/3 -translate-y-1/4 opacity-15"></div>
+    <div class="blob w-[400px] h-[400px] rounded-full bottom-1/3 left-0 -translate-x-1/3" style="background:#1D4532; opacity:0.14;"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-40 glass-light border-b border-stone/60">
+        <div class="max-w-6xl mx-auto px-5 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-midnight rounded-full flex items-center justify-center shadow-md">
+                        <span class="text-amber-400 font-display italic text-xl font-bold">V</span>
+                    </div>
+                    <div>
+                        <span class="block font-head font-800 text-base tracking-tight text-midnight leading-none">Vitale</span>
+                        <span class="block font-mono text-[9px] tracking-[0.15em] text-dusk uppercase">by 1wellness</span>
+                    </div>
+                </div>
+                <div>
+                    <span class="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-100 px-4 py-1.5 rounded-full text-[10px] font-mono tracking-widest text-amber-700 uppercase">
+                        <span class="md:hidden">✓ Done</span>
+                        <span class="hidden md:inline">✓ Analysis Complete</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-28 pb-16 px-4 md:px-6" x-data="mensResults()">
+
+        <!-- Loading State -->
+        <div x-show="isLoading" class="text-center py-24 min-h-[60vh] flex flex-col items-center justify-center">
+            <div class="w-16 h-16 border-2 border-amber-500/20 border-t-amber-500 rounded-full animate-spin mx-auto mb-6"></div>
+            <h2 class="text-3xl font-display font-bold text-midnight mb-3">Analysing Your Profile...</h2>
+            <p class="text-dusk font-mono text-xs tracking-widest uppercase">Cross-referencing your pattern with our database</p>
+        </div>
+
+        <!-- Results Content -->
+        <div x-show="!isLoading && assessmentData">
+
+            <!-- Congratulations Section -->
+            <section class="text-center mb-10 md:mb-14 max-w-4xl mx-auto fade-up">
+                <div class="glass-light rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 shadow-soft relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-700 via-amber-400 to-amber-700"></div>
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-amber-500/8 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+
+                    <div class="relative z-10">
+                        <div class="w-20 h-20 bg-midnight rounded-full flex items-center justify-center mx-auto mb-6 shadow-amber">
+                            <span class="text-amber-400 font-display italic text-4xl font-bold">✓</span>
+                        </div>
+                        <h1 class="text-4xl md:text-5xl font-display font-bold text-midnight mb-4">
+                            Analysis Complete,
+                            <span x-text="assessmentData?.contactInfo?.name?.split(' ')[0] || ''"
+                                class="italic text-amber-500"></span>!
+                        </h1>
+                        <p class="text-xl text-dusk font-body font-light max-w-2xl mx-auto leading-relaxed">
+                            We've identified your primary vitality driver. Below is your personalised type assessment and targeted protocol.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vitality Type Results Card -->
+            <section class="mb-10 md:mb-14 max-w-5xl mx-auto fade-up d1">
+                <div class="bg-midnight rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-12 text-cream shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-forest-800/30 rounded-full blur-3xl -ml-20 translate-y-1/2"></div>
+                    <div class="absolute inset-0 bg-grain opacity-8 mix-blend-overlay"></div>
+
+                    <div class="relative z-10">
+                        <div class="text-center mb-8 md:mb-10">
+                            <div class="amber-line w-10 mx-auto mb-4"></div>
+                            <span class="inline-block border border-amber-500/30 bg-amber-500/10 px-4 py-1 rounded-full text-[10px] font-mono tracking-[0.2em] uppercase mb-4 text-amber-300">Your Primary Type</span>
+                            <h2 class="text-4xl md:text-6xl font-display font-bold mb-4 text-cream"
+                                x-text="mensTypeInfo.name"></h2>
+                            <p class="text-stone/70 text-base md:text-xl max-w-3xl mx-auto font-body font-light leading-relaxed"
+                                x-text="mensTypeInfo.description"></p>
+
+                            <div class="mt-6">
+                                <span class="inline-flex items-center gap-2 bg-white/8 border border-white/12 px-4 py-2 rounded-full text-sm font-mono tracking-widest uppercase">
+                                    Confidence: <span class="text-amber-400 font-bold"
+                                        x-text="assessmentData?.mensType?.confidence?.toUpperCase()"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Symptoms & Causes Grid -->
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <!-- Symptoms -->
+                            <div class="bg-white/6 border border-white/10 rounded-2xl p-6">
+                                <h3 class="font-head font-700 text-amber-400 mb-4 text-[10px] tracking-widest uppercase">Your Symptom Pattern</h3>
+                                <ul class="space-y-2.5">
+                                    <template x-for="symptom in mensTypeInfo.symptoms">
+                                        <li class="flex items-start gap-2.5">
+                                            <span class="text-amber-500 mt-0.5 shrink-0 text-xs">▸</span>
+                                            <span class="text-stone/75 font-body text-sm leading-relaxed" x-text="symptom"></span>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+
+                            <!-- Root Causes -->
+                            <div class="bg-white/6 border border-white/10 rounded-2xl p-6">
+                                <h3 class="font-head font-700 text-amber-400 mb-4 text-[10px] tracking-widest uppercase">Root Cause Analysis</h3>
+                                <ul class="space-y-2.5">
+                                    <template x-for="cause in mensTypeInfo.causes">
+                                        <li class="flex items-start gap-2.5">
+                                            <span class="text-forest-500 mt-0.5 shrink-0 text-xs">◈</span>
+                                            <span class="text-stone/75 font-body text-sm leading-relaxed" x-text="cause"></span>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Score Breakdown -->
+                        <div class="bg-white/5 border border-white/8 rounded-2xl p-6">
+                            <h3 class="font-head font-700 text-amber-400 mb-5 text-[10px] tracking-widest uppercase text-center">Type Score Breakdown</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <template x-for="(score, type) in assessmentData?.mensType?.scores">
+                                    <div class="text-center">
+                                        <div class="font-mono text-2xl font-bold mb-1"
+                                            :class="type === assessmentData?.mensType?.primary ? 'text-amber-400' : 'text-stone/40'"
+                                            x-text="score"></div>
+                                        <div class="font-head text-[9px] tracking-widest uppercase"
+                                            :class="type === assessmentData?.mensType?.primary ? 'text-amber-300' : 'text-stone/30'"
+                                            x-text="type === 'cortisol' ? 'Cortisol' : type === 'androgen' ? 'Androgen' : type === 'mitochondrial' ? 'Mitochondrial' : 'Inflammatory'"></div>
+                                        <div class="mt-1.5 h-1 rounded-full overflow-hidden bg-white/10">
+                                            <div class="h-1 rounded-full transition-all duration-700"
+                                                :class="type === assessmentData?.mensType?.primary ? 'bg-amber-500' : 'bg-white/20'"
+                                                :style="`width: ${Math.min(score * 14, 100)}%`"></div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Personalised Protocols -->
+            <section class="mb-10 md:mb-14 max-w-5xl mx-auto fade-up d2">
+                <div class="text-center mb-8">
+                    <div class="amber-line w-10 mx-auto mb-4"></div>
+                    <h2 class="text-3xl md:text-4xl font-display text-midnight mb-3">
+                        Your <span class="italic text-amber-500">Personalised Protocols</span>
+                    </h2>
+                    <p class="text-dusk font-body font-light max-w-xl mx-auto">Three targeted interventions calibrated to your specific vitality type. Full protocols are unlocked inside the member portal.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-5">
+                    <template x-for="(protocol, index) in mensTypeInfo.protocols" :key="index">
+                        <div class="bg-white border border-stone rounded-2xl overflow-hidden shadow-sm hover:shadow-soft transition-shadow protocol-card">
+                            <div class="bg-midnight px-6 py-4 flex items-center gap-2">
+                                <span class="font-mono text-amber-400 text-xs font-bold" x-text="`0${index + 1}`"></span>
+                                <div class="w-px h-4 bg-white/20"></div>
+                                <h3 class="font-head font-700 text-cream text-xs tracking-wider uppercase flex-1" x-text="protocol.title"></h3>
+                            </div>
+                            <div class="p-6">
+                                <p class="text-dusk font-body text-sm leading-relaxed mb-4" x-text="protocol.teaser"></p>
+                                <div class="flex items-center gap-2 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+                                    <span class="text-amber-600 text-sm">🔒</span>
+                                    <span class="text-amber-700 font-mono text-[10px] tracking-widest uppercase" x-text="protocol.locked"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </section>
+
+            <!-- 30-Day Timeline -->
+            <section class="mb-10 md:mb-14 max-w-5xl mx-auto fade-up d3">
+                <div class="bg-canvas border border-stone rounded-[2rem] p-6 md:p-10">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl md:text-3xl font-display text-midnight mb-2">What to Expect</h2>
+                        <p class="text-dusk font-body font-light text-sm">Your protocol is phase-based. Here is the typical progression for your vitality type.</p>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-5">
+                        <template x-for="(milestone, idx) in mensTypeInfo.timeline" :key="idx">
+                            <div class="text-center">
+                                <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-mono font-bold"
+                                    :class="idx === 0 ? 'bg-amber-500 text-midnight' : idx === 1 ? 'bg-charcoal text-amber-400' : idx === 2 ? 'bg-midnight text-amber-400' : 'bg-forest-800 text-cream'">
+                                    <span x-text="`W${idx + 1}`"></span>
+                                </div>
+                                <h4 class="font-head font-700 text-midnight text-sm mb-1" x-text="milestone.title"></h4>
+                                <p class="text-dusk font-body text-xs leading-relaxed" x-text="milestone.description"></p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <section class="max-w-4xl mx-auto mb-12">
+                <div class="bg-midnight rounded-[2rem] p-6 md:p-12 text-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                    <div class="absolute inset-0 bg-grain opacity-8 mix-blend-overlay"></div>
+
+                    <div class="relative z-10">
+                        <div class="amber-line w-10 mx-auto mb-6"></div>
+                        <h2 class="text-3xl md:text-4xl font-display font-bold text-cream mb-4">
+                            Unlock Your <span class="italic text-amber-400">Full Protocol</span>
+                        </h2>
+                        <p class="text-stone/65 font-body font-light mb-4 max-w-xl mx-auto leading-relaxed">
+                            Your personalised
+                            <strong class="text-stone/90 font-semibold" x-text="mensTypeInfo.name + ' Protocol'"></strong>
+                            includes your complete meal timing plan, supplement stack, recovery schedule, and weekly check-in system — all inside the Vitale member portal.
+                        </p>
+
+                        <!-- Starting price display -->
+                        <div x-show="startingPrice > 0" class="mb-6">
+                            <span class="text-stone/50 font-mono text-xs tracking-widest uppercase">Starting from</span>
+                            <div class="text-4xl font-display font-bold text-amber-400 mt-1">
+                                ₦<span x-text="startingPrice.toLocaleString()"></span>
+                            </div>
+                        </div>
+
+                        <button @click="viewSolution()" id="main-cta"
+                            class="inline-flex items-center gap-3 bg-amber-500 hover:bg-amber-400 text-midnight font-head font-bold text-sm px-12 py-5 rounded-full transition-all duration-300 transform hover:scale-105 shadow-amber hover:shadow-lg tracking-widest uppercase">
+                            Get My Full Protocol
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </button>
+
+                        <div class="flex flex-wrap justify-center gap-6 mt-7 text-[10px] font-mono tracking-widest text-stone/40 uppercase">
+                            <span>✓ Personalised to Your Type</span>
+                            <span>✓ Evidence-Based Protocols</span>
+                            <span>✓ 30-Day Results Guarantee</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- What's Included -->
+            <section class="mb-12 max-w-5xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-display text-midnight text-center mb-8">Everything Inside Your Portal</h2>
+                <div class="grid md:grid-cols-3 gap-5">
+                    <div class="bg-white border border-stone rounded-2xl p-6 shadow-sm">
+                        <div class="text-2xl mb-3">🧪</div>
+                        <h3 class="font-head font-700 text-midnight mb-2 text-sm">Supplement Stack</h3>
+                        <p class="text-dusk font-body text-sm leading-relaxed">An exact supplement protocol — herbs, minerals, and adaptogens — calibrated to your vitality type, with dosage, timing, and sourcing guidance.</p>
+                    </div>
+                    <div class="bg-white border border-stone rounded-2xl p-6 shadow-sm">
+                        <div class="text-2xl mb-3">🍽️</div>
+                        <h3 class="font-head font-700 text-midnight mb-2 text-sm">Nutrition Timing Plan</h3>
+                        <p class="text-dusk font-body text-sm leading-relaxed">Meal composition and timing designed around your hormonal pattern — using accessible Nigerian foods to naturally support androgen production and cortisol rhythm.</p>
+                    </div>
+                    <div class="bg-white border border-stone rounded-2xl p-6 shadow-sm">
+                        <div class="text-2xl mb-3">📈</div>
+                        <h3 class="font-head font-700 text-midnight mb-2 text-sm">Recovery &amp; Training Protocol</h3>
+                        <p class="text-dusk font-body text-sm leading-relaxed">A structured physical recovery and movement plan that works with your hormonal state — not against it — to maximise adaptation and reduce inflammation.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WhatsApp Nudge -->
+            <section class="max-w-xl mx-auto mb-12 text-center">
+                <div class="bg-green-50 border border-green-200 rounded-2xl p-6">
+                    <div class="text-3xl mb-3">💬</div>
+                    <h3 class="font-head font-700 text-green-900 mb-2">Questions About Your Results?</h3>
+                    <p class="text-green-800 font-body text-sm mb-4 font-light">Our specialists are on WhatsApp. Tell us your vitality type and get instant guidance.</p>
+                    <a href="https://wa.me/2348133149989?text=Hi%2C%20I%20just%20completed%20the%20Vitale%20assessment"
+                        target="_blank"
+                        class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-head font-700 text-xs px-6 py-3 rounded-full transition-all tracking-widest uppercase">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.316 0-4.458-.764-6.186-2.056l-.432-.332-3.29 1.103 1.103-3.29-.332-.432A9.955 9.955 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+                        Chat With a Specialist
+                    </a>
+                </div>
+            </section>
+
+        </div><!-- end results content -->
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-midnight text-stone/40 py-10 border-t border-white/6">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="w-10 h-10 bg-white/8 rounded-full flex items-center justify-center mx-auto mb-5">
+                <span class="text-amber-400 font-display italic text-xl font-bold">V</span>
+            </div>
+            <p class="text-stone/30 text-[10px] font-mono tracking-widest uppercase mb-2">
+                © <span id="footer-year"></span> Vitale by 1wellness
+            </p>
+            <p class="text-[10px] text-stone/20 max-w-xl mx-auto font-body">
+                This assessment is for educational purposes only and does not replace professional medical advice. Always consult a qualified healthcare professional.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Results Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const y = document.getElementById('footer-year');
+            if (y) y.textContent = new Date().getFullYear();
+        });
+
+        function mensResults() {
+            return {
+                isLoading: true,
+                assessmentData: null,
+                mensTypeInfo: {},
+                startingPrice: 0,
+                pricingLoaded: false,
+
+                init() {
+                    this.loadAssessmentData();
+                    this.loadPricing();
+                },
+
+                async loadPricing() {
+                    try {
+                        const response = await fetch('../backend/api/get-pricing.php');
+                        const result = await response.json();
+                        if (result.success && result.data.plans.mens) {
+                            const plans = result.data.plans.mens;
+                            const prices = [];
+                            if (plans['30-day']) prices.push(Number(plans['30-day'].price));
+                            if (plans['90-day']) prices.push(Number(plans['90-day'].price));
+                            this.startingPrice = Math.min(...prices);
+                        }
+                    } catch (e) {
+                        console.error('Pricing load failed', e);
+                        this.startingPrice = 0;
+                    } finally {
+                        this.pricingLoaded = true;
+                    }
+                },
+
+                loadAssessmentData() {
+                    setTimeout(() => {
+                        const data = localStorage.getItem('mensAssessmentData');
+                        if (data) {
+                            this.assessmentData = JSON.parse(data);
+                            this.mensTypeInfo = this.getVitalityTypeInfo(this.assessmentData.mensType.primary);
+
+                            // Map to human-readable label and store for member area pre-fill
+                            const mensTypeMap = {
+                                'cortisol':      'Cortisol Dominance',
+                                'androgen':      'Androgen Deficit',
+                                'mitochondrial': 'Mitochondrial Drain',
+                                'inflammatory':  'Inflammatory Overload'
+                            };
+                            const label = mensTypeMap[this.assessmentData.mensType.primary] || 'Cortisol Dominance';
+                            localStorage.setItem('1w_mens_type', label);
+                            localStorage.setItem('1w_mens_type_confidence', this.assessmentData.mensType.confidence || 'medium');
+
+                            // Analytics
+                            if (window.WebhookManager) {
+                                window.WebhookManager.trackConversion('results_page_view', {
+                                    page: 'vitale-mens-results',
+                                    mensType: this.assessmentData.mensType.primary,
+                                    confidence: this.assessmentData.mensType.confidence
+                                });
+                            }
+
+                            if (window.WellnessTracking) {
+                                window.WellnessTracking.trackLead('Vitale', this.assessmentData.mensType.primary);
+                                window.WellnessTracking.trackCompleteRegistration('Vitale');
+                            }
+                        }
+                        this.isLoading = false;
+                    }, 2000);
+                },
+
+                // ── Type Info Database ──────────────────────────────────────
+                getVitalityTypeInfo(type) {
+                    const typeInfo = {
+
+                        // ── CORTISOL DOMINANCE ────────────────────────────────
+                        cortisol: {
+                            name: "Cortisol Dominance",
+                            description: "Your HPA axis is chronically over-activated, flooding your body with cortisol that suppresses testosterone, drives visceral fat accumulation, and depletes your energy reserves at the cellular level.",
+                            symptoms: [
+                                "Stubborn belly fat that resists diet and exercise",
+                                "Wired but tired — alert at night, exhausted in the morning",
+                                "Anxiety, irritability, or emotional flatness",
+                                "Cravings for sugar and high-carbohydrate foods",
+                                "Reduced testosterone despite otherwise healthy habits",
+                                "Poor sleep quality and difficulty switching off"
+                            ],
+                            causes: [
+                                "Chronic activation of the fight-or-flight stress axis",
+                                "Elevated cortisol directly suppressing testosterone synthesis",
+                                "Adrenal fatigue from sustained psychological pressure",
+                                "Disrupted circadian rhythm and poor sleep hygiene",
+                                "Nutritional deficiencies that impair cortisol clearance"
+                            ],
+                            protocols: [
+                                {
+                                    title: "Cortisol Rhythm Reset Protocol",
+                                    teaser: "A time-specific nutrition plan that works with your cortisol curve — specific foods at precise windows that signal your adrenals to down-regulate without drugs or stimulants.",
+                                    locked: "Full meal plan inside portal"
+                                },
+                                {
+                                    title: "Adaptogen Recovery Blend",
+                                    teaser: "A clinically-validated combination of Ashwagandha, Rhodiola, and Tulsi — dosed precisely for cortisol reduction, with sourcing guidance for Nigeria-available forms.",
+                                    locked: "Supplement stack inside portal"
+                                },
+                                {
+                                    title: "Stress Architecture System",
+                                    teaser: "A structured daily protocol that rebuilds your nervous system's stress threshold — most men report measurably better sleep within 7 days of consistent application.",
+                                    locked: "Full system inside portal"
+                                }
+                            ],
+                            timeline: [
+                                { title: "Week 1", description: "Sleep quality improves. Morning grogginess begins to lift. Cortisol rhythm starts to normalise." },
+                                { title: "Week 2", description: "Belly fat begins to mobilise as insulin sensitivity improves. Energy more consistent through the day." },
+                                { title: "Week 3", description: "Mood stabilises. Testosterone levels begin recovering as cortisol suppression reduces." },
+                                { title: "Week 4", description: "Sustained energy, reduced waistline, and renewed mental clarity. HPA axis recalibration in progress." }
+                            ]
+                        },
+
+                        // ── ANDROGEN DEFICIT ──────────────────────────────────
+                        androgen: {
+                            name: "Androgen Deficit",
+                            description: "Your testosterone and androgen signalling has declined below optimal thresholds — whether through age, lifestyle, or endocrine disruption — stripping you of the hormonal substrate that drives libido, muscle, and ambition.",
+                            symptoms: [
+                                "Reduced or absent libido and sexual drive",
+                                "Difficulty building or maintaining muscle mass",
+                                "Loss of competitive drive and ambition",
+                                "Fatigue that is not relieved by rest",
+                                "Increased body fat, especially around the chest and abdomen",
+                                "Gradual hair thinning or accelerated pattern hair loss"
+                            ],
+                            causes: [
+                                "Age-related decline in Leydig cell testosterone output",
+                                "Elevated oestrogen from environmental xenoestrogens and body fat",
+                                "Nutritional deficiencies in zinc, magnesium, and vitamin D",
+                                "Sedentary lifestyle and insufficient resistance training stimulus",
+                                "Chronic sleep deprivation suppressing nocturnal testosterone release"
+                            ],
+                            protocols: [
+                                {
+                                    title: "Androgen Optimisation Nutrition Plan",
+                                    teaser: "A testosterone-supportive meal structure using Nigerian staples — specific macro ratios and micronutrient priorities clinically shown to raise free testosterone by 20–40% within 8 weeks.",
+                                    locked: "Full meal plan inside portal"
+                                },
+                                {
+                                    title: "Androgen Restore Supplement Stack",
+                                    teaser: "A targeted combination of Tongkat Ali, Fadogia Agrestis, and Shilajit at evidence-based doses — with protocols for cycling to prevent receptor downregulation.",
+                                    locked: "Supplement stack inside portal"
+                                },
+                                {
+                                    title: "Testosterone Amplification Training Protocol",
+                                    teaser: "A resistance training structure designed specifically for androgen optimisation — not general fitness. Specific rep ranges, rest periods, and movement patterns that maximally stimulate anabolic signalling.",
+                                    locked: "Full training system inside portal"
+                                }
+                            ],
+                            timeline: [
+                                { title: "Week 1", description: "Morning energy improves. First signs of recovery in libido and mood as the supplement stack initiates." },
+                                { title: "Week 2", description: "Strength output increases noticeably. Motivation begins to return. Sleep quality improves." },
+                                { title: "Week 3", description: "Body composition begins shifting — muscle definition improving, waist reducing. Libido markedly stronger." },
+                                { title: "Week 4", description: "Full androgen recovery underway. Sustained drive, physical strength, and sexual vitality returning to baseline." }
+                            ]
+                        },
+
+                        // ── MITOCHONDRIAL DRAIN ───────────────────────────────
+                        mitochondrial: {
+                            name: "Mitochondrial Drain",
+                            description: "Your cellular energy production is compromised. Your mitochondria — the power plants of every cell — are underperforming, leaving you with energy deficits that sleep, caffeine, and willpower cannot overcome.",
+                            symptoms: [
+                                "Persistent, deep fatigue unrelieved by rest",
+                                "Severe post-exercise exhaustion lasting multiple days",
+                                "Brain fog, slow thinking, and poor memory",
+                                "Energy crashes mid-morning or mid-afternoon",
+                                "Feeling physically depleted after moderate activity",
+                                "Muscle weakness and reduced exercise tolerance"
+                            ],
+                            causes: [
+                                "Mitochondrial dysfunction from oxidative stress accumulation",
+                                "Deficiency in CoQ10, B vitamins, and magnesium — essential co-factors for ATP production",
+                                "Chronic inflammation damaging mitochondrial membranes",
+                                "Metabolic toxin exposure impairing electron transport chain function",
+                                "Overtraining without adequate recovery compounding cellular debt"
+                            ],
+                            protocols: [
+                                {
+                                    title: "Mitochondrial Nourishment Diet",
+                                    teaser: "A nutrient-dense eating protocol targeting the 8 critical co-factors for cellular energy production — using Nigerian foods proven to support mitochondrial biogenesis.",
+                                    locked: "Full meal plan inside portal"
+                                },
+                                {
+                                    title: "Cellular Energy Supplement Stack",
+                                    teaser: "A precise combination of CoQ10, PQQ, NAD+ precursors, and B-complex — sequenced to rebuild your mitochondrial capacity from the ground up within 4–6 weeks.",
+                                    locked: "Supplement stack inside portal"
+                                },
+                                {
+                                    title: "Recovery Architecture Protocol",
+                                    teaser: "A structured activity and recovery plan that stimulates mitochondrial biogenesis without compounding the energy debt — the critical distinction most men training through fatigue miss entirely.",
+                                    locked: "Full system inside portal"
+                                }
+                            ],
+                            timeline: [
+                                { title: "Week 1", description: "Brain fog begins to lift. Morning energy improves as the supplement stack initiates mitochondrial support." },
+                                { title: "Week 2", description: "Exercise recovery accelerates noticeably. Post-workout exhaustion shortens from days to hours." },
+                                { title: "Week 3", description: "Sustained energy through the day without crashes. Mental sharpness and focus markedly improved." },
+                                { title: "Week 4", description: "Full cellular energy restoration. Physical capacity, recovery, and mental performance operating at capacity." }
+                            ]
+                        },
+
+                        // ── INFLAMMATORY OVERLOAD ─────────────────────────────
+                        inflammatory: {
+                            name: "Inflammatory Overload",
+                            description: "Systemic, low-grade inflammation is disrupting your hormonal signalling at the receptor level — meaning that even adequate testosterone levels cannot properly communicate with your cells, leaving you feeling depleted despite normal-looking blood work.",
+                            symptoms: [
+                                "Persistent low mood or emotional blunting",
+                                "Slow or painful recovery from physical activity",
+                                "Generalised weight gain without dietary change",
+                                "Joint stiffness or mild chronic discomfort",
+                                "Brain fog and cognitive slowing",
+                                "Disrupted gut function and food sensitivities"
+                            ],
+                            causes: [
+                                "Chronic elevation of pro-inflammatory cytokines (IL-6, TNF-α, CRP)",
+                                "Gut microbiome imbalance driving systemic inflammation",
+                                "Processed food intake and seed oil excess impairing cellular membranes",
+                                "Inflammatory cytokines blocking androgen receptor sensitivity",
+                                "Environmental toxin exposure and poor detoxification capacity"
+                            ],
+                            protocols: [
+                                {
+                                    title: "Anti-Inflammatory Reset Protocol",
+                                    teaser: "A 28-day dietary elimination and reintroduction framework using accessible Nigerian foods — designed to identify and neutralise your specific inflammatory triggers while rebuilding gut integrity.",
+                                    locked: "Full meal plan inside portal"
+                                },
+                                {
+                                    title: "Inflammation Resolution Supplement Stack",
+                                    teaser: "A clinically-validated anti-inflammatory supplement protocol combining Curcumin, Omega-3 DHA, and specific probiotic strains — dosed and cycled to systematically lower your inflammatory burden.",
+                                    locked: "Supplement stack inside portal"
+                                },
+                                {
+                                    title: "Gut-Hormone Restoration System",
+                                    teaser: "A structured gut-healing protocol that repairs intestinal permeability — the hidden root of inflammatory hormone resistance — restoring androgen receptor sensitivity from the inside out.",
+                                    locked: "Full system inside portal"
+                                }
+                            ],
+                            timeline: [
+                                { title: "Week 1", description: "Gut inflammation begins resolving. Mood lifts slightly as cytokine load reduces. Bloating and digestive discomfort eases." },
+                                { title: "Week 2", description: "Recovery after exercise accelerates. Joint comfort improves. Brain fog begins to clear noticeably." },
+                                { title: "Week 3", description: "Androgen receptor sensitivity recovering — testosterone is now signalling more effectively. Energy and mood significantly improved." },
+                                { title: "Week 4", description: "Systemic inflammation substantially reduced. Body composition improving, motivation returning, physical performance rebounding." }
+                            ]
+                        }
+                    };
+
+                    return typeInfo[type] || typeInfo.cortisol;
+                },
+
+                viewSolution() {
+                    if (window.WebhookManager) {
+                        window.WebhookManager.trackSalesVisit({
+                            mensType: this.assessmentData?.mensType?.primary,
+                            source: 'results_page',
+                            confidence: this.assessmentData?.mensType?.confidence
+                        });
+                    }
+                    window.location.href = '90-day-plan.html';
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,2351 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Area | 1wellness</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sage: {
+                            50: '#F2F4F1',
+                            100: '#E3E8E1',
+                            200: '#C7D1C3',
+                            300: '#A4B4A6',
+                            400: '#6B7C70',
+                            500: '#2C3E35',
+                            600: '#1A2620',
+                        },
+                        coral: {
+                            400: '#D97757',
+                            500: '#BF6649',
+                        },
+                        cream: {
+                            50: '#FDFCF8',
+                            100: '#F2e6d8',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @layer base {
+            body {
+                background: #FDFCF8;
+                color: #2C3E35;
+                font-family: "Inter", sans-serif;
+                -webkit-font-smoothing: antialiased;
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C7D1C3;
+            border-radius: 99px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A4B4A6;
+        }
+
+        /* Navigation active states */
+        .nav-link.active {
+            background: #2C3E35;
+            color: white;
+            box-shadow: 0 20px 25px -5px rgba(44, 62, 53, 0.2);
+            transform: translateX(4px);
+        }
+
+        .nav-link.active i {
+            color: white;
+        }
+
+        .mobile-nav-link.active {
+            color: white;
+            transform: scale(1.1);
+            opacity: 1 !important;
+        }
+
+        .mobile-nav-link.active .active-dot {
+            display: block;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <!-- Sculpting Overlay -->
+    <div id="sculptingOverlay"
+        class="fixed inset-0 bg-sage-50 z-[100] flex flex-col items-center justify-center transition-opacity duration-1000 hidden">
+        <div class="relative w-64 h-64 mb-12">
+            <div class="absolute inset-0 border-4 border-sage-100 rounded-[3rem] animate-pulse"></div>
+            <div class="absolute inset-4 border-2 border-sage-200 rounded-[2rem] animate-[spin_10s_linear_infinite]">
+            </div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <i data-lucide="sparkles" class="text-sage-500 w-16 h-16 animate-pulse"></i>
+            </div>
+        </div>
+        <div class="text-center px-6">
+            <h2 class="font-serif text-4xl text-sage-500 mb-4 animate-fade-in-up">Sculpting Your Protocol</h2>
+            <p class="text-sage-400 max-w-sm mx-auto leading-relaxed animate-fade-in-up" style="animation-delay: 0.2s">
+                Our AI is weaving together your cycle phase, PCOS type, and health metrics into a personalized 7-day
+                plan.
+            </p>
+            <div id="genProgress" class="mt-8 flex justify-center gap-2">
+                <!-- Dots -->
+                <div class="w-2 h-2 rounded-full bg-sage-200 animate-bounce"></div>
+                <div class="w-2 h-2 rounded-full bg-sage-300 animate-bounce" style="animation-delay: 0.2s"></div>
+                <div class="w-2 h-2 rounded-full bg-sage-500 animate-bounce" style="animation-delay: 0.4s"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="app" class="hidden">
+        <!-- Sidebar - Desktop -->
+        <aside
+            class="hidden md:flex flex-col fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-sage-100 p-8 z-50">
+            <div class="flex items-center gap-3 mb-16 pl-2">
+                <div
+                    class="w-10 h-10 bg-sage-500 rounded-xl flex items-center justify-center text-white font-serif text-xl">
+                    O</div>
+                <span class="font-serif text-2xl text-sage-600 tracking-tight">1wellness.<span
+                        class="italic font-light">wellness</span></span>
+            </div>
+
+            <nav class="flex-1 space-y-2">
+                <a href="#" onclick="switchView('dashboard')"
+                    class="nav-link flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 group text-sage-300 hover:text-sage-500 hover:bg-sage-50"
+                    data-view="dashboard">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span class="font-medium">Today</span>
+                </a>
+                <a href="#" onclick="switchView('nourish')"
+                    class="nav-link flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 group text-sage-300 hover:text-sage-500 hover:bg-sage-50"
+                    data-view="nourish">
+                    <i data-lucide="utensils" class="w-5 h-5"></i>
+                    <span class="font-medium">Nourish</span>
+                </a>
+                <a href="#" onclick="switchView('weekly')"
+                    class="nav-link flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 group text-sage-300 hover:text-sage-500 hover:bg-sage-50"
+                    data-view="weekly">
+                    <i data-lucide="calendar-days" class="w-5 h-5"></i>
+                    <span class="font-medium">Weekly Protocol</span>
+                </a>
+                <a href="#" onclick="switchView('tracker')"
+                    class="nav-link flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 group text-sage-300 hover:text-sage-500 hover:bg-sage-50"
+                    data-view="tracker">
+                    <i data-lucide="activity" class="w-5 h-5"></i>
+                    <span class="font-medium">Body Data</span>
+                </a>
+                <a href="#" onclick="switchView('resources')"
+                    class="nav-link flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 group text-sage-300 hover:text-sage-500 hover:bg-sage-50"
+                    data-view="resources">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    <span class="font-medium">Resources</span>
+                </a>
+                <a href="#" onclick="switchView('profile')"
+                    class="nav-link flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 group text-sage-300 hover:text-sage-500 hover:bg-sage-50"
+                    data-view="profile">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span class="font-medium">My Profile</span>
+                </a>
+            </nav>
+
+            <!-- WhatsApp Specialist Button -->
+            <button onclick="chatWithSpecialist()"
+                class="flex items-center gap-4 px-4 py-4 rounded-2xl bg-green-50 text-green-700 hover:bg-green-100 transition-all mb-4 group border border-green-100">
+                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                <span class="font-medium text-sm">Chat with Specialist</span>
+            </button>
+
+            <button onclick="handleLogout()"
+                class="flex items-center gap-4 px-4 py-4 rounded-2xl text-sage-300 hover:text-red-500 hover:bg-red-50 transition-all mt-auto group">
+                <i data-lucide="log-out" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+                <span class="font-medium">Sign Out</span>
+            </button>
+        </aside>
+
+        <!-- Bottom Bar - Mobile -->
+        <nav
+            class="fixed bottom-6 left-6 right-6 h-20 bg-sage-600/90 backdrop-blur-xl rounded-[2rem] border border-white/20 px-6 flex items-center justify-around z-50 md:hidden shadow-2xl overflow-hidden shadow-sage-950/20">
+            <a href="#" onclick="switchView('dashboard')"
+                class="mobile-nav-link p-4 rounded-2xl transition-all duration-300 relative text-sage-100 opacity-40"
+                data-view="dashboard">
+                <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+                <span
+                    class="active-dot hidden absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-coral-400 rounded-full"></span>
+            </a>
+            <a href="#" onclick="switchView('nourish')"
+                class="mobile-nav-link p-4 rounded-2xl transition-all duration-300 relative text-sage-100 opacity-40"
+                data-view="nourish">
+                <i data-lucide="utensils" class="w-6 h-6"></i>
+                <span
+                    class="active-dot hidden absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-coral-400 rounded-full"></span>
+            </a>
+            <a href="#" onclick="switchView('weekly')"
+                class="mobile-nav-link p-4 rounded-2xl transition-all duration-300 relative text-sage-100 opacity-40"
+                data-view="weekly">
+                <i data-lucide="calendar-days" class="w-6 h-6"></i>
+                <span
+                    class="active-dot hidden absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-coral-400 rounded-full"></span>
+            </a>
+            <a href="#" onclick="switchView('tracker')"
+                class="mobile-nav-link p-4 rounded-2xl transition-all duration-300 relative text-sage-100 opacity-40"
+                data-view="tracker">
+                <i data-lucide="activity" class="w-6 h-6"></i>
+                <span
+                    class="active-dot hidden absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-coral-400 rounded-full"></span>
+            </a>
+            <!-- Education Hub Removed on Mobile -->
+            <a href="#" onclick="switchView('profile')"
+                class="mobile-nav-link group w-12 h-12 rounded-full border border-white/20 opacity-40 transition-all flex items-center justify-center bg-sage-200/20"
+                data-view="profile">
+                <i data-lucide="user" class="w-5 h-5 text-sage-100"></i>
+            </a>
+        </nav>
+
+        <!-- Floating WhatsApp Button - Mobile -->
+        <button onclick="chatWithSpecialist()"
+            class="fixed bottom-32 right-6 w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg flex items-center justify-center z-40 md:hidden transition-all hover:scale-110">
+            <i data-lucide="message-circle" class="w-6 h-6"></i>
+        </button>
+
+        <!-- Main Content (SPA Shell) -->
+        <div class="md:pl-64">
+            <main class="max-w-6xl mx-auto p-6 md:p-12 min-h-screen pb-28 md:pb-12">
+
+                <!-- Dashboard View -->
+                <section id="dashboard" class="view-section active animate-fade-in-up space-y-12">
+                    <header class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div>
+                            <h1 class="text-4xl md:text-6xl font-serif text-sage-500 leading-tight">
+                                <span id="greetingText">Good morning</span>, <span id="userName"
+                                    class="italic font-normal opacity-60">Member</span>
+                            </h1>
+                        </div>
+                        <div class="flex gap-3">
+                            <div id="phaseIndicator"
+                                class="px-4 py-2 bg-cream-100 rounded-full text-xs font-bold text-coral-400 uppercase tracking-widest border border-coral-400/20">
+                                Month 1: Repair
+                            </div>
+                            <div
+                                class="px-4 py-2 bg-white rounded-full text-sm font-medium border border-sage-100 shadow-sm flex items-center gap-2 text-sage-500">
+                                <i data-lucide="calendar" class="w-4 h-4"></i> <span id="currentDate">Dec 27</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Cycle Card -->
+                        <div
+                            class="bg-sage-600 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-sage-600/20 relative overflow-hidden group h-full flex flex-col justify-between">
+                            <div>
+                                <span
+                                    class="text-xs font-bold uppercase tracking-[0.2em] opacity-60 text-sage-100">Today's
+                                    Focus</span>
+                                <h3 id="cyclePhase" class="text-4xl font-serif mt-4 mb-2">---</h3>
+                                <p id="cycleDay" class="text-sage-200 text-sm leading-relaxed">Calculating...</p>
+                            </div>
+                            <div class="mt-12 flex items-center justify-between">
+                                <span id="pcosTag"
+                                    class="text-xs font-bold uppercase tracking-widest bg-white/10 px-3 py-1.5 rounded-full">PCOS
+                                    Support</span>
+                                <i data-lucide="chevron-right"
+                                    class="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                            </div>
+                        </div>
+
+                        <!-- Hydration Card -->
+                        <div
+                            class="bg-white rounded-[2.5rem] p-10 border border-sage-100 shadow-sm flex flex-col justify-between h-full">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <i data-lucide="droplets" class="text-blue-400 mb-6 w-8 h-8"></i>
+                                    <h3 class="font-serif text-2xl">Daily Water Intake</h3>
+                                </div>
+                                <span id="hydrationVal" class="text-4xl font-serif">0L</span>
+                            </div>
+                            <div class="mt-8 flex gap-4">
+                                <button onclick="updateHydration(-0.2)"
+                                    class="flex-1 py-3 rounded-2xl bg-sage-50 text-sage-500 font-bold hover:bg-sage-100 transition-colors">-
+                                    0.2L</button>
+                                <button onclick="updateHydration(0.2)"
+                                    class="flex-1 py-3 rounded-2xl bg-sage-500 text-white font-bold hover:shadow-lg hover:shadow-sage-500/20 transition-all">+
+                                    0.2L</button>
+                            </div>
+                        </div>
+
+                        <!-- Supplements Card -->
+                        <div class="bg-cream-100 rounded-[2.5rem] p-10 flex flex-col h-full">
+                            <i data-lucide="pill" class="text-coral-400 mb-6 w-8 h-8"></i>
+                            <h3 class="font-serif text-2xl mb-6">Rituals</h3>
+                            <div id="supplementList" class="space-y-4">
+                                <!-- Dynamic -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Meal Preview -->
+                    <div
+                        class="bg-white rounded-[3rem] p-8 md:p-12 border border-sage-100 shadow-sm transition-all duration-500">
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 class="font-serif text-3xl">Nourishment Plan</h2>
+                                <p class="text-sage-400 mt-1">Tailored for your PCOS type</p>
+                            </div>
+                            <button onclick="fetchData()"
+                                class="p-4 rounded-2xl hover:bg-sage-50 text-sage-400 transition-colors">
+                                <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <div id="mealPreviewGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Content generated via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Movement Suggestion -->
+                    <div
+                        class="bg-sage-600 rounded-[3rem] p-8 md:p-12 text-white shadow-2xl shadow-sage-600/20 relative overflow-hidden">
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between mb-8">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
+                                        <i data-lucide="footprints" class="text-white w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="font-serif text-3xl">Daily Movement</h2>
+                                        <p class="text-sage-200 text-sm opacity-80">Walking protocol for hormonal
+                                            balance</p>
+                                    </div>
+                                </div>
+                                <button id="movementDoneBtn" onclick="markActivityDone('movement')"
+                                    class="px-6 py-3 bg-white/20 hover:bg-white/30 rounded-2xl text-sm font-bold transition-all flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+                                    <i data-lucide="check" class="w-4 h-4"></i>
+                                    <span>Mark Done</span>
+                                </button>
+                            </div>
+
+                            <div class="bg-white/5 border border-white/10 rounded-[2rem] p-8">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div>
+                                        <h3 id="workoutName" class="text-2xl font-serif mb-3">Morning & Evening Walk
+                                        </h3>
+                                        <p id="workoutDesc" class="text-sage-200 leading-relaxed max-w-2xl">Brisk
+                                            walking routine to support hormonal balance and improve insulin sensitivity.
+                                        </p>
+                                    </div>
+                                    <div id="workoutTimeRange" class="text-right text-xs text-sage-200 opacity-80">
+                                        <span class="block">6:00 AM - 6:30 AM</span>
+                                        <span class="block">6:00 PM - 6:30 PM</span>
+                                    </div>
+                                </div>
+
+                                <div id="workoutMeta"
+                                    class="mt-8 flex flex-wrap items-center gap-4 text-[10px] font-bold uppercase tracking-[0.2em]">
+                                    <span class="px-4 py-2 bg-white/10 rounded-full flex items-center gap-2">
+                                        <i data-lucide="footprints" class="w-3 h-3"></i>
+                                        <span id="stepsTarget">6,000 steps</span>
+                                    </span>
+                                    <span class="px-4 py-2 bg-white/10 rounded-full">Moderate</span>
+                                    <span class="px-4 py-2 bg-white/10 rounded-full">40 mins total</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2">
+                        </div>
+                    </div>
+
+                    <!-- Herbal Tea Recommendations -->
+                    <div
+                        class="bg-gradient-to-br from-amber-50 to-cream-100 rounded-[3rem] p-8 md:p-12 border border-amber-200/50 relative overflow-hidden">
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between mb-8">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center">
+                                        <i data-lucide="cup-soda" class="text-amber-600 w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="font-serif text-3xl text-sage-600">Herbal Tea Protocol</h2>
+                                        <p class="text-sage-400 text-sm">Natural remedies for your wellness journey</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="herbalTeaGrid">
+                                <!-- Morning Tea -->
+                                <div class="bg-white rounded-[2rem] p-6 border border-sage-100 shadow-sm">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <span
+                                            class="text-[10px] font-bold text-amber-600 uppercase tracking-widest">Morning
+                                            Ritual</span>
+                                        <span id="morningTeaTime" class="text-xs text-sage-400">10:00 AM - 10:30
+                                            AM</span>
+                                    </div>
+                                    <h4 id="morningTeaName" class="font-serif text-xl text-sage-600 mb-2">PCOS Morning
+                                        Harmony Blend</h4>
+                                    <p id="morningTeaBenefits" class="text-sm text-sage-400 mb-4">Supports insulin
+                                        sensitivity and hormonal balance</p>
+                                    <div class="flex items-center justify-between">
+                                        <button id="morningTeaDoneBtn" onclick="markActivityDone('herbal_tea_morning')"
+                                            class="px-4 py-2 bg-sage-50 hover:bg-sage-100 text-sage-600 rounded-xl text-xs font-bold transition-all flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+                                            <i data-lucide="check" class="w-3 h-3"></i>
+                                            Done
+                                        </button>
+                                        <a href="#" onclick="openHerbalShop('pcos_morning_blend')"
+                                            class="text-xs text-amber-600 hover:underline font-medium flex items-center gap-1">
+                                            <i data-lucide="shopping-bag" class="w-3 h-3"></i>
+                                            Buy Now
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Evening Tea -->
+                                <div class="bg-white rounded-[2rem] p-6 border border-sage-100 shadow-sm">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <span
+                                            class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Evening
+                                            Ritual</span>
+                                        <span id="eveningTeaTime" class="text-xs text-sage-400">8:30 PM - 9:00 PM</span>
+                                    </div>
+                                    <h4 id="eveningTeaName" class="font-serif text-xl text-sage-600 mb-2">PCOS Evening
+                                        Calm Blend</h4>
+                                    <p id="eveningTeaBenefits" class="text-sm text-sage-400 mb-4">Reduces cortisol and
+                                        promotes restful sleep</p>
+                                    <div class="flex items-center justify-between">
+                                        <button id="eveningTeaDoneBtn" onclick="markActivityDone('herbal_tea_evening')"
+                                            class="px-4 py-2 bg-sage-50 hover:bg-sage-100 text-sage-600 rounded-xl text-xs font-bold transition-all flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+                                            <i data-lucide="check" class="w-3 h-3"></i>
+                                            Done
+                                        </button>
+                                        <a href="#" onclick="openHerbalShop('pcos_evening_blend')"
+                                            class="text-xs text-amber-600 hover:underline font-medium flex items-center gap-1">
+                                            <i data-lucide="shopping-bag" class="w-3 h-3"></i>
+                                            Buy Now
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Subtle Shop CTA -->
+                            <div
+                                class="mt-8 pt-6 border-t border-amber-200/50 flex items-center justify-between mb-4 md:mb-0">
+                                <p class="text-sm text-sage-400">Get all your herbal essentials in one order</p>
+                                <a href="#" onclick="openHerbalShop('bundle')"
+                                    class="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-2xl text-sm font-bold transition-all shadow-lg shadow-amber-500/20 flex items-center gap-2">
+                                    <i data-lucide="package" class="w-4 h-4"></i>
+                                    Shop Herbal Bundle
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Nourish View (Meal Planner) -->
+                <section id="nourish" class="view-section animate-fade-in-up space-y-12">
+                    <header>
+                        <h1 class="text-5xl font-serif text-sage-500 mb-2">Nourish</h1>
+                        <p class="text-sage-400">Your personalized, protocol-safe nutrition plan.</p>
+                    </header>
+
+                    <div id="mealsContainer" class="grid grid-cols-1 lg:grid-cols-3 gap-6 auto-rows-fr">
+                        <!-- Content generated via JS -->
+                    </div>
+
+                    <div
+                        class="bg-sage-600 rounded-[3rem] p-8 md:p-12 text-white shadow-2xl shadow-sage-600/20 relative overflow-hidden">
+                        <div class="relative z-10">
+                            <h2 class="text-3xl font-serif mb-6">Shopping List</h2>
+                            <div id="shoppingList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <!-- Dynamic items -->
+                            </div>
+                        </div>
+                        <div
+                            class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Weekly View -->
+                <section id="weekly" class="view-section animate-fade-in-up space-y-12">
+                    <header>
+                        <h1 class="text-5xl font-serif text-sage-500 mb-2">Weekly Protocol</h1>
+                        <p class="text-sage-400">Strategize your upcoming week for consistency and results.</p>
+                    </header>
+
+                    <div id="weeklyContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-12">
+                        <!-- Content via JS -->
+                    </div>
+                </section>
+
+                <!-- Body Data & Logs View -->
+                <section id="tracker" class="view-section animate-fade-in-up space-y-12">
+                    <header>
+                        <h1 class="text-5xl font-serif text-sage-500 mb-2">Body Data</h1>
+                        <p class="text-sage-400">Track your metrics and sync your protocol to your latest data.</p>
+                    </header>
+
+                    <form id="bodyDataForm" onsubmit="saveBodyData(event)"
+                        class="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
+                        <div class="bg-white rounded-[3rem] p-10 border border-sage-100 shadow-sm space-y-8">
+                            <h3 class="font-serif text-2xl text-sage-600">Physical Metrics</h3>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">Weight
+                                        (kg)</label>
+                                    <input type="number" step="0.1" name="weight" id="body_weight"
+                                        class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                                </div>
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">Height
+                                        (cm)</label>
+                                    <input type="number" step="0.1" name="height" id="body_height"
+                                        class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                                </div>
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">Age</label>
+                                    <input type="number" name="age" id="body_age"
+                                        class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                                </div>
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">PCOS
+                                        Type</label>
+                                    <select name="pcos_type" id="body_pcos_type"
+                                        class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium appearance-none">
+                                        <option value="Insulin Resistant">Insulin Resistant</option>
+                                        <option value="Inlammatory">Inflammatory</option>
+                                        <option value="Adrenal">Adrenal</option>
+                                        <option value="Post-Pill">Post-Pill</option>
+                                        <option value="General">General</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-[3rem] p-10 border border-sage-100 shadow-sm space-y-8">
+                            <h3 class="font-serif text-2xl text-sage-600">Cycle & Preferences</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">Cycle
+                                        Length (days)</label>
+                                    <input type="number" name="cycle_length" id="body_cycle_length"
+                                        class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                                </div>
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">Last
+                                        Period Start</label>
+                                    <input type="date" name="last_period_date" id="body_last_period"
+                                        class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">Known
+                                    Allergies</label>
+                                <input type="text" name="allergies" id="body_allergies" placeholder="None"
+                                    class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">Dietary
+                                    Preferences</label>
+                                <input type="text" name="dietary_preferences" id="body_diet_prefs" placeholder="None"
+                                    class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-2 flex justify-end">
+                            <button type="submit"
+                                class="bg-sage-500 text-white px-12 py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-sage-500/20 transition-all transform hover:-translate-y-1">
+                                Update Body Data
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <section id="resources" class="view-section animate-fade-in-up py-20 text-center">
+                    <div
+                        class="w-20 h-20 bg-sage-100 rounded-3xl mx-auto flex items-center justify-center text-sage-500 mb-8">
+                        <i data-lucide="book-open" class="w-10 h-10"></i>
+                    </div>
+                    <h2 class="text-4xl font-serif text-sage-500 mb-4">Educational Hub</h2>
+                    <p class="text-sage-400 max-w-sm mx-auto">Access guides and lifestyle protocols.</p>
+                </section>
+
+                <!-- My Profile View -->
+                <section id="profile" class="view-section animate-fade-in-up space-y-12">
+                    <header>
+                        <h1 class="text-5xl font-serif text-sage-500 mb-2">My Profile</h1>
+                        <p class="text-sage-400">Manage your personal information and security.</p>
+                    </header>
+
+                    <div class="max-w-4xl">
+                        <!-- Sub-tabs Navigation -->
+                        <div class="flex gap-8 mb-8 border-b border-sage-100 pb-px overflow-x-auto no-scrollbar">
+                            <button onclick="switchProfileTab('personal')" id="tab-personal"
+                                class="profile-tab text-[10px] font-bold uppercase tracking-[0.2em] pb-4 border-b-2 border-sage-500 text-sage-600 transition-all whitespace-nowrap">
+                                Personal Details
+                            </button>
+                            <button onclick="switchProfileTab('subscription')" id="tab-subscription"
+                                class="profile-tab text-[10px] font-bold uppercase tracking-[0.2em] pb-4 border-b-2 border-transparent text-sage-300 hover:text-sage-400 transition-all whitespace-nowrap">
+                                Subscription & Renewal
+                            </button>
+                        </div>
+
+                        <form id="profileForm" onsubmit="saveProfile(event)"
+                            class="bg-white rounded-[3rem] p-10 md:p-12 border border-sage-100 shadow-sm transition-all duration-300">
+                            <!-- Personal Info Tab Content -->
+                            <div id="content-personal" class="profile-content space-y-10 text-left">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div class="space-y-4">
+                                        <h3 class="text-[10px] font-bold text-sage-300 uppercase tracking-[0.2em]">
+                                            Contact
+                                            Information</h3>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">First
+                                                    Name</label>
+                                                <input type="text" name="first_name" id="profile_first_name"
+                                                    class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">Last
+                                                    Name</label>
+                                                <input type="text" name="last_name" id="profile_last_name"
+                                                    class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                                            </div>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">Email
+                                                Address</label>
+                                            <input type="email" name="email" id="profile_email"
+                                                class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">Phone
+                                                Number</label>
+                                            <input type="tel" name="phone" id="profile_phone"
+                                                class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <h3 class="text-[10px] font-bold text-sage-300 uppercase tracking-[0.2em]">
+                                            Security
+                                        </h3>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">New
+                                                Password</label>
+                                            <input type="password" name="password" id="profile_password"
+                                                placeholder="Leave blank to keep current"
+                                                class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
+                                        </div>
+                                        <div class="pt-10 flex flex-col items-center group">
+                                            <div
+                                                class="w-20 h-20 bg-sage-50 rounded-3xl flex items-center justify-center text-sage-400 mb-4 group-hover:scale-110 transition-transform">
+                                                <i data-lucide="shield-check" class="w-8 h-8"></i>
+                                            </div>
+                                            <p class="text-xs text-sage-300 text-center px-6">Your data is secured with
+                                                world-class encryption.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Subscription Tab Content -->
+                            <div id="content-subscription" class="profile-content hidden space-y-10 text-left">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                                    <div class="space-y-6">
+                                        <div class="p-8 bg-sage-50/50 rounded-[2rem] border border-sage-50">
+                                            <p
+                                                class="text-[10px] font-bold text-sage-300 uppercase tracking-widest mb-4">
+                                                Current Status</p>
+                                            <div class="flex items-center gap-4 mb-2">
+                                                <div id="statusIcon"
+                                                    class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-500">
+                                                    <i data-lucide="check-circle" class="w-6 h-6"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="text-2xl font-serif text-sage-600" id="profile_tier_big">
+                                                        30-Day Plan</p>
+                                                    <p class="text-sm font-medium" id="profile_status_big"><span
+                                                            class="text-green-500">Active</span></p>
+                                                </div>
+                                            </div>
+                                            <p id="profile_days_left_big" class="text-xs text-sage-400 mt-4 italic"></p>
+                                        </div>
+                                        <p class="text-xs text-sage-400 leading-relaxed px-2">
+                                            Your subscription unlocks daily tailored meal plans, workout protocols,
+                                            and real-time cycle tracking tailored to your PCOS type.
+                                        </p>
+                                    </div>
+
+                                    <div class="space-y-6">
+                                        <h3 class="text-[10px] font-bold text-sage-300 uppercase tracking-[0.2em]">
+                                            Extend Protocol</h3>
+                                        <div class="space-y-4">
+                                            <button type="button" onclick="openRenewalModal()"
+                                                class="w-full bg-sage-500 text-white p-6 rounded-[2rem] font-bold hover:shadow-xl hover:shadow-sage-500/20 transition-all flex items-center justify-between group">
+                                                <span>Renew or Upgrade Plan</span>
+                                                <i data-lucide="arrow-right"
+                                                    class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                                            </button>
+                                            <div class="flex items-center gap-4 p-4 grayscale opacity-40">
+                                                <img src="https://checkout.flutterwave.com/images/payment-methods.png"
+                                                    alt="Payment Methods" class="h-6 object-contain">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Actions (Only for Personal Tab) -->
+                            <div id="profileActions" class="pt-8 border-t border-sage-50 text-right">
+                                <button type="submit"
+                                    class="w-full md:w-auto bg-sage-500 text-white px-12 py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-sage-500/20 transition-all transform hover:-translate-y-1">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    </form>
+        </div>
+        </section>
+
+        </main>
+    </div>
+    </div>
+
+    <!-- Renewal Modal -->
+    <div id="renewalModal"
+        class="fixed inset-0 bg-sage-600/20 backdrop-blur-sm z-[110] flex items-center justify-center hidden">
+        <div class="bg-white rounded-[3rem] p-8 md:p-12 max-w-2xl w-full mx-4 shadow-2xl animate-fade-in-up relative">
+            <button onclick="closeRenewalModal()"
+                class="absolute top-8 right-8 text-sage-300 hover:text-sage-500 transition-colors">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            <div class="text-center mb-10">
+                <h2 class="font-serif text-4xl text-sage-500 mb-4">Extend Your Protocol</h2>
+                <p class="text-sage-400">Select a plan to continue your PCOS transformation journey.</p>
+            </div>
+            <div id="renewalPlans" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <!-- Dynamic Plans -->
+                <div class="animate-pulse bg-sage-50 h-64 rounded-[2rem]"></div>
+                <div class="animate-pulse bg-sage-50 h-64 rounded-[2rem]"></div>
+            </div>
+            <div class="text-center text-xs text-sage-300">
+                Secure payment powered by <b>Flutterwave</b>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expiry Overlay -->
+    <div id="expiryOverlay"
+        class="fixed inset-0 bg-white/60 backdrop-blur-md z-[60] flex flex-col items-center justify-center hidden">
+        <div class="luxury-card p-12 text-center max-w-md animate-fade-in-up">
+            <div
+                class="w-20 h-20 bg-coral-500/10 rounded-full flex items-center justify-center text-coral-500 mx-auto mb-8">
+                <i data-lucide="calendar-off" class="w-10 h-10"></i>
+            </div>
+            <h2 class="font-serif text-4xl text-sage-500 mb-4">Plan Expired</h2>
+            <p class="text-sage-400 mb-10 leading-relaxed">Your subscription has ended. To continue accessing your
+                tailored meal plans and protocol, please renew your plan.</p>
+            <button onclick="openRenewalModal()"
+                class="w-full bg-sage-500 text-white py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-sage-500/20 transition-all mb-4">
+                Renew Your Plan
+            </button>
+            <button onclick="handleLogout()"
+                class="text-sage-400 text-sm font-medium hover:text-sage-600 hover:underline transition-colors">
+                Back to Login
+            </button>
+        </div>
+    </div>
+
+    <!-- Error/Loading Overlay -->
+    <div id="loader" class="fixed inset-0 bg-cream-50 z-[100] flex items-center justify-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sage-500"></div>
+    </div>
+
+    <script>
+        let userData = null;
+
+        // Initialize Lucide
+        lucide.createIcons();
+
+        // 1. Initial Auth Check & Data Fetch
+        async function initialize() {
+            try {
+                // Quick session check
+                const authRes = await fetch('/member/api/check_auth.php', { credentials: 'include' });
+                const authData = await authRes.json();
+
+                if (!authData.authenticated) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                await fetchData();
+                document.getElementById('loader').classList.add('hidden');
+
+                if (userData && userData.user.subscription_status === 'expired') {
+                    document.getElementById('expiryOverlay').classList.remove('hidden');
+                } else {
+                    document.getElementById('app').classList.remove('hidden');
+                    updateGreeting();
+                }
+            } catch (e) {
+                console.error("Auth check failed", e);
+                // If auth check fails (network?), retry or show error
+                // For safety, if we can't verify auth, redirect
+                window.location.href = 'login.html';
+            }
+        }
+
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            let greeting = 'Good morning';
+
+            if (hour >= 12 && hour < 17) {
+                greeting = 'Good afternoon';
+            } else if (hour >= 17 || hour < 5) {
+                greeting = 'Good evening';
+            }
+
+            const el = document.getElementById('greetingText');
+            if (el) el.innerText = greeting;
+        }
+
+        async function fetchData() {
+            try {
+                const response = await fetch('/member/api/data.php', { credentials: 'include' });
+                if (response.status === 401) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                const data = await response.json();
+                if (data.success) {
+                    userData = data;
+
+                    // --- PROFILE COMPLETENESS CHECK ---
+                    const p = userData.user;
+                    const b = userData.body;
+
+                    const pcosType = (p.pcos_type || "").toLowerCase();
+                    const allergies = (b.allergies || "").toLowerCase();
+                    const prefs = (b.dietary_preferences || "").toLowerCase();
+
+                    const isProfileIncomplete =
+                        !pcosType || pcosType === 'general' || pcosType === 'pcos' || pcosType === 'unknown' ||
+                        (!allergies && allergies !== '') || // Allow empty sring if that's how we save 'no allergies', but wait, logic above says !allergies. 
+                        // Let's simplify. If they have 'none', it is VALID. 
+                        // So we only fail if it is falsy AND not 'none'? 
+                        // No, the original logic was: is incomplete if (!allergies OR allergies === 'none').
+                        // We want: is incomplete if (!allergies). If it is 'none', it is complete.
+                        !allergies ||
+                        !prefs;
+
+                    if (isProfileIncomplete) {
+                        console.log("Profile incomplete, showing modal", { pcosType, allergies, prefs });
+                        document.getElementById('onboardingModal').classList.remove('hidden');
+                        lucide.createIcons();
+                        return;
+                    }
+                    // ----------------------------------
+
+                    renderDashboard();
+                    if (document.getElementById('nourish').classList.contains('active')) {
+                        renderNourish();
+                    }
+
+                    // Trigger Proactive Gen if not done this session
+                    if (!sessionStorage.getItem('proactive_triggered')) {
+                        triggerProactiveGen();
+                    }
+                } else {
+                    alert('Error loading data: ' + data.error);
+                }
+            } catch (err) {
+                console.error("Dashboard Fetch Error:", err);
+                alert('Fatal Error: Failed to connect to dashboard API. Please check your internet or contact support.');
+            }
+        }
+
+        // 2. View Management
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+
+            document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
+                if (link.dataset.view === viewId) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            if (viewId === 'dashboard') renderDashboard();
+            if (viewId === 'nourish') renderNourish();
+            if (viewId === 'weekly') renderWeekly();
+            if (viewId === 'tracker') renderBodyForm();
+            if (viewId === 'profile') renderProfileForm();
+        }
+
+        function renderBodyForm() {
+            const { body, user } = userData;
+            document.getElementById('body_weight').value = body.weight;
+            document.getElementById('body_height').value = body.height;
+            document.getElementById('body_age').value = user.age;
+            document.getElementById('body_pcos_type').value = user.pcos_type;
+            document.getElementById('body_cycle_length').value = body.cycle_length;
+            document.getElementById('body_last_period').value = body.last_period_date;
+            document.getElementById('body_allergies').value = body.allergies;
+            document.getElementById('body_diet_prefs').value = body.dietary_preferences;
+        }
+
+        async function saveBodyData(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<div class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mx-auto"></div>';
+            btn.disabled = true;
+
+            const formData = new FormData(e.target);
+            formData.append('action', 'update_body_data');
+
+            try {
+                const res = await fetch('/member/api/member_actions.php', { method: 'POST', body: formData, credentials: 'include' });
+                const data = await res.json();
+                if (data.success) {
+                    await fetchData();
+                    alert('Body data updated successfully!');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error');
+            } finally {
+                btn.innerHTML = 'Update Body Data';
+                btn.disabled = false;
+            }
+        }
+
+        function renderProfileForm() {
+            const { user } = userData;
+            document.getElementById('profile_first_name').value = user.first_name || '';
+            document.getElementById('profile_last_name').value = user.last_name || '';
+            document.getElementById('profile_email').value = user.email || '';
+            document.getElementById('profile_phone').value = user.phone || '';
+            document.getElementById('profile_tier_big').textContent = (user.tier || '30-day').toUpperCase() + " Plan";
+            document.getElementById('profile_password').value = '';
+
+            // Update subscription info
+            const statusEl = document.getElementById('profile_status_big');
+            const isActive = user.subscription_status === 'active';
+            statusEl.innerHTML = `<span class="${isActive ? 'text-green-500' : 'text-coral-500'}">${user.subscription_status.charAt(0).toUpperCase() + user.subscription_status.slice(1)}</span>`;
+
+            const iconEl = document.getElementById('statusIcon');
+            if (iconEl) {
+                iconEl.className = `w-12 h-12 rounded-2xl flex items-center justify-center ${isActive ? 'bg-green-500/10 text-green-500' : 'bg-coral-500/10 text-coral-500'}`;
+                iconEl.innerHTML = `<i data-lucide="${isActive ? 'check-circle' : 'alert-circle'}" class="w-6 h-6"></i>`;
+            }
+
+            const daysLeftEl = document.getElementById('profile_days_left_big');
+            if (daysLeftEl) {
+                daysLeftEl.textContent = user.days_left > 0 ? `${user.days_left} days left on protocol` : (user.days_left === 0 ? 'Protocol expired' : 'Pending activation');
+            }
+            lucide.createIcons();
+        }
+
+        function switchProfileTab(tab) {
+            // Update buttons
+            document.querySelectorAll('.profile-tab').forEach(btn => {
+                btn.classList.remove('border-sage-500', 'text-sage-600');
+                btn.classList.add('border-transparent', 'text-sage-300');
+            });
+            document.getElementById('tab-' + tab).classList.remove('border-transparent', 'text-sage-300');
+            document.getElementById('tab-' + tab).classList.add('border-sage-500', 'text-sage-600');
+
+            // Update content
+            document.querySelectorAll('.profile-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById('content-' + tab).classList.remove('hidden');
+
+            // Show/hide Save button
+            const actions = document.getElementById('profileActions');
+            if (actions) {
+                if (tab === 'personal') {
+                    actions.classList.remove('hidden');
+                } else {
+                    actions.classList.add('hidden');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        async function saveProfile(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<div class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mx-auto"></div>';
+            btn.disabled = true;
+
+            const formData = new FormData(e.target);
+            formData.append('action', 'update_profile');
+
+            try {
+                const res = await fetch('/member/api/member_actions.php', { method: 'POST', body: formData, credentials: 'include' });
+                const data = await res.json();
+                if (data.success) {
+                    await fetchData();
+                    alert('Profile updated successfully!');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error');
+            } finally {
+                btn.innerHTML = 'Save Changes';
+                btn.disabled = false;
+            }
+        }
+
+        async function renderWeekly() {
+            const container = document.getElementById('weeklyContainer');
+            container.innerHTML = '<div class="col-span-full py-12 flex justify-center"><div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-sage-500"></div></div>';
+
+            try {
+                const res = await fetch('/member/api/data.php?action=weekly_plans', { credentials: 'include' });
+                const data = await res.json();
+
+                if (data.success) {
+                    container.innerHTML = data.plans.map(day => `
+                        <div class="bg-white rounded-[2rem] p-6 border border-sage-100 shadow-sm transition-all hover:shadow-md flex flex-col ${day.is_today ? 'ring-2 ring-sage-500 ring-offset-4' : ''}">
+                            <div class="text-center mb-6 pb-4 border-b border-sage-50">
+                                <span class="text-[10px] font-bold uppercase tracking-[0.2em] ${day.is_today ? 'text-sage-500' : 'text-sage-200'}">${day.is_today ? 'Today' : 'Upcoming'}</span>
+                                <h4 class="font-serif text-xl text-sage-500 mt-1">${day.display_date}</h4>
+                            </div>
+
+                            <div class="space-y-4 flex-1">
+                                ${day.plan && day.plan.meals ? `
+                                    <div class="bg-sage-50/30 p-3 rounded-xl">
+                                        <p class="text-[9px] font-bold text-sage-300 uppercase mb-1">Breakfast</p>
+                                        <p class="text-xs font-medium text-sage-500 line-clamp-1">${day.plan.meals.breakfast?.name || 'Pending...'}</p>
+                                    </div>
+                                    <div class="bg-sage-50/30 p-3 rounded-xl">
+                                        <p class="text-[9px] font-bold text-sage-300 uppercase mb-1">Lunch</p>
+                                        <p class="text-xs font-medium text-sage-500 line-clamp-1">${day.plan.meals.lunch?.name || 'Pending...'}</p>
+                                    </div>
+                                    <div class="bg-sage-50/30 p-3 rounded-xl">
+                                        <p class="text-[9px] font-bold text-sage-300 uppercase mb-1">Dinner</p>
+                                        <p class="text-xs font-medium text-sage-500 line-clamp-1">${day.plan.meals.dinner?.name || 'Pending...'}</p>
+                                    </div>
+                                    <div class="pt-2">
+                                        <p class="text-[9px] font-bold text-coral-400 uppercase mb-1 text-center">Movement</p>
+                                        <p class="text-[10px] italic text-sage-400 text-center">${day.plan.workout?.name || 'Rest & Recovery'}</p>
+                                    </div>
+                                ` : `
+                                    <div class="h-full flex flex-col items-center justify-center py-6 text-center opacity-30">
+                                        <i data-lucide="sparkles" class="w-6 h-6 mb-2"></i>
+                                        <p class="text-[10px] font-bold uppercase">Pending</p>
+                                    </div>
+                                `}
+                            </div>
+                            
+                            <button onclick="viewDay('${day.date}')" class="mt-6 w-full py-3 bg-sage-50 text-sage-400 text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-sage-500 hover:text-white transition-all">
+                                View Protocol
+                            </button>
+                        </div>
+                    `).join('');
+                    lucide.createIcons();
+                }
+            } catch (e) {
+                container.innerHTML = '<p class="col-span-full text-center text-red-500">Failed to load weekly plans.</p>';
+            }
+        }
+
+        async function viewDay(date) {
+            document.getElementById('loader').classList.remove('hidden');
+            try {
+                const res = await fetch(`/member/api/data.php?action=dashboard_data&date=${date}`, { credentials: 'include' });
+                const data = await res.json();
+                if (data.success) {
+                    userData = data;
+                    switchView('dashboard');
+                    // Add a back button indicator or something if needed?
+                }
+            } catch (e) {
+                console.error(e);
+            } finally {
+                document.getElementById('loader').classList.add('hidden');
+            }
+        }
+
+        async function triggerProactiveGen(force = false) {
+            sessionStorage.setItem('proactive_triggered', 'true');
+
+            // Show generating state immediately in the main container if it exists
+            const container = document.getElementById('mealsContainer');
+            if (container) {
+                container.innerHTML = `
+                    <div class="col-span-full py-16 text-center bg-white/50 rounded-[3rem] border border-sage-100">
+                        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sage-500 mx-auto mb-6"></div>
+                        <h3 class="text-2xl font-serif text-sage-600 mb-2">Curating Your Protocol</h3>
+                        <p class="text-sage-400 max-w-md mx-auto mb-8">
+                            Your personalized nutrition plan is being generated by our AI based on your hormonal profile.
+                            This usually takes about 10-15 seconds.
+                        </p>
+                    </div>
+                `;
+            }
+
+            try {
+                // Call generation
+                const url = force ? '/member/api/data.php?action=regenerate_plan' : '/member/api/data.php?action=proactive_gen&days=3';
+                await fetch(url, { credentials: 'include' });
+
+                // Wait 2s then reload to show data
+                setTimeout(() => window.location.reload(), 2000);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+
+
+        function showSculpting() {
+            const overlay = document.getElementById('sculptingOverlay');
+            overlay.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        // 3. Render Logic
+        function renderDashboard() {
+            if (!userData) return;
+            const { user, cycle, plan } = userData;
+
+            const viewDate = userData.plan?.plan_date || new Date().toISOString().split('T')[0];
+            const isToday = viewDate === new Date().toISOString().split('T')[0];
+
+            const userName = user.first_name || user.name || (user.email ? user.email.split('@')[0] : "Member");
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('currentDate').textContent = new Date(viewDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+            // Add "Back to Today" if not today
+            const dateSpan = document.getElementById('currentDate');
+            if (!isToday) {
+                dateSpan.innerHTML = `${dateSpan.textContent} <button onclick="goToday()" class="ml-2 text-coral-400 hover:underline text-[10px] uppercase font-bold">Back to Today</button>`;
+            }
+
+            const week = user.program_week;
+            document.getElementById('phaseIndicator').textContent = week <= 4 ? "Month 1: Repair" : (week <= 8 ? "Month 2: Reset" : "Month 3: Restore");
+
+            document.getElementById('cyclePhase').textContent = cycle.phase;
+            document.getElementById('cycleDay').textContent = `Day ${cycle.day} of cycle`;
+            document.getElementById('pcosTag').textContent = user.pcos_type + " Type";
+            document.getElementById('hydrationVal').textContent = (plan.hydration || 0).toFixed(1) + 'L';
+
+            // Daily Fruit Protocol
+            const fruit = plan.fruit_ritual || {};
+            const fruitName = fruit.name || 'Garden Egg';
+            const fruitPortion = fruit.portion || '2 medium fruits';
+            const fruitBenefit = fruit.benefits || 'High in potassium & fiber';
+            const fruitReason = fruit.why_it_works || 'Fiber helps regulate blood sugar while potassium supports healthy fluid balance.';
+
+            document.getElementById('supplementList').innerHTML = `
+                <div class="bg-gradient-to-br from-terracotta-50 to-orange-50/50 rounded-2xl p-5 border border-terracotta-100/50 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-4xl transform translate-x-2 -translate-y-2">🍎</div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h5 class="text-[10px] font-bold text-terracotta-400 uppercase tracking-widest mb-1">Daily Fruit Protocol</h5>
+                                <h4 id="fruitName" class="font-serif text-xl text-terracotta-900 leading-tight">${fruitName}</h4>
+                                <p class="text-xs text-terracotta-600 mt-1 font-medium">${fruitPortion}</p>
+                            </div>
+                            <button id="fruitDoneBtn" onclick="markActivityDone('fruit_ritual')" 
+                                class="w-10 h-10 rounded-full bg-white border border-terracotta-100 text-terracotta-400 flex items-center justify-center hover:bg-terracotta-500 hover:text-white transition-all shadow-sm">
+                                <i data-lucide="check" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="bg-white/60 rounded-xl p-3 border border-white/50 backdrop-blur-sm">
+                            <p class="text-[10px] font-bold text-terracotta-400 uppercase mb-1">Why this works</p>
+                            <p id="fruitReason" class="text-xs text-terracotta-800 leading-relaxed">${fruitReason}</p>
+                        </div>
+                        
+                        <div class="mt-3 flex items-center gap-2 text-[10px] text-terracotta-600/80">
+                            <i data-lucide="zap" class="w-3 h-3 text-terracotta-500"></i>
+                            <span id="fruitBenefit">${fruitBenefit}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Fill Workout/Movement with Nigerian-focused walking data
+            const workout = plan.workout || {};
+            document.getElementById('workoutName').textContent = workout.name || 'Morning & Evening Walk';
+            document.getElementById('workoutDesc').textContent = workout.description || 'Brisk walking routine to support hormonal balance and improve insulin sensitivity.';
+
+            // Update step target if available
+            if (workout.steps_target) {
+                document.getElementById('stepsTarget').textContent = workout.steps_target.toLocaleString() + ' steps';
+            }
+
+            // Update time range if available
+            if (workout.activities && workout.activities.length > 0) {
+                const timeHTML = workout.activities.map(a => `<span class="block">${a.time || ''}</span>`).join('');
+                document.getElementById('workoutTimeRange').innerHTML = timeHTML || '<span>6:00 AM - 6:30 PM</span>';
+            }
+
+            // Update herbal tea section if plan includes it
+            const herbalTea = plan.herbal_tea || {};
+            if (herbalTea.morning) {
+                document.getElementById('morningTeaName').textContent = herbalTea.morning.name || 'PCOS Morning Harmony Blend';
+                document.getElementById('morningTeaBenefits').textContent = herbalTea.morning.benefits || 'Supports insulin sensitivity and hormonal balance';
+                document.getElementById('morningTeaTime').textContent = `${herbalTea.morning.time_start || '10:00'} - ${herbalTea.morning.time_end || '10:30'}`;
+            }
+            if (herbalTea.evening) {
+                document.getElementById('eveningTeaName').textContent = herbalTea.evening.name || 'PCOS Evening Calm Blend';
+                document.getElementById('eveningTeaBenefits').textContent = herbalTea.evening.benefits || 'Reduces cortisol and promotes restful sleep';
+                document.getElementById('eveningTeaTime').textContent = `${herbalTea.evening.time_start || '20:30'} - ${herbalTea.evening.time_end || '21:00'}`;
+            }
+
+            // Update meal preview with time ranges
+            const meals = ['breakfast', 'lunch', 'dinner'];
+            document.getElementById('mealPreviewGrid').innerHTML = meals.map(m => {
+                const meal = plan?.meals?.[m];
+                const mealName = meal?.name;
+                const display = mealName || 'Planning...';
+                const pulse = !mealName ? 'animate-pulse' : '';
+                const timeRange = meal?.time_start && meal?.time_end ? `${meal.time_start} - ${meal.time_end}` : '';
+                return `
+                <div class="flex items-center gap-6 p-6 rounded-3xl bg-sage-50/50 border border-sage-50 group hover:border-sage-200 transition-all cursor-pointer" onclick="markActivityDone('meal_${m}')">
+                    <div class="w-20 h-20 rounded-2xl bg-sage-100 flex items-center justify-center text-3xl transition-transform group-hover:scale-110">
+                        ${m === 'breakfast' ? '🥣' : (m === 'lunch' ? '🥗' : '🍲')}
+                    </div>
+                    <div class="flex-1 ${pulse}">
+                        <div class="flex items-center justify-between mb-1">
+                            <p class="text-[10px] font-bold text-sage-300 uppercase tracking-[0.2em]">${m}</p>
+                            ${timeRange ? `<span class="text-[9px] text-sage-400">${timeRange}</span>` : ''}
+                        </div>
+                        <h4 class="text-xl font-medium">${display}</h4>
+                    </div>
+                    <button class="p-3 rounded-xl bg-sage-100 hover:bg-sage-500 hover:text-white text-sage-400 transition-all opacity-0 group-hover:opacity-100" title="Mark as Done">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `}).join('');
+
+            // Check and update activity button states based on time windows
+            updateActivityButtonStates();
+
+            lucide.createIcons();
+        }
+
+        function renderNourish() {
+            if (!userData) return;
+            const { plan } = userData;
+
+            const meals = ['breakfast', 'lunch', 'dinner'];
+
+            // Check if we have valid meals
+            const hasMeals = plan.meals && Object.keys(plan.meals).length > 0 && plan.meals.breakfast;
+
+            if (!hasMeals) {
+                document.getElementById('mealsContainer').innerHTML = `
+                    <div class="col-span-full py-16 text-center bg-white/50 rounded-[3rem] border border-sage-100">
+                        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sage-500 mx-auto mb-6"></div>
+                        <h3 class="text-2xl font-serif text-sage-600 mb-2">Curating Your Protocol</h3>
+                        <p class="text-sage-400 max-w-md mx-auto mb-8">
+                            Your personalized nutrition plan is being generated by our AI based on your hormonal profile.
+                            This usually takes about 10-15 seconds.
+                        </p>
+                        <button onclick="triggerProactiveGen(true)" class="px-8 py-3 bg-sage-500 text-white rounded-xl font-bold text-sm shadow-xl shadow-sage-500/10 hover:shadow-sage-500/20 transition-all">
+                            Regenerate Plan
+                        </button>
+                    </div>
+                `;
+            } else {
+                document.getElementById('mealsContainer').innerHTML = meals.map(m => {
+                    const meal = plan.meals[m];
+                    if (!meal) return '';
+                    return `
+                        <div class="group h-full flex flex-col bg-white rounded-[2rem] p-6 border border-sage-100/50 shadow-sm hover:shadow-md hover:border-sage-200 transition-all duration-300">
+                            <!-- Header -->
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="shrink-0 w-12 h-12 rounded-2xl bg-sage-50 text-sage-600 flex items-center justify-center text-2xl shadow-inner">
+                                    ${m === 'breakfast' ? '🥣' : (m === 'lunch' ? '🥗' : '🍲')}
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-sage-300 uppercase tracking-widest mb-1">${m}</p>
+                                    <h4 class="font-serif text-xl text-sage-700 leading-tight line-clamp-2">${meal.name}</h4>
+                                </div>
+                            </div>
+                            
+                            <!-- Body -->
+                            <div class="flex-1 mb-6">
+                                <p class="text-sm text-sage-500 leading-relaxed line-clamp-4">${meal.description}</p>
+                            </div>
+                            
+                            <!-- Footer -->
+                            <div class="mt-auto pt-6 border-t border-sage-50">
+                                <button onclick="openRecipeModal('${m}')" class="w-full py-3.5 bg-sage-50 text-sage-600 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-sage-100 hover:text-sage-700 transition-colors flex items-center justify-center gap-2 group-hover:gap-3">
+                                    <span>View Recipe</span>
+                                    <i data-lucide="arrow-right" class="w-3 h-3 transition-transform"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Re-init icons for the new content
+            lucide.createIcons();
+
+
+            // ----------------------------------------------------
+            // RECIPE MODAL LOGIC
+            // ----------------------------------------------------
+            function openRecipeModal(mealType) {
+                const meal = userData?.plan?.meals?.[mealType];
+                if (!meal) return;
+
+                document.getElementById('recipeModalTitle').textContent = meal.name;
+
+                const content = document.getElementById('recipeModalContent');
+                content.innerHTML = `
+                <!-- Ingredients Section -->
+                <div class="bg-sage-50/50 rounded-2xl p-5 border border-sage-100">
+                    <h5 class="uppercase tracking-widest text-[0.65rem] font-bold text-sage-400 mb-4 flex items-center gap-2">
+                        <i data-lucide="shopping-bag" class="w-3 h-3"></i> Ingredients
+                    </h5>
+                    <ul class="space-y-3">
+                        ${meal.ingredients.map(ing => `
+                            <li class="flex justify-between items-start text-sm text-sage-700 border-b border-sage-100/50 pb-2 last:border-0 last:pb-0">
+                                <span class="font-medium pr-2">${ing.item}</span>
+                                <span class="text-sage-500 text-xs whitespace-nowrap bg-white px-2 py-1 rounded-md border border-sage-100 shadow-sm font-number">${ing.quantity}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+
+                <!-- Instructions Section -->
+                        <div>
+                            <h5 class="uppercase tracking-widest text-[0.65rem] font-bold text-sage-400 mb-4 flex items-center gap-2">
+                                <i data-lucide="chef-hat" class="w-3 h-3"></i> Preparation
+                            </h5>
+                            <ol class="space-y-6 relative border-l-2 border-sage-100 ml-3 pl-6">
+                                ${(Array.isArray(meal.instructions) ? meal.instructions : []).map((step, idx) => `
+                                    <li class="relative">
+                                        <span class="absolute -left-[1.65rem] top-0 w-6 h-6 rounded-full bg-white border-2 border-sage-200 text-sage-400 text-[10px] font-bold flex items-center justify-center">
+                                            ${idx + 1}
+                                        </span>
+                                        <p class="text-sm text-sage-600 leading-relaxed font-light">${step}</p>
+                                    </li>
+                                `).join('')}
+                                ${(!meal.instructions || meal.instructions.length === 0) ? '<li class="text-sm text-sage-400 italic">No instructions available.</li>' : ''}
+                            </ol>
+                        </div>
+                    `;
+
+                document.getElementById('recipeModal').classList.remove('hidden');
+                lucide.createIcons();
+            }
+
+            function closeRecipeModal() {
+                document.getElementById('recipeModal').classList.add('hidden');
+            }
+
+            // VISUAL DEBUGGER - REMOVE LATER
+            if (!hasMeals) {
+                const debugInfo = JSON.stringify(plan, null, 2);
+                const container = document.getElementById('mealsContainer');
+                container.innerHTML += `<div class="p-4 bg-red-100 text-red-800 text-xs font-mono mt-4 rounded-xl border border-red-200 overflow-auto whitespace-pre-wrap">DEBUG INFO:\n${debugInfo || 'Plan object is NULL'}</div>`;
+            }
+
+
+            const list = plan.shopping_list || [];
+            document.getElementById('shoppingList').innerHTML = list.length > 0
+                ? list.map(item => `
+                        <div class="flex items-center gap-3 bg-white/10 p-4 rounded-2xl border border-white/5 group hover:bg-white/20 transition-all">
+                        <div class="w-5 h-5 rounded-md border-2 border-white/20 group-hover:border-white/40 flex items-center justify-center text-[10px]">
+                           <i data-lucide="check" class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                        <span class="text-sm font-medium opacity-90">${item.quantity} ${item.item}</span>
+                    </div>
+                        `).join('')
+                : '<p class="opacity-60 text-sm italic">Generate a plan to see items.</p>';
+
+            lucide.createIcons();
+        }
+
+        async function updateHydration(amount) {
+            const newVal = Math.max(0, (userData.plan.hydration || 0) + amount);
+            userData.plan.hydration = newVal;
+            document.getElementById('hydrationVal').textContent = newVal.toFixed(1) + 'L';
+
+            const formData = new FormData();
+            formData.append('action', 'update_hydration');
+            formData.append('liters', newVal);
+            fetch('/member/api/member_actions.php', { method: 'POST', body: formData, credentials: 'include' });
+        }
+
+        async function toggleSupplement(suppId) {
+            if (!userData.plan.supplements) userData.plan.supplements = {};
+            userData.plan.supplements[suppId] = !userData.plan.supplements[suppId];
+
+            const formData = new FormData();
+            formData.append('action', 'toggle_supplement');
+            formData.append('supp_id', suppId);
+            formData.append('completed', userData.plan.supplements[suppId] ? 'true' : 'false');
+            fetch('/member/api/member_actions.php', { method: 'POST', body: formData, credentials: 'include' });
+        }
+
+        // Activity Tracking Functions
+        async function markActivityDone(activityType, event) {
+            if (event) event.stopPropagation();
+
+            const plan = userData?.plan || {};
+            let activityName = '';
+            let scheduledStart = '';
+            let scheduledEnd = '';
+
+            // Determine activity details based on type
+            if (activityType.startsWith('meal_')) {
+                const mealType = activityType.replace('meal_', '');
+                const meal = plan.meals?.[mealType];
+                activityName = meal?.name || mealType;
+                scheduledStart = meal?.time_start || '';
+                scheduledEnd = meal?.time_end || '';
+            } else if (activityType === 'movement') {
+                activityName = plan.workout?.name || 'Daily Walk';
+                scheduledStart = plan.workout?.time_start || '06:00';
+                scheduledEnd = plan.workout?.time_end || '18:30';
+            } else if (activityType === 'herbal_tea_morning') {
+                activityName = plan.herbal_tea?.morning?.name || 'Morning Herbal Tea';
+                scheduledStart = plan.herbal_tea?.morning?.time_start || '10:00';
+                scheduledEnd = plan.herbal_tea?.morning?.time_end || '10:30';
+            } else if (activityType === 'herbal_tea_evening') {
+                activityName = plan.herbal_tea?.evening?.name || 'Evening Herbal Tea';
+                scheduledStart = plan.herbal_tea?.evening?.time_start || '20:30';
+                scheduledEnd = plan.herbal_tea?.evening?.time_end || '21:00';
+            } else if (activityType === 'fruit_ritual') {
+                activityName = plan.fruit_ritual?.name || 'Fruit Protocol';
+                scheduledStart = plan.fruit_ritual?.time_start || '10:00';
+                scheduledEnd = plan.fruit_ritual?.time_end || '11:00';
+            }
+
+            const formData = new FormData();
+            formData.append('action', 'mark_activity_done');
+            formData.append('activity_type', activityType);
+            formData.append('activity_name', activityName);
+            formData.append('scheduled_start', scheduledStart);
+            formData.append('scheduled_end', scheduledEnd);
+            formData.append('plan_date', plan.plan_date || new Date().toISOString().split('T')[0]);
+
+            try {
+                const res = await fetch('/member/api/member_actions.php', { method: 'POST', body: formData, credentials: 'include' });
+                const data = await response.json();
+
+                if (data.success) {
+                    showNotification('✓ Activity marked as done!', 'success');
+                    updateButtonState(activityType, 'completed');
+                } else {
+                    if (data.status === 'missed') {
+                        showNotification('⏰ Time window has passed - activity marked as missed', 'warning');
+                        updateButtonState(activityType, 'missed');
+                    } else if (data.status === 'completed') {
+                        showNotification('Already marked as done!', 'info');
+                    } else {
+                        showNotification(data.error || 'Failed to log activity', 'error');
+                    }
+                }
+            } catch (err) {
+                console.error('Activity logging error:', err);
+                showNotification('Connection error', 'error');
+            }
+        }
+
+        function updateButtonState(activityType, status) {
+            let btnId = '';
+            if (activityType === 'movement') btnId = 'movementDoneBtn';
+            else if (activityType === 'herbal_tea_morning') btnId = 'morningTeaDoneBtn';
+            else if (activityType === 'herbal_tea_evening') btnId = 'eveningTeaDoneBtn';
+            else if (activityType === 'fruit_ritual') btnId = 'fruitDoneBtn';
+
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                if (status === 'completed') {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i>';
+                    btn.classList.add('bg-terracotta-500', 'text-white');
+                    btn.classList.remove('bg-white', 'text-terracotta-400', 'hover:bg-terracotta-500', 'hover:text-white');
+                } else if (status === 'missed') {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i data-lucide="x-circle" class="w-4 h-4"></i>';
+                    btn.classList.add('bg-red-500/20', 'text-red-400');
+                }
+                lucide.createIcons();
+            }
+        }
+
+        function updateActivityButtonStates() {
+            const now = new Date();
+            const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            const plan = userData?.plan || {};
+
+            // Check herbal tea times
+            const herbalTea = plan.herbal_tea || {};
+
+            // Morning tea
+            if (herbalTea.morning?.time_end && currentTime > herbalTea.morning.time_end) {
+                const gracePeriod = addMinutesToTime(herbalTea.morning.time_end, 30);
+                if (currentTime > gracePeriod) {
+                    disableButton('morningTeaDoneBtn');
+                }
+            }
+
+            // Evening tea
+            if (herbalTea.evening?.time_end && currentTime > herbalTea.evening.time_end) {
+                const gracePeriod = addMinutesToTime(herbalTea.evening.time_end, 30);
+                if (currentTime > gracePeriod) {
+                    disableButton('eveningTeaDoneBtn');
+                }
+            }
+
+            // Fruit Ritual
+            const fruit = plan.fruit_ritual || {};
+            if (fruit.time_end && currentTime > fruit.time_end) {
+                const gracePeriod = addMinutesToTime(fruit.time_end, 30);
+                if (currentTime > gracePeriod) {
+                    disableButton('fruitDoneBtn');
+                }
+            }
+        }
+
+        function disableButton(btnId) {
+            const btn = document.getElementById(btnId);
+            if (btn && !btn.disabled) {
+                btn.disabled = true;
+                btn.classList.add('opacity-40', 'cursor-not-allowed');
+                btn.title = 'Time window has passed';
+            }
+        }
+
+        function addMinutesToTime(timeStr, minutes) {
+            const [hours, mins] = timeStr.split(':').map(Number);
+            const totalMins = hours * 60 + mins + minutes;
+            const newHours = Math.floor(totalMins / 60) % 24;
+            const newMins = totalMins % 60;
+            return newHours.toString().padStart(2, '0') + ':' + newMins.toString().padStart(2, '0');
+        }
+
+        function showNotification(message, type = 'info') {
+            // Simple notification - can be upgraded to custom toast
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-amber-500',
+                info: 'bg-sage-500'
+            };
+
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-2xl shadow-lg z-[200] animate-fade-in-up font-medium`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.3s';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function openHerbalShop(productKey) {
+            event.preventDefault();
+            // Open product modal or redirect to shop
+            const shopUrl = `https://1wellness.club/shop?product=${productKey}`;
+
+            if (productKey === 'bundle') {
+                // Show bundle offer
+                showNotification('🌿 Herbal Bundle offer - Opening shop...', 'info');
+            }
+
+            // For now, open in new tab - can be replaced with modal
+            window.open(shopUrl, '_blank');
+        }
+
+        async function handleMealSwap(mealType) {
+            const btn = event.currentTarget;
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<div class="animate-spin w-5 h-5 border-2 border-current border-t-transparent rounded-full"></div>';
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('action', 'swap_meal');
+            formData.append('meal_type', mealType);
+
+            try {
+                const res = await fetch('api/member_actions.php', { method: 'POST', body: formData, credentials: 'include' });
+                const resData = await res.json();
+                if (resData.success) {
+                    userData.plan.meals[mealType] = resData.meal;
+                    renderNourish();
+                } else {
+                    alert('Swap failed: ' + resData.error);
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                btn.innerHTML = originalIcon;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                await fetch('/member/api/logout.php', { credentials: 'include' });
+                window.location.href = 'login.html';
+            } catch (e) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        function chatWithSpecialist() {
+            const userName = document.getElementById('userName')?.textContent || 'Member';
+            const supportNumber = '+2348133149989';
+            const message = encodeURIComponent(`Hi! I'm ${userName} from the 1wellness CycleSync program. I need help with my healing journey.`);
+            const whatsappUrl = `https://wa.me/${supportNumber}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        async function goToday() {
+            await initialize();
+            switchView('dashboard');
+        }
+
+        // --- Renewal Logic ---
+        function openRenewalModal() {
+            document.getElementById('renewalModal').classList.remove('hidden');
+            fetchRenewalPlans();
+        }
+
+        function closeRenewalModal() {
+            document.getElementById('renewalModal').classList.add('hidden');
+        }
+
+        async function fetchRenewalPlans() {
+            const container = document.getElementById('renewalPlans');
+            try {
+                const res = await fetch('api/get-pricing.php', { credentials: 'include' });
+                const data = await res.json();
+
+                if (data.success) {
+                    const plans = data.data.plans;
+                    const funnel = userData?.user?.condition_type || 'pcos';
+                    const activePlans = plans[funnel] || plans['pcos'] || {};
+                    const pubKey = data.data.config.flutterwavePublicKey;
+
+                    container.innerHTML = Object.entries(activePlans).map(([key, plan]) => {
+                        const features = plan.features || [];
+                        const description = plan.description || 'Professional health protocol management.';
+
+                        return `
+                        <div class="luxury-card p-8 border border-sage-100 hover:border-sage-500 transition-all group flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] font-bold text-coral-400 uppercase tracking-widest">${key.replace('-', ' ')} Plan</span>
+                                <h3 class="text-2xl font-serif text-sage-600 mt-2 mb-4">${plan.name}</h3>
+                                <p class="text-sage-400 text-sm mb-6">${description}</p>
+                                <ul class="space-y-2 mb-8">
+                                    ${features.map(f => `<li class="text-xs text-sage-400 flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3 h-3 text-sage-300"></i> ${f}</li>`).join('')}
+                                    ${features.length === 0 ? '<li class="text-xs text-sage-400 flex items-center gap-2"><i data-lucide="check-circle-2" class="w-3 h-3 text-sage-300"></i> Full Digital Access</li>' : ''}
+                                </ul>
+                            </div>
+                            <div class="mt-auto">
+                                <div class="text-3xl font-serif text-sage-600 mb-6">$${new Intl.NumberFormat().format(plan.price)}</div>
+                                <button onclick="processRenewal('${key}', ${plan.price}, '${pubKey}')" class="w-full bg-sage-500 text-white py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-sage-500/20 transition-all">
+                                    Choose Plan
+                                </button>
+                            </div>
+                        </div>
+                        `}).join('');
+                    lucide.createIcons();
+                } else {
+                    throw new Error(data.message || 'API error');
+                }
+            } catch (e) {
+                console.error("Renewal Plans Load Error:", e);
+                container.innerHTML = `
+                        <div class="col-span-full py-12 text-center">
+                        <p class="text-coral-500 font-medium">Failed to load plans.</p>
+                        <p class="text-sage-300 text-[10px] mt-2">${e.message}</p>
+                        <button onclick="fetchRenewalPlans()" class="mt-4 text-xs text-sage-400 hover:text-sage-500 underline">Try Again</button>
+                    </div>
+                        `;
+            }
+        }
+
+        function processRenewal(tier, amount, pubKey) {
+            console.log("Processing renewal:", { tier, amount, pubKey });
+
+            if (!pubKey) {
+                alert("Payment system error: Public key is missing. Please contact support.");
+                return;
+            }
+
+            if (typeof FlutterwaveCheckout !== 'undefined') {
+                try {
+                    FlutterwaveCheckout({
+                        public_key: pubKey,
+                        tx_ref: "1W_" + Math.floor((Math.random() * 1000000000) + 1),
+                        amount: amount,
+                        currency: "USD",
+                        payment_options: "card, account, ussd",
+                        customer: {
+                            email: userData?.user?.email || "",
+                            phone_number: userData?.user?.phone || "",
+                            name: (userData?.user?.first_name || "") + " " + (userData?.user?.last_name || ""),
+                        },
+                        customizations: {
+                            title: "1wellness Plan Renewal",
+                            description: "Payment for " + tier + " plan",
+                            logo: "https://1wellness.club/assets/img/logo.png",
+                        },
+                        callback: async function (data) {
+                            console.log("Flutterwave callback:", data);
+                            if (data.status === "successful") {
+                                // Verify on backend
+                                const res = await fetch('/member/api/member_actions.php', {
+                                    method: 'POST',
+                                    body: new URLSearchParams({
+                                        action: 'verify_renewal',
+                                        transaction_id: data.transaction_id,
+                                        tx_ref: data.tx_ref,
+                                        tier: tier
+                                    }),
+                                    credentials: 'include'
+                                });
+                                const result = await res.json();
+                                if (result.success) {
+                                    alert("Subscription renewed successfully!");
+                                    window.location.reload();
+                                } else {
+                                    alert("Payment successful but verification failed: " + result.error);
+                                }
+                            }
+                        },
+                        onclose: function () {
+                            console.log("Payment modal closed");
+                        }
+                    });
+                } catch (err) {
+                    console.error("Flutterwave error:", err);
+                    alert("Error launching payment: " + err.message);
+                }
+            } else {
+                console.log("Loading Flutterwave script...");
+                const script = document.createElement('script');
+                script.src = "https://checkout.flutterwave.com/v3.js";
+                script.onload = () => {
+                    console.log("Flutterwave script loaded.");
+                    processRenewal(tier, amount, pubKey);
+                };
+                script.onerror = () => {
+                    alert("Failed to load payment gateway. Please check your internet connection.");
+                };
+                document.head.appendChild(script);
+            }
+        }
+
+        // Onboarding / Missing Data Logic
+        let boardingStep = 1;
+        const totalSteps = 3;
+
+        // Pre-fill PCOS type from localStorage if available (from assessment results)
+        function prefillPCOSTypeFromStorage() {
+            const savedPCOSType = localStorage.getItem('1w_pcos_type');
+            if (savedPCOSType) {
+                // Find the radio button with matching value and check it
+                const radios = document.querySelectorAll('input[name="pcos_type"]');
+                radios.forEach(radio => {
+                    if (radio.value === savedPCOSType) {
+                        radio.checked = true;
+                        // Trigger visual update for the label styling
+                        radio.dispatchEvent(new Event('change'));
+                    }
+                });
+                console.log('Pre-filled PCOS type from assessment:', savedPCOSType);
+            }
+        }
+
+        // Call prefill when onboarding modal becomes visible
+        const onboardingObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.target.id === 'onboardingModal' && !mutation.target.classList.contains('hidden')) {
+                    prefillPCOSTypeFromStorage();
+                }
+            });
+        });
+
+        // Start observing once DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('onboardingModal');
+            if (modal) {
+                onboardingObserver.observe(modal, { attributes: true, attributeFilter: ['class'] });
+                // Also prefill immediately if modal is already visible
+                if (!modal.classList.contains('hidden')) {
+                    prefillPCOSTypeFromStorage();
+                }
+            }
+        });
+
+        function nextBoardingStep() {
+            // Validation
+            const currentStepEl = document.querySelector(`.boarding-step[data-step="${boardingStep}"]`);
+            const inputs = currentStepEl.querySelectorAll('input:not(.hidden), select, textarea');
+            let isValid = true;
+            let firstInvalid = null;
+
+            inputs.forEach(input => {
+                if (input.hasAttribute('required') && !input.value) {
+                    isValid = false;
+                    highlightError(input);
+                    if (!firstInvalid) firstInvalid = input;
+                } else if (input.type === 'radio' && input.hasAttribute('required')) {
+                    // Check if group has value
+                    const group = currentStepEl.querySelectorAll(`input[name="${input.name}"]:checked`);
+                    if (group.length === 0) {
+                        isValid = false;
+                        // Highlight the container of the radio group if possible, or scroll to it
+                        if (!firstInvalid) firstInvalid = input;
+                    }
+                }
+            });
+
+            if (!isValid) {
+                showInlineError("Please provide all required information to continue.");
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalid.focus({ preventScroll: true });
+                }
+                return;
+            }
+
+            hideInlineError();
+
+            if (boardingStep < totalSteps) {
+                boardingStep++;
+                updateBoardingView();
+            }
+        }
+
+        function highlightError(input) {
+            input.classList.add('border-red-400', 'bg-red-50');
+            // Remove error style on input
+            input.addEventListener('input', () => {
+                input.classList.remove('border-red-400', 'bg-red-50');
+            }, { once: true });
+        }
+
+        function showInlineError(msg) {
+            const el = document.getElementById('onboardingError');
+            if (el) {
+                el.classList.remove('hidden');
+                el.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4 shrink-0 mt-0.5"></i> <span class="leading-tight">${msg}</span>`;
+                lucide.createIcons();
+            }
+        }
+
+        function hideInlineError() {
+            const el = document.getElementById('onboardingError');
+            if (el) el.classList.add('hidden');
+        }
+
+        function prevBoardingStep() {
+            if (boardingStep > 1) {
+                boardingStep--;
+                updateBoardingView();
+            }
+        }
+
+        function updateBoardingView() {
+            document.querySelectorAll('.boarding-step').forEach(s => s.classList.add('hidden'));
+            document.querySelector(`[data-step="${boardingStep}"]`).classList.remove('hidden');
+
+            // Progress Bar
+            const progress = (boardingStep / totalSteps) * 100;
+            document.getElementById('boardingProgress').style.width = `${progress}% `;
+
+            // Step Titles
+            const titles = ["Vital Metrics", "Hormonal Profile", "Personalized Needs"];
+            document.getElementById('boardingStepTitle').textContent = titles[boardingStep - 1];
+
+            // Button Logic
+            const prevBtn = document.querySelector('.boarding-prev-btn');
+            const nextBtn = document.querySelector('.boarding-next-btn');
+            const submitBtn = document.querySelector('.boarding-submit-btn');
+
+            // Prev Button
+            if (boardingStep > 1) prevBtn.classList.remove('hidden');
+            else prevBtn.classList.add('hidden');
+
+            // Next vs Submit
+            if (boardingStep === totalSteps) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+
+            lucide.createIcons();
+        }
+
+        function toggleHeightUnit() {
+            const unit = document.querySelector('input[name="h_unit"]:checked').value;
+            const cmRow = document.getElementById('height_cm_row');
+            const ftRow = document.getElementById('height_ft_row');
+
+            if (unit === 'cm') {
+                cmRow.classList.remove('hidden');
+                ftRow.classList.add('hidden');
+            } else {
+                cmRow.classList.add('hidden');
+                ftRow.classList.remove('hidden');
+            }
+        }
+
+        async function saveOnboarding(e) {
+            e.preventDefault();
+            hideInlineError();
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<div class="flex items-center gap-2"><span>Sculpting...</span><div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div></div>';
+            btn.disabled = true;
+
+            const formData = new FormData(e.target);
+
+            // Height Conversion
+            const unit = formData.get('h_unit');
+            let heightCm = 0;
+            if (unit === 'cm') {
+                heightCm = formData.get('height_cm');
+            } else {
+                const ft = parseInt(formData.get('height_ft') || 0);
+                const inch = parseInt(formData.get('height_in') || 0);
+                heightCm = Math.round((ft * 30.48) + (inch * 2.54));
+            }
+            formData.set('height', heightCm);
+            formData.append('action', 'update_body_data');
+
+            // Timeout controller
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+
+            try {
+                const res = await fetch('api/member_actions.php', {
+                    method: 'POST',
+                    body: formData,
+                    signal: controller.signal,
+                    credentials: 'include'
+                });
+                clearTimeout(timeoutId);
+
+                const text = await res.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error("Server returned non-JSON:", text);
+                    throw new Error('Server error: Invalid response format.');
+                }
+
+                if (data.success) {
+                    showSculpting();
+                    document.getElementById('onboardingModal').classList.add('hidden');
+
+                    // Run generation in background
+                    try {
+                        await triggerProactiveGen();
+                    } catch (genErr) {
+                        console.warn("Generation warning:", genErr);
+                    }
+
+                    await fetchData();
+                    document.getElementById('sculptingOverlay').classList.add('hidden');
+                } else {
+                    throw new Error(data.error || 'Unknown error occurred.');
+                }
+            } catch (err) {
+                console.error(err);
+                let msg = err.message;
+                if (err.name === 'AbortError') {
+                    msg = "Connection timed out. Please check your internet.";
+                } else if (msg.includes('Failed to fetch')) {
+                    msg = "Network error. Please check your connection.";
+                }
+                showInlineError(msg);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // ----------------------------------------------------
+        // RECIPE MODAL LOGIC (Global)
+        // ----------------------------------------------------
+        function openRecipeModal(mealType) {
+            const meal = userData?.plan?.meals?.[mealType];
+            if (!meal) return;
+
+            document.getElementById('recipeModalTitle').textContent = meal.name;
+
+            const content = document.getElementById('recipeModalContent');
+            content.innerHTML = `
+                        < !--Ingredients Section-- >
+                <div class="bg-sage-50/50 rounded-2xl p-5 border border-sage-100">
+                    <h5 class="uppercase tracking-widest text-[0.65rem] font-bold text-sage-400 mb-4 flex items-center gap-2">
+                        <i data-lucide="shopping-bag" class="w-3 h-3"></i> Ingredients
+                    </h5>
+                    <ul class="space-y-3">
+                        ${meal.ingredients.map(ing => `
+                            <li class="flex justify-between items-start text-sm text-sage-700 border-b border-sage-100/50 pb-2 last:border-0 last:pb-0">
+                                <span class="font-medium pr-2">${ing.item}</span>
+                                <span class="text-sage-500 text-xs whitespace-nowrap bg-white px-2 py-1 rounded-md border border-sage-100 shadow-sm font-number">${ing.quantity}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+
+                <!--Instructions Section-- >
+                        <div>
+                            <h5 class="uppercase tracking-widest text-[0.65rem] font-bold text-sage-400 mb-4 flex items-center gap-2">
+                                <i data-lucide="chef-hat" class="w-3 h-3"></i> Preparation
+                            </h5>
+                            <ol class="space-y-6 relative border-l-2 border-sage-100 ml-3 pl-6">
+                                ${meal.instructions.map((step, idx) => `
+                            <li class="relative">
+                                <span class="absolute -left-[1.65rem] top-0 w-6 h-6 rounded-full bg-white border-2 border-sage-200 text-sage-400 text-[10px] font-bold flex items-center justify-center">
+                                    ${idx + 1}
+                                </span>
+                                <p class="text-sm text-sage-600 leading-relaxed font-light">${step}</p>
+                            </li>
+                        `).join('')}
+                            </ol>
+                        </div>
+            `;
+
+            document.getElementById('recipeModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeRecipeModal() {
+            document.getElementById('recipeModal').classList.add('hidden');
+        }
+
+        initialize();
+    </script>
+    <!-- Recipe Modal -->
+    <div id="recipeModal"
+        class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-sage-900/40 backdrop-blur-sm p-4 transition-all duration-300">
+        <div
+            class="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <!-- Header -->
+            <div class="p-6 border-b border-sage-100 bg-sage-50/30 flex justify-between items-center shrink-0">
+                <div>
+                    <p class="text-[10px] font-bold text-sage-300 uppercase tracking-widest mb-1">Recipe Details</p>
+                    <h3 id="recipeModalTitle" class="font-serif text-xl text-sage-800 leading-tight"></h3>
+                </div>
+                <button onclick="closeRecipeModal()"
+                    class="w-8 h-8 rounded-full bg-white border border-sage-100 text-sage-400 flex items-center justify-center hover:bg-sage-50 transition-colors">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
+                <div id="recipeModalContent" class="space-y-8">
+                    <!-- Content injected via JS -->
+                </div>
+            </div>
+
+            <!-- Footer CTA -->
+            <div class="p-4 border-t border-sage-100 bg-white shrink-0">
+                <button onclick="closeRecipeModal()"
+                    class="w-full py-3 bg-sage-900 text-white rounded-xl font-bold text-sm shadow-lg shadow-sage-900/10 hover:shadow-sage-900/20 transition-all">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<!-- Mandatory Onboarding Modal -->
+<div id="onboardingModal" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" data-backdrop="static">
+    <div class="fixed inset-0 bg-sage-500/80 backdrop-blur-xl"></div>
+
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center">
+            <div
+                class="relative transform overflow-hidden rounded-[3rem] bg-cream-50 text-left shadow-2xl transition-all sm:w-full sm:max-w-xl border border-sage-100">
+
+                <!-- Progress Line -->
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-sage-100">
+                    <div id="boardingProgress" class="h-full bg-coral-400 transition-all duration-700 ease-out"
+                        style="width: 33%"></div>
+                </div>
+
+                <form onsubmit="saveOnboarding(event)" class="flex flex-col h-full">
+                    <!-- Header -->
+                    <div class="px-10 pt-12 pb-6">
+                        <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-sage-300 block mb-2">Step
+                            <span id="currentStepNum">1</span> of 3</span>
+                        <h2 id="boardingStepTitle" class="text-4xl font-serif text-sage-500 mb-2">Vital Metrics</h2>
+                        <p class="text-sage-400 text-sm leading-relaxed">Let's start with your basic body measurements.
+                        </p>
+                    </div>
+
+                    <!-- Step Content -->
+                    <div class="px-10 pb-12 flex-1">
+                        <!-- Step 1: Vitals -->
+                        <div class="boarding-step space-y-8 animate-fade-in-up" data-step="1">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">Your
+                                        Weight</label>
+                                    <div class="relative">
+                                        <input type="number" name="weight" required step="0.1" placeholder="00.0"
+                                            class="w-full text-4xl font-serif bg-transparent border-b-2 border-sage-100 py-4 focus:outline-none focus:border-sage-500 transition-colors">
+                                        <span class="absolute right-0 bottom-4 text-sage-300 font-medium">KG</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">Your
+                                        Age</label>
+                                    <div class="relative">
+                                        <input type="number" name="age" required min="13" max="90" placeholder="25"
+                                            class="w-full text-4xl font-serif bg-transparent border-b-2 border-sage-100 py-4 focus:outline-none focus:border-sage-500 transition-colors">
+                                        <span class="absolute right-0 bottom-4 text-sage-300 font-medium">YRS</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div class="flex justify-between items-center">
+                                    <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">Your
+                                        Height</label>
+                                    <div class="flex bg-sage-50 rounded-full p-1 border border-sage-100 scale-90">
+                                        <label
+                                            class="px-4 py-1 rounded-full text-xs font-bold cursor-pointer transition-all has-[:checked]:bg-white has-[:checked]:shadow-sm has-[:checked]:text-sage-500 text-sage-300">
+                                            <input type="radio" name="h_unit" value="cm" checked class="hidden"
+                                                onchange="toggleHeightUnit()"> CM
+                                        </label>
+                                        <label
+                                            class="px-4 py-1 rounded-full text-xs font-bold cursor-pointer transition-all has-[:checked]:bg-white has-[:checked]:shadow-sm has-[:checked]:text-sage-500 text-sage-300">
+                                            <input type="radio" name="h_unit" value="ft" class="hidden"
+                                                onchange="toggleHeightUnit()"> FT
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="height_cm_row" class="relative">
+                                    <input type="number" name="height_cm" step="1" placeholder="170"
+                                        class="w-full text-5xl font-serif bg-transparent border-b-2 border-sage-100 py-4 focus:outline-none focus:border-sage-500 transition-colors">
+                                    <span class="absolute right-0 bottom-4 text-sage-300 font-medium">CM</span>
+                                </div>
+
+                                <div id="height_ft_row" class="hidden flex gap-8">
+                                    <div class="relative flex-1">
+                                        <input type="number" name="height_ft" placeholder="5"
+                                            class="w-full text-5xl font-serif bg-transparent border-b-2 border-sage-100 py-4 focus:outline-none focus:border-sage-500 transition-colors">
+                                        <span class="absolute right-0 bottom-4 text-sage-300 font-medium">FT</span>
+                                    </div>
+                                    <div class="relative flex-1">
+                                        <input type="number" name="height_in" placeholder="10"
+                                            class="w-full text-5xl font-serif bg-transparent border-b-2 border-sage-100 py-4 focus:outline-none focus:border-sage-500 transition-colors">
+                                        <span class="absolute right-0 bottom-4 text-sage-300 font-medium">IN</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Hormonal Profile -->
+                        <div class="boarding-step hidden space-y-8 animate-fade-in-up" data-step="2">
+                            <div class="space-y-4">
+                                <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">PCOS
+                                    Type</label>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <label
+                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
+                                        <input type="radio" name="pcos_type" value="Insulin Resistant" class="hidden"
+                                            required>
+                                        <div class="flex-1">
+                                            <div class="font-bold text-sage-500">Insulin Resistant</div>
+                                            <div class="text-[10px] text-sage-400 leading-tight">Weight gain, fatigue,
+                                                sugar cravings.</div>
+                                        </div>
+                                        <i data-lucide="check-circle-2"
+                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
+                                    </label>
+                                    <label
+                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
+                                        <input type="radio" name="pcos_type" value="Adrenal" class="hidden">
+                                        <div class="flex-1">
+                                            <div class="font-bold text-sage-500">Adrenal Driven</div>
+                                            <div class="text-[10px] text-sage-400 leading-tight">High stress, anxiety,
+                                                sleep issues.</div>
+                                        </div>
+                                        <i data-lucide="check-circle-2"
+                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
+                                    </label>
+                                    <label
+                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
+                                        <input type="radio" name="pcos_type" value="Inflammatory" class="hidden">
+                                        <div class="flex-1">
+                                            <div class="font-bold text-sage-500">Inflammatory</div>
+                                            <div class="text-[10px] text-sage-400 leading-tight">Acne, headaches, joint
+                                                pain.</div>
+                                        </div>
+                                        <i data-lucide="check-circle-2"
+                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
+                                    </label>
+                                    <label
+                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
+                                        <input type="radio" name="pcos_type" value="Post-Pill" class="hidden">
+                                        <div class="flex-1">
+                                            <div class="font-bold text-sage-500">Post-Pill</div>
+                                            <div class="text-[10px] text-sage-400 leading-tight">Symptoms flared after
+                                                birth control.</div>
+                                        </div>
+                                        <i data-lucide="check-circle-2"
+                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label
+                                        class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Cycle
+                                        Length</label>
+                                    <input type="number" name="cycle_length" value="28"
+                                        class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
+                                </div>
+                                <div class="space-y-2">
+                                    <label
+                                        class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Last
+                                        Period</label>
+                                    <input type="date" name="last_period_date"
+                                        class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Diet & Custom -->
+                        <div class="boarding-step hidden space-y-8 animate-fade-in-up" data-step="3">
+                            <div class="space-y-4">
+                                <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">Allergies
+                                    / Intolerances</label>
+                                <textarea name="allergies" rows="3" placeholder="No Allergies" required
+                                    class="w-full p-6 bg-white border-2 border-sage-100 rounded-3xl focus:outline-none focus:border-sage-500 transition-all resize-none"></textarea>
+                            </div>
+
+                            <div class="space-y-4">
+                                <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">Meal
+                                    Preferences</label>
+                                <textarea name="dietary_preferences" rows="3" placeholder="Nigerian Meal" required
+                                    class="w-full p-6 bg-white border-2 border-sage-100 rounded-3xl focus:outline-none focus:border-sage-500 transition-all resize-none"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Container -->
+                    <div id="onboardingError"
+                        class="hidden mx-10 mb-4 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm flex items-start gap-2 animate-in fade-in slide-in-from-top-2">
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="px-10 pb-10 flex gap-4 mt-auto">
+                        <button type="button" onclick="prevBoardingStep()"
+                            class="boarding-prev-btn px-6 py-4 rounded-2xl bg-sage-50 text-sage-400 hover:bg-sage-100 transition-all hidden">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </button>
+
+                        <button type="button" onclick="nextBoardingStep()"
+                            class="boarding-next-btn flex-1 bg-sage-500 text-white font-bold py-4 rounded-2xl shadow-xl shadow-sage-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                            <span>Continue</span>
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+
+                        <button type="submit"
+                            class="boarding-submit-btn flex-1 bg-coral-400 text-white font-bold py-4 rounded-2xl shadow-xl shadow-coral-400/20 hover:scale-[1.02] transition-all hidden flex items-center justify-center gap-2">
+                            <span>Begin My Journey</span>
+                            <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

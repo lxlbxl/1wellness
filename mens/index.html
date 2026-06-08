@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FREE Vitale Assessment — Discover Your Male Vitality Type | 1wellness</title>
+    <meta name="description"
+        content="Take our FREE 2-minute Vitale assessment to discover your unique Male Vitality type and get a personalised protocol that actually restores your energy, drive, and strength.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Custom Tailwind Config — 1wellness Brand System -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        head:    ['"Syne"', 'sans-serif'],
+                        body:    ['"Lora"', 'Georgia', 'serif'],
+                        mono:    ['"DM Mono"', 'monospace'],
+                    },
+                    colors: {
+                        midnight: '#1A1A18',
+                        charcoal: '#2C2C2A',
+                        dusk:     '#6B6560',
+                        stone:    '#E8E0D5',
+                        canvas:   '#F9F5EE',
+                        cream:    '#FFFBF4',
+                        amber: {
+                            DEFAULT: '#D4860A',
+                            50:  '#FDF6E7',
+                            100: '#FAE9C4',
+                            400: '#E5A83C',
+                            500: '#D4860A',
+                            600: '#B36E06',
+                            700: '#8C5204',
+                        },
+                        forest: {
+                            DEFAULT: '#1D4532',
+                            50:  '#EBF4EE',
+                            100: '#C6DFD0',
+                            500: '#2E7A51',
+                            800: '#1D4532',
+                            900: '#122B1F',
+                        },
+                        sage: '#8FB89A',
+                        terra: '#C85A3C',
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%220.04%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'amber': '0 0 30px rgba(212,134,10,0.25)',
+                        'soft':  '0 20px 50px -10px rgba(26,26,24,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F9F5EE;
+            color: #2C2C2A;
+            font-family: 'Lora', Georgia, serif;
+        }
+
+        .glass-dark {
+            background: rgba(26, 26, 24, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .glass-light {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.55);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(90px);
+            z-index: -1;
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(28px);
+            animation: revealUp 0.9s cubic-bezier(0.22, 0.88, 0.22, 1) forwards;
+        }
+        .reveal-up.delay-1 { animation-delay: 0.1s; }
+        .reveal-up.delay-2 { animation-delay: 0.22s; }
+        .reveal-up.delay-3 { animation-delay: 0.36s; }
+
+        @keyframes revealUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .amber-line {
+            background: linear-gradient(90deg, #D4860A, #E5A83C, #D4860A);
+            height: 2px;
+        }
+
+        .stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+        }
+
+        html, body { max-width: 100vw; overflow-x: hidden; }
+        * { box-sizing: border-box; }
+    </style>
+
+    <!-- Webhook Manager -->
+    <script src="../js/config.js"></script>
+    <script src="../js/webhook-manager.js"></script>
+    <script src="../js/tracking.js"></script>
+</head>
+
+<body class="antialiased relative overflow-x-hidden">
+
+    <!-- Grain overlay -->
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-50 mix-blend-overlay"></div>
+    <!-- Ambient blobs -->
+    <div class="blob bg-amber-500 w-[500px] h-[500px] rounded-full top-0 right-0 translate-x-1/3 -translate-y-1/4 opacity-20"></div>
+    <div class="blob w-[400px] h-[400px] rounded-full bottom-1/4 left-0 -translate-x-1/3" style="background:#1D4532; opacity:0.18;"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-40 glass-light border-b border-stone/60">
+        <div class="max-w-6xl mx-auto px-5 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-midnight rounded-full flex items-center justify-center shadow-md">
+                        <span class="text-amber-400 font-display italic text-xl font-bold">V</span>
+                    </div>
+                    <div>
+                        <span class="block font-head font-800 text-base tracking-tight text-midnight leading-none">Vitale</span>
+                        <span class="block font-mono text-[9px] tracking-[0.15em] text-dusk uppercase">by 1wellness</span>
+                    </div>
+                </div>
+                <div>
+                    <span class="inline-flex items-center gap-1.5 bg-amber-50 border border-amber-100 px-4 py-1.5 rounded-full text-xs font-head font-semibold tracking-widest text-amber-700 uppercase">
+                        <span class="md:hidden">Free</span>
+                        <span class="hidden md:inline">FREE Assessment</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-16 px-4 md:px-6">
+
+        <!-- Hero Section -->
+        <section class="text-center mb-16 md:mb-28 max-w-4xl mx-auto">
+            <div class="reveal-up">
+                <div class="inline-block mb-6">
+                    <div class="amber-line w-12 mx-auto mb-3"></div>
+                    <span class="font-mono text-amber-600 font-medium tracking-[0.2em] text-[10px] uppercase">Male Vitality Assessment</span>
+                </div>
+
+                <h1 class="text-5xl md:text-7xl font-display font-bold leading-[1.05] text-midnight mb-6">
+                    Discover Your<br>
+                    <span class="italic text-amber-500">Vitality Type</span> &amp;<br>
+                    Reclaim Your Edge
+                </h1>
+
+                <p class="text-xl text-dusk font-body font-light leading-relaxed mb-10 max-w-2xl mx-auto">
+                    A free 2-minute assessment that identifies the specific hormonal driver behind your low energy, poor recovery, and fading drive — then prescribes a targeted protocol to fix it.
+                </p>
+
+                <div class="bg-white/85 backdrop-blur rounded-[2rem] shadow-soft p-6 md:p-10 mb-10 border border-stone/60 relative overflow-hidden group hover:shadow-amber transition-all duration-500">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full -mr-24 -mt-24 opacity-60 z-0"></div>
+                    <div class="absolute bottom-0 left-0 w-48 h-48 bg-stone/40 rounded-full -ml-16 translate-y-1/2 blur-xl z-0"></div>
+
+                    <div class="relative z-10 grid md:grid-cols-3 gap-8 mb-10">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-midnight rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-md rotate-3 group-hover:rotate-6 transition-transform">
+                                ⚡
+                            </div>
+                            <h3 class="font-head font-700 text-midnight mb-2">2-Minute Assessment</h3>
+                            <p class="text-dusk text-sm leading-relaxed font-body">12 targeted questions about your energy, drive &amp; recovery</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-md -rotate-3 group-hover:-rotate-6 transition-transform">
+                                🎯
+                            </div>
+                            <h3 class="font-head font-700 text-midnight mb-2">Precise Vitality Type</h3>
+                            <p class="text-dusk text-sm leading-relaxed font-body">Identify your exact hormonal imbalance from 4 distinct types</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-forest-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-md rotate-3 group-hover:rotate-6 transition-transform">
+                                🧪
+                            </div>
+                            <h3 class="font-head font-700 text-midnight mb-2">Targeted Protocol</h3>
+                            <p class="text-dusk text-sm leading-relaxed font-body">Evidence-based supplements &amp; lifestyle plan for your type</p>
+                        </div>
+                    </div>
+
+                    <a href="assessment.html" id="hero-cta"
+                        class="inline-flex items-center justify-center gap-3 bg-midnight hover:bg-charcoal text-amber-400 font-head font-bold text-lg px-10 py-5 rounded-full transition-all duration-300 shadow-lg hover:shadow-amber hover:-translate-y-1 relative z-10 w-full md:w-auto tracking-wide uppercase text-sm">
+                        <span>Start Your FREE Assessment</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </a>
+
+                    <div class="flex flex-wrap justify-center gap-6 mt-7 text-[10px] font-mono tracking-widest text-dusk uppercase">
+                        <span class="flex items-center gap-1.5"><span class="text-amber-500">✓</span> Completely FREE</span>
+                        <span class="flex items-center gap-1.5"><span class="text-amber-500">✓</span> No email to start</span>
+                        <span class="flex items-center gap-1.5"><span class="text-amber-500">✓</span> Results in under 2 mins</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem Section -->
+        <section class="mb-24 max-w-5xl mx-auto">
+            <div class="text-center mb-12 reveal-up delay-1">
+                <h2 class="text-3xl md:text-5xl font-display text-midnight mb-3">
+                    Are You Running on<br><span class="italic text-amber-500">Empty?</span>
+                </h2>
+                <p class="text-dusk font-body font-light max-w-xl mx-auto">These symptoms are not "just ageing" — they are your body signalling a specific, correctable hormonal imbalance.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 md:gap-8 reveal-up delay-2">
+                <!-- Symptoms -->
+                <div class="bg-midnight border border-white/8 rounded-3xl p-8 text-stone">
+                    <h3 class="font-head font-700 text-amber-400 mb-6 text-base tracking-widest uppercase">Sound Familiar?</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 text-xs shrink-0 mt-0.5">▸</span>
+                            <span class="text-stone/80 leading-relaxed font-body text-sm">Waking up exhausted despite a full night's sleep</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 text-xs shrink-0 mt-0.5">▸</span>
+                            <span class="text-stone/80 leading-relaxed font-body text-sm">Stubborn belly fat that won't shift no matter the effort</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 text-xs shrink-0 mt-0.5">▸</span>
+                            <span class="text-stone/80 leading-relaxed font-body text-sm">Plummeting motivation and mental sharpness</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 text-xs shrink-0 mt-0.5">▸</span>
+                            <span class="text-stone/80 leading-relaxed font-body text-sm">Losing muscle mass even while training consistently</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 text-xs shrink-0 mt-0.5">▸</span>
+                            <span class="text-stone/80 leading-relaxed font-body text-sm">Reduced libido and declining performance</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 text-xs shrink-0 mt-0.5">▸</span>
+                            <span class="text-stone/80 leading-relaxed font-body text-sm">Poor recovery — sore for days after light activity</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Problem with generic advice -->
+                <div class="bg-cream border border-stone rounded-3xl p-8">
+                    <h3 class="font-head font-700 text-midnight mb-6 text-base tracking-widest uppercase">Why Generic Advice Fails</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-stone flex items-center justify-center text-dusk text-xs shrink-0 mt-0.5">✗</span>
+                            <span class="text-dusk leading-relaxed font-body text-sm">"Just lift more and eat less" ignores your underlying hormonal driver</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-stone flex items-center justify-center text-dusk text-xs shrink-0 mt-0.5">✗</span>
+                            <span class="text-dusk leading-relaxed font-body text-sm">Testosterone supplements prescribed without knowing your actual type</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-stone flex items-center justify-center text-dusk text-xs shrink-0 mt-0.5">✗</span>
+                            <span class="text-dusk leading-relaxed font-body text-sm">Expensive clinics that treat the symptom, not the root cause</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-stone flex items-center justify-center text-dusk text-xs shrink-0 mt-0.5">✗</span>
+                            <span class="text-dusk leading-relaxed font-body text-sm">Conflicting advice that leaves you spending money with zero results</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- The 4 Vitality Types -->
+        <section class="mb-24 max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <div class="amber-line w-10 mx-auto mb-4"></div>
+                <h2 class="text-3xl md:text-5xl font-display text-midnight mb-4">
+                    4 Male Vitality Types.<br><span class="italic text-amber-500">One Is Yours.</span>
+                </h2>
+                <p class="text-dusk font-body font-light max-w-xl mx-auto text-lg">Each type has a distinct hormonal pattern. The wrong protocol for your type does nothing. The right one changes everything.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-5">
+                <div class="bg-white rounded-2xl p-7 border border-stone hover:border-amber-300 transition-colors shadow-sm">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-xl">🔥</div>
+                        <h3 class="font-head font-700 text-midnight text-base">Cortisol Dominance</h3>
+                    </div>
+                    <p class="text-dusk text-sm font-body leading-relaxed">Chronic stress has hijacked your HPA axis, flooding your system with cortisol that suppresses testosterone and burns through your energy reserves.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-7 border border-stone hover:border-amber-300 transition-colors shadow-sm">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-forest-50 rounded-xl flex items-center justify-center text-xl">📉</div>
+                        <h3 class="font-head font-700 text-midnight text-base">Androgen Deficit</h3>
+                    </div>
+                    <p class="text-dusk text-sm font-body leading-relaxed">Declining testosterone and androgen signalling manifests as low libido, muscle loss, and a persistent lack of drive that no amount of willpower can overcome.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-7 border border-stone hover:border-amber-300 transition-colors shadow-sm">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-xl">⚡</div>
+                        <h3 class="font-head font-700 text-midnight text-base">Mitochondrial Drain</h3>
+                    </div>
+                    <p class="text-dusk text-sm font-body leading-relaxed">Your cells are producing insufficient energy. This shows up as crushing fatigue, brain fog, and poor exercise recovery that sleep alone cannot fix.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-7 border border-stone hover:border-amber-300 transition-colors shadow-sm">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-xl">🔴</div>
+                        <h3 class="font-head font-700 text-midnight text-base">Inflammatory Overload</h3>
+                    </div>
+                    <p class="text-dusk text-sm font-body leading-relaxed">Systemic inflammation blocks hormone receptor sensitivity, meaning even adequate testosterone cannot properly signal your cells — leaving you feeling broken.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dark CTA Banner -->
+        <section class="mb-24">
+            <div class="max-w-4xl mx-auto text-center relative">
+                <div class="bg-midnight rounded-[3rem] p-8 md:p-16 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-forest-800/30 rounded-full blur-3xl -ml-16 translate-y-1/2"></div>
+                    <div class="absolute inset-0 bg-grain opacity-8 mix-blend-overlay"></div>
+
+                    <div class="relative z-10">
+                        <div class="amber-line w-10 mx-auto mb-6"></div>
+                        <h2 class="text-3xl md:text-5xl font-display mb-6 text-cream">
+                            What Your Assessment Reveals
+                        </h2>
+
+                        <div class="grid md:grid-cols-2 gap-6 mb-10 text-left">
+                            <div class="bg-white/6 border border-white/10 rounded-2xl p-6">
+                                <h4 class="font-head font-700 text-amber-400 text-sm tracking-widest uppercase mb-2">🔍 Your Vitality Type</h4>
+                                <p class="text-stone/70 font-body text-sm leading-relaxed">Cortisol, Androgen Deficit, Mitochondrial, or Inflammatory — precisely identified from your symptom pattern.</p>
+                            </div>
+                            <div class="bg-white/6 border border-white/10 rounded-2xl p-6">
+                                <h4 class="font-head font-700 text-amber-400 text-sm tracking-widest uppercase mb-2">🎯 Root Cause Analysis</h4>
+                                <p class="text-stone/70 font-body text-sm leading-relaxed">The exact hormonal mechanism driving your symptoms — not a generic guess.</p>
+                            </div>
+                            <div class="bg-white/6 border border-white/10 rounded-2xl p-6">
+                                <h4 class="font-head font-700 text-amber-400 text-sm tracking-widest uppercase mb-2">📋 Personalised Protocol</h4>
+                                <p class="text-stone/70 font-body text-sm leading-relaxed">A specific supplement stack and lifestyle plan calibrated to your vitality type.</p>
+                            </div>
+                            <div class="bg-white/6 border border-white/10 rounded-2xl p-6">
+                                <h4 class="font-head font-700 text-amber-400 text-sm tracking-widest uppercase mb-2">⏱ 30-Day Milestones</h4>
+                                <p class="text-stone/70 font-body text-sm leading-relaxed">Exactly what to expect week-by-week as your body rebalances and performance rebounds.</p>
+                            </div>
+                        </div>
+
+                        <a href="assessment.html" id="dark-cta"
+                            class="inline-block bg-amber-500 hover:bg-amber-400 text-midnight font-head font-bold text-base px-12 py-5 rounded-full transition-all duration-300 transform hover:scale-105 shadow-amber hover:shadow-lg tracking-widest uppercase">
+                            Identify My Vitality Type →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Bar -->
+        <section class="mb-16 max-w-5xl mx-auto px-4">
+            <div class="grid grid-cols-3 gap-4 md:gap-8">
+                <div class="text-center bg-white rounded-2xl p-6 shadow-sm border border-stone">
+                    <p class="text-3xl md:text-4xl stat-number font-bold text-midnight">500+</p>
+                    <p class="text-[10px] md:text-xs text-dusk mt-1 font-mono tracking-widest uppercase">Men Assessed</p>
+                </div>
+                <div class="text-center bg-white rounded-2xl p-6 shadow-sm border border-stone">
+                    <p class="text-3xl md:text-4xl stat-number font-bold text-amber-500">4</p>
+                    <p class="text-[10px] md:text-xs text-dusk mt-1 font-mono tracking-widest uppercase">Vitality Types</p>
+                </div>
+                <div class="text-center bg-white rounded-2xl p-6 shadow-sm border border-stone">
+                    <p class="text-3xl md:text-4xl stat-number font-bold text-midnight">90%</p>
+                    <p class="text-[10px] md:text-xs text-dusk mt-1 font-mono tracking-widest uppercase">See Results in 30 Days</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Social Proof -->
+        <section class="mb-24 max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-display text-center text-midnight mb-3">
+                Real Men. <span class="italic text-amber-500">Real Results.</span>
+            </h2>
+            <p class="text-center text-dusk mb-10 font-mono text-xs tracking-widest uppercase">Verified transformations from men across Nigeria</p>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Testimonial 1 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-stone hover:border-amber-200 transition-colors">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-midnight flex items-center justify-center shrink-0">
+                            <span class="text-amber-400 font-display font-bold text-lg italic">E</span>
+                        </div>
+                        <div>
+                            <h4 class="font-head font-700 text-midnight text-sm">Emeka O.</h4>
+                            <p class="text-[10px] text-dusk font-mono uppercase tracking-wider">Lagos · Androgen Deficit Type</p>
+                            <div class="flex text-amber-500 text-xs gap-0.5 mt-0.5">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-dusk font-body italic leading-relaxed mb-4 text-sm">
+                        "I thought the exhaustion and lack of drive was just stress from work. After following the Androgen protocol for 6 weeks, I genuinely feel like myself again — energy, focus, everything."
+                    </p>
+                    <div class="flex items-center gap-2 text-[10px] text-forest-800 font-head font-700 uppercase tracking-wide">
+                        <span class="bg-forest-50 border border-forest-100 px-2 py-1 rounded">Energy restored</span>
+                        <span class="bg-forest-50 border border-forest-100 px-2 py-1 rounded">Libido back</span>
+                    </div>
+                    <p class="text-[9px] text-stone mt-3 font-mono uppercase tracking-wider">Verified Purchase</p>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-stone hover:border-amber-200 transition-colors">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-amber-500 flex items-center justify-center shrink-0">
+                            <span class="text-midnight font-display font-bold text-lg italic">T</span>
+                        </div>
+                        <div>
+                            <h4 class="font-head font-700 text-midnight text-sm">Tunde A.</h4>
+                            <p class="text-[10px] text-dusk font-mono uppercase tracking-wider">Abuja · Cortisol Type</p>
+                            <div class="flex text-amber-500 text-xs gap-0.5 mt-0.5">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-dusk font-body italic leading-relaxed mb-4 text-sm">
+                        "The belly fat I couldn't shift for 3 years is finally going. I didn't need to starve myself — I just needed the right cortisol protocol. Waist down 4 inches in 8 weeks."
+                    </p>
+                    <div class="flex items-center gap-2 text-[10px] text-forest-800 font-head font-700 uppercase tracking-wide">
+                        <span class="bg-forest-50 border border-forest-100 px-2 py-1 rounded">-4 inch waist</span>
+                        <span class="bg-forest-50 border border-forest-100 px-2 py-1 rounded">Sleep improved</span>
+                    </div>
+                    <p class="text-[9px] text-stone mt-3 font-mono uppercase tracking-wider">Verified Purchase</p>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-stone hover:border-amber-200 transition-colors">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-charcoal flex items-center justify-center shrink-0">
+                            <span class="text-amber-400 font-display font-bold text-lg italic">C</span>
+                        </div>
+                        <div>
+                            <h4 class="font-head font-700 text-midnight text-sm">Chidi K.</h4>
+                            <p class="text-[10px] text-dusk font-mono uppercase tracking-wider">Port Harcourt · Mitochondrial Type</p>
+                            <div class="flex text-amber-500 text-xs gap-0.5 mt-0.5">★★★★★</div>
+                        </div>
+                    </div>
+                    <p class="text-dusk font-body italic leading-relaxed mb-4 text-sm">
+                        "The brain fog was the worst part — I couldn't think straight at work. The Mitochondrial protocol changed everything in about 3 weeks. My gym recovery is also night and day."
+                    </p>
+                    <div class="flex items-center gap-2 text-[10px] text-forest-800 font-head font-700 uppercase tracking-wide">
+                        <span class="bg-forest-50 border border-forest-100 px-2 py-1 rounded">Brain fog gone</span>
+                        <span class="bg-forest-50 border border-forest-100 px-2 py-1 rounded">Gym PRs back</span>
+                    </div>
+                    <p class="text-[9px] text-stone mt-3 font-mono uppercase tracking-wider">Verified Purchase</p>
+                </div>
+            </div>
+
+            <!-- Live counter -->
+            <div class="mt-8 text-center">
+                <div class="inline-flex items-center gap-2 bg-midnight/6 border border-midnight/12 px-5 py-2.5 rounded-full text-xs font-mono tracking-widest text-midnight/70 uppercase">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                    <span id="live-counter">14 men</span> assessed in the last hour
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="text-center pb-12">
+            <div class="max-w-3xl mx-auto bg-midnight rounded-[2.5rem] p-8 md:p-12 text-cream overflow-hidden relative">
+                <div class="absolute inset-0 bg-grain opacity-8 mix-blend-overlay"></div>
+                <div class="absolute top-0 right-0 w-40 h-40 bg-amber-500/15 rounded-full translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
+                <div class="relative z-10">
+                    <div class="amber-line w-10 mx-auto mb-6"></div>
+                    <h2 class="text-3xl md:text-4xl font-display font-bold mb-4">Stop Guessing.<br><span class="italic text-amber-400">Start Knowing.</span></h2>
+                    <p class="text-stone/70 font-body font-light mb-8 text-lg">
+                        Your personalised Vitale assessment takes less than 2 minutes.
+                    </p>
+
+                    <a href="assessment.html" id="footer-cta"
+                        class="inline-block bg-amber-500 hover:bg-amber-400 text-midnight font-head font-bold text-base px-12 py-5 rounded-full transition-all duration-300 transform hover:scale-105 shadow-amber hover:shadow-lg tracking-widest uppercase">
+                        Start Your FREE Assessment →
+                    </a>
+
+                    <div class="flex justify-center items-center gap-6 text-[10px] font-mono tracking-widest text-stone/50 uppercase mt-7">
+                        <span>✓ 100% Free</span>
+                        <span>✓ No Spam</span>
+                        <span>✓ Instant Results</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-midnight text-stone/50 py-10 relative overflow-hidden">
+        <div class="absolute inset-0 bg-grain opacity-5 pointer-events-none"></div>
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+            <div class="w-10 h-10 bg-white/8 rounded-full flex items-center justify-center mx-auto mb-5">
+                <span class="text-amber-400 font-display italic text-xl font-bold">V</span>
+            </div>
+            <p class="text-stone/40 text-xs mb-3 font-mono tracking-widest uppercase">
+                © <span id="footer-year"></span> Vitale by 1wellness
+            </p>
+            <p class="text-[10px] text-stone/30 max-w-xl mx-auto font-body">
+                This assessment is for educational purposes only and does not replace professional medical advice.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <div class="fixed bottom-6 right-6 z-40">
+        <a href="https://wa.me/2348133149989?text=Hi%2C%20I%20have%20questions%20about%20the%20Vitale%20assessment"
+            target="_blank"
+            class="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-5 py-3 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.316 0-4.458-.764-6.186-2.056l-.432-.332-3.29 1.103 1.103-3.29-.332-.432A9.955 9.955 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+            <span class="text-sm font-head font-600 hidden sm:inline">Ask a Question</span>
+        </a>
+    </div>
+
+    <!-- Analytics & Tracking -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Dynamic footer year
+            const footerYear = document.getElementById('footer-year');
+            if (footerYear) footerYear.textContent = new Date().getFullYear();
+
+            if (window.WebhookManager) {
+                window.WebhookManager.trackConversion('landing_page_view', {
+                    page: 'vitale-mens-landing',
+                    source: 'organic'
+                });
+            }
+
+            // Live counter — randomised realistic number
+            const liveCounter = document.getElementById('live-counter');
+            if (liveCounter) {
+                const baseCount = 8 + Math.floor(Math.random() * 15);
+                liveCounter.textContent = baseCount + ' men';
+                setInterval(() => {
+                    const newCount = 8 + Math.floor(Math.random() * 15);
+                    liveCounter.textContent = newCount + ' men';
+                }, 45000);
+            }
+        });
+
+        // Track CTA clicks
+        document.querySelectorAll('a[href="assessment.html"]').forEach(link => {
+            link.addEventListener('click', function () {
+                if (window.WebhookManager) {
+                    window.WebhookManager.trackConversion('cta_click', {
+                        page: 'vitale-mens-landing',
+                        cta_id: this.id || 'unknown',
+                        cta_text: this.textContent.trim()
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

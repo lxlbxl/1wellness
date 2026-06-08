@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Acne Type Results - Personalized Treatment Plan</title>
+    <meta name="description"
+        content="Discover your personalized Acne type results and get targeted treatment recommendations that work for your specific symptoms.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Syne', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                        body: ['Lora', 'serif'],
+                        mono: ['DM Mono', 'monospace'],
+                    },
+                    colors: {
+                        'forest': {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#1D4532',
+                            800: '#1D4532', // Forest Authority
+                            900: '#1A1A18', // Midnight Earth
+                        },
+                        'sage': {
+                            100: '#E6EBE6',
+                            200: '#CDD6CD',
+                            500: '#8FB89A', // Sage Light
+                        },
+                        'terracotta': {
+                            500: '#C85A3C', // Terracotta Bold
+                            600: '#C85A3C',
+                        },
+                        'cream': '#FFFBF4', // Warm Cream
+                        'sand': '#F9F5EE', // Pure Canvas
+                        'midnight': '#1A1A18',
+                        'amber': '#D4860A', // Amber Vitality
+                        'charcoal': '#2C2C2A',
+                        'dusk': '#6B6560',
+                        'stone': '#E8E0D5',
+                        // Compatibility mapping for existing scripts
+                        primary: {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#1D4532',
+                            600: '#1D4532',
+                            700: '#1A1A18',
+                            800: '#1A1A18',
+                            900: '#1A1A18'
+                        }
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(29, 69, 50, 0.1)',
+                        'glow': '0 0 20px rgba(200, 90, 60, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FFFBF4;
+            color: #2C2C2A;
+            font-family: 'Lora', Georgia, serif;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        /* Responsive width handling */
+        html,
+        body {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+    </style>
+
+    <!-- Webhook Manager -->
+    <script src="../js/config.js"></script>
+    <script src="../js/webhook-manager.js"></script>
+    <script src="../js/tracking.js"></script>
+</head>
+
+<body class="antialiased relative min-h-screen">
+
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-40 mix-blend-overlay"></div>
+    <div class="blob bg-sage-200 w-96 h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="blob bg-terracotta-500 w-80 h-80 rounded-full top-1/4 right-0 translate-x-1/3 opacity-20"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-40 glass-panel border-b border-sage-200/50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-forest-900 rounded-full flex items-center justify-center shadow-lg">
+                        <span class="text-sand font-serif italic text-xl">W</span>
+                    </div>
+                    <span class="text-lg font-serif font-bold tracking-tight text-forest-900">Your GlowClear Report</span>
+                </div>
+                <div class="text-sm text-forest-800">
+                    <span
+                        class="bg-forest-100/50 border border-forest-100 px-3 md:px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide uppercase">
+                        <span class="md:hidden">Complete</span>
+                        <span class="hidden md:inline">Analysis Complete</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-28 pb-12 px-4 md:px-6" x-data="acneResults()">
+
+        <!-- Loading State -->
+        <div x-show="isLoading" class="text-center py-24 min-h-[60vh] flex flex-col items-center justify-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-forest-900 mx-auto mb-6"></div>
+            <h2 class="text-3xl font-serif font-bold text-forest-900 mb-3">Analyzing Your Unique Profile...</h2>
+            <p class="text-gray-500 font-light text-lg">Comparing your symptoms with our database of 500+ skin profiles.</p>
+        </div>
+
+        <!-- Results Content -->
+        <div x-show="!isLoading && assessmentData">
+
+            <!-- Congratulations Section -->
+            <section class="text-center mb-10 md:mb-16 max-w-4xl mx-auto">
+                <div
+                    class="glass-panel rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 shadow-soft relative overflow-hidden">
+                    <div
+                        class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-terracotta-500 via-forest-500 to-terracotta-500">
+                    </div>
+
+                    <div
+                        class="w-20 h-20 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-sm">
+                        🎉
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-serif font-bold text-forest-900 mb-4">
+                        Analysis Complete, <span x-text="assessmentData?.contactInfo?.name?.split(' ')[0] || ''"
+                            class="italic text-terracotta-600"></span>!
+                    </h1>
+                    <p class="text-xl text-gray-600 font-light max-w-2xl mx-auto">
+                        We've identified your specific Acne driver. This is the first step to finally taking control of
+                        your skin health.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Acne Type Results -->
+            <section class="mb-10 md:mb-16 max-w-5xl mx-auto">
+                <div
+                    class="bg-forest-900 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-12 text-sand shadow-2xl relative overflow-hidden group">
+                    <!-- Decorative background elements -->
+                    <div
+                        class="absolute top-0 right-0 w-96 h-96 bg-forest-800 rounded-full blur-3xl opacity-50 -mr-32 -mt-32">
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full h-full bg-grain opacity-10 mix-blend-overlay"></div>
+
+                    <div class="relative z-10 text-center mb-10">
+                        <span
+                            class="inline-block border border-forest-700 bg-forest-800/50 px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4 text-forest-200">Your
+                            Primary Type</span>
+                        <h2 class="text-3xl md:text-6xl font-serif font-bold mb-4 text-white"
+                            x-text="acneTypeInfo.name"></h2>
+                        <p class="text-forest-200 text-base md:text-xl max-w-3xl mx-auto font-light leading-relaxed"
+                            x-text="acneTypeInfo.description"></p>
+
+                        <div class="mt-6">
+                            <span
+                                class="inline-flex items-center gap-2 bg-white/10 backdrop-blur px-4 py-2 rounded-full text-sm font-medium border border-white/20">
+                                Confidence Level: <span class="text-terracotta-400 font-bold"
+                                    x-text="assessmentData?.acneType?.confidence?.toUpperCase()"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Type Details Grid -->
+                    <div class="grid md:grid-cols-2 gap-6 relative z-10">
+                        <!-- Common Symptoms -->
+                        <div
+                            class="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/10 transition-colors">
+                            <h4 class="font-serif text-xl font-bold text-terracotta-400 mb-6 flex items-center gap-2">
+                                <span class="text-2xl">⚠️</span> Your Key Symptoms
+                            </h4>
+                            <ul class="space-y-4">
+                                <template x-for="symptom in acneTypeInfo.symptoms" :key="symptom">
+                                    <li class="flex items-start gap-3">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-terracotta-500 mt-2.5 shrink-0"></span>
+                                        <span class="text-gray-200 font-light text-lg" x-text="symptom"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+
+                        <!-- Root Causes -->
+                        <div
+                            class="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/10 transition-colors">
+                            <h4 class="font-serif text-xl font-bold text-sage-300 mb-6 flex items-center gap-2">
+                                <span class="text-2xl">🧬</span> Your Root Causes
+                            </h4>
+                            <ul class="space-y-4">
+                                <template x-for="cause in acneTypeInfo.causes" :key="cause">
+                                    <li class="flex items-start gap-3">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-sage-400 mt-2.5 shrink-0"></span>
+                                        <span class="text-gray-200 font-light text-lg" x-text="cause"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Your Healing Protocol Preview (Teaser - not giving away the solution) -->
+            <section class="mb-20 max-w-6xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-forest-900 mb-4">Your Personalized Healing Protocol</h2>
+                    <p class="text-gray-500">We've identified 3 targeted interventions for <span x-text="acneTypeInfo.name"
+                            class="font-bold text-forest-800"></span></p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <template x-for="(protocol, index) in acneTypeInfo.protocols" :key="index">
+                        <div
+                            class="glass-panel p-8 rounded-2xl hover:shadow-lg transition-all duration-300 group border-t-4 border-t-transparent hover:border-t-forest-500 relative overflow-hidden">
+                            <div
+                                class="w-12 h-12 bg-forest-100 text-forest-800 rounded-xl flex items-center justify-center mb-6 font-serif font-bold text-xl group-hover:bg-forest-900 group-hover:text-sand transition-colors">
+                                <span x-text="index + 1"></span>
+                            </div>
+                            <h4 class="font-serif text-xl font-bold text-forest-900 mb-3" x-text="protocol.title">
+                            </h4>
+                            <p class="text-gray-600 font-light text-sm leading-relaxed"
+                                x-text="protocol.teaser"></p>
+                            <!-- Locked overlay -->
+                            <div class="mt-4 flex items-center gap-2 text-xs font-bold text-terracotta-600 uppercase tracking-wider">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                                <span x-text="protocol.locked"></span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </section>
+
+            <!-- The Problem Section (Glassmorphism Warning) -->
+            <section class="mb-20 max-w-5xl mx-auto">
+                <div
+                    class="bg-gradient-to-br from-terracotta-50 to-white border border-terracotta-100 rounded-[2rem] p-8 md:p-12 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 text-9xl opacity-5 pointer-events-none select-none">!</div>
+
+                    <h2 class="text-3xl font-serif font-bold text-terracotta-900 mb-6">Here's the Truth They Won't Tell
+                        You...</h2>
+                    <p class="text-lg text-gray-700 mb-8 max-w-3xl leading-relaxed">
+                        Free tips and generic advice will <strong>not</strong> fix <strong
+                            x-text="acneTypeInfo.name"></strong>. You need a system that works for YOUR body — one that
+                        adapts daily, tracks your cycles, and gives you Western recipes you'll actually eat.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-10">
+                        <div>
+                            <h3 class="font-bold text-terracotta-800 mb-4 uppercase text-xs tracking-widest">Without a
+                                proper plan:</h3>
+                            <ul class="space-y-4">
+                                <li class="flex items-start gap-3">
+                                    <span class="text-terracotta-500 text-lg">✗</span>
+                                    <span class="text-gray-600 font-light">Symptoms often return with a vengeance</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-terracotta-500 text-lg">✗</span>
+                                    <span class="text-gray-600 font-light">Wasted money on generic supplements</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-terracotta-500 text-lg">✗</span>
+                                    <span class="text-gray-600 font-light">Years of frustration and trial & error</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-bold text-forest-800 mb-4 uppercase text-xs tracking-widest">You need a
+                                system that includes:</h3>
+                            <ul class="space-y-4">
+                                <li class="flex items-start gap-3">
+                                    <span class="text-forest-500 text-lg">✓</span>
+                                    <span class="text-gray-800"><strong>Smart-personalized meals</strong> crafted daily
+                                        for
+                                        your type</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-forest-500 text-lg">✓</span>
+                                    <span class="text-gray-800">Herbal tea rituals with <strong>tracking &
+                                            reminders</strong></span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-forest-500 text-lg">✓</span>
+                                    <span class="text-gray-800">A <strong>private member portal</strong> that evolves
+                                        with you</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Educational Bridge -->
+            <section class="mb-20 max-w-5xl mx-auto">
+                <div class="text-center mb-12">
+                    <span class="text-terracotta-600 font-medium tracking-widest text-xs uppercase mb-2 block">The
+                        Scientific Approach</span>
+                    <h2 class="text-3xl md:text-5xl font-serif font-bold text-forest-900 mb-6">
+                        The 2-Step Hormonal Reset
+                    </h2>
+                    <p class="text-xl text-gray-500 font-light max-w-2xl mx-auto">
+                        To reverse <span x-text="acneTypeInfo.name" class="font-medium"></span>, you need a holistic
+                        approach that realigns your body's natural rhythms.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Step 1 -->
+                    <div
+                        class="glass-panel p-8 rounded-3xl relative hover:-translate-y-1 transition-transform duration-300">
+                        <div
+                            class="bg-forest-100 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm">
+                            🌿</div>
+                        <h3 class="font-serif text-2xl font-bold text-forest-900 mb-3">1. Herbal Intervention</h3>
+                        <p class="text-gray-600 font-light mb-4 leading-relaxed">
+                            We use potent <strong>organic roots & leaves</strong> that have been used for centuries to
+                            naturally lower sebum production and clear synthetic hormone residues.
+                        </p>
+                        <ul class="space-y-2 text-sm text-gray-500">
+                            <li class="flex items-center gap-2"><span class="text-forest-500">✓</span> Rebalance sebum and oil production</li>
+                            <li class="flex items-center gap-2"><span class="text-forest-500">✓</span> Clear synthetic hormone residues</li>
+                        </ul>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div
+                        class="glass-panel p-8 rounded-3xl relative hover:-translate-y-1 transition-transform duration-300">
+                        <div
+                            class="bg-sage-200 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm">
+                            🥗</div>
+                        <h3 class="font-serif text-2xl font-bold text-forest-900 mb-3">2. Nutritional Therapy</h3>
+                        <p class="text-gray-600 font-light mb-4 leading-relaxed">
+                            Specific <strong>hormone-balancing meals</strong> designed to reduce inflammation instantly
+                            and keep blood sugar stable.
+                        </p>
+                        <ul class="space-y-2 text-sm text-gray-500">
+                            <li class="flex items-center gap-2"><span class="text-forest-500">✓</span> Reduce
+                                inflammation instantly</li>
+                            <li class="flex items-center gap-2"><span class="text-forest-500">✓</span> Support metabolic
+                                function</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Value Stack Preview (Price Anchoring) -->
+            <section class="max-w-5xl mx-auto mb-12 md:mb-16">
+                <div class="text-center mb-10">
+                    <span class="text-terracotta-600 font-medium tracking-widest text-xs uppercase mb-2 block">What's Inside Your Portal</span>
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-forest-900 mb-4">
+                        Everything Built for <span x-text="acneTypeInfo.name" class="italic text-terracotta-600"></span>
+                    </h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="glass-panel rounded-2xl p-6 flex items-start gap-4">
+                        <div class="w-10 h-10 bg-forest-100 rounded-xl flex items-center justify-center text-xl shrink-0">🥗</div>
+                        <div>
+                            <h4 class="font-bold text-forest-900 mb-1">Smart-Personalized Daily Meals</h4>
+                            <p class="text-gray-500 text-sm">Western recipes that target your specific skin triggers</p>
+                            <span class="text-xs text-gray-400 line-through mt-1 block">Valued at $45</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel rounded-2xl p-6 flex items-start gap-4">
+                        <div class="w-10 h-10 bg-forest-100 rounded-xl flex items-center justify-center text-xl shrink-0">🍵</div>
+                        <div>
+                            <h4 class="font-bold text-forest-900 mb-1">Morning & Evening Herbal Rituals</h4>
+                            <p class="text-gray-500 text-sm">Type-specific blends with daily reminders & tracking</p>
+                            <span class="text-xs text-gray-400 line-through mt-1 block">Valued at $35</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel rounded-2xl p-6 flex items-start gap-4">
+                        <div class="w-10 h-10 bg-forest-100 rounded-xl flex items-center justify-center text-xl shrink-0">🏃‍♀️</div>
+                        <div>
+                            <h4 class="font-bold text-forest-900 mb-1">Skin-Support Movement Protocols</h4>
+                            <p class="text-gray-500 text-sm">Stress-aware activity plans that support detoxification</p>
+                            <span class="text-xs text-gray-400 line-through mt-1 block">Valued at $27</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel rounded-2xl p-6 flex items-start gap-4">
+                        <div class="w-10 h-10 bg-forest-100 rounded-xl flex items-center justify-center text-xl shrink-0">📊</div>
+                        <div>
+                            <h4 class="font-bold text-forest-900 mb-1">Skin & Trigger Data Tracking</h4>
+                            <p class="text-gray-500 text-sm">Log skin flares, food triggers, and symptoms to watch progress</p>
+                            <span class="text-xs text-gray-400 line-through mt-1 block">Valued at $90</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-8">
+                    <p class="text-sm text-gray-400">Total Value: <span class="line-through">$197</span></p>
+                    <p class="text-2xl font-serif font-bold text-forest-900 mt-1" x-show="pricingLoaded && startingPrice > 0" x-cloak>
+                        Your Assessment Price: Starting from <span x-text="'$' + startingPrice.toLocaleString()"></span>
+                    </p>
+                    <p class="text-2xl font-serif font-bold text-forest-900 mt-1 animate-pulse" x-show="!pricingLoaded">
+                        Loading price...
+                    </p>
+                </div>
+            </section>
+
+            <!-- Final Solution Card (Sales Page Link) — Honest CTA -->
+            <section class="max-w-4xl mx-auto mb-16 md:mb-20 text-center">
+                <div
+                    class="bg-forest-900 rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-14 shadow-2xl relative overflow-hidden text-white">
+                    <div class="absolute inset-0 bg-grain opacity-10 mix-blend-overlay"></div>
+                    <div class="absolute top-0 left-0 w-64 h-64 bg-terracotta-500 rounded-full blur-[100px] opacity-20">
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-64 h-64 bg-sage-500 rounded-full blur-[100px] opacity-20">
+                    </div>
+
+                    <div class="relative z-10">
+                        <h2 class="text-3xl md:text-5xl font-serif font-bold mb-6">
+                            Ready to Start Your <span x-text="acneTypeInfo.name" class="italic text-terracotta-400"></span> Protocol?
+                        </h2>
+                        <p class="text-xl text-forest-100 mb-10 font-light max-w-2xl mx-auto">
+                            Your personalized treatment plan is ready. Choose the program that fits your journey — 30-day quick start or the complete 90-day transformation.
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                            <button @click="viewSolution()"
+                                class="bg-terracotta-500 hover:bg-terracotta-600 text-white font-bold text-lg md:text-xl px-10 py-5 rounded-full transition-all duration-300 transform hover:scale-105 shadow-glow hover:shadow-lg">
+                                See My Treatment Plan →
+                            </button>
+                        </div>
+
+                        <div
+                            class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 text-xs font-bold tracking-widest text-forest-300 uppercase mt-6">
+                            <span class="flex items-center gap-2">✓ Instant Portal Access</span>
+                            <span class="flex items-center gap-2">✓ Money-Back Guarantee</span>
+                            <span class="flex items-center gap-2">✓ 500+ People Transformed</span>
+                        </div>
+
+                        <!-- WhatsApp CTA -->
+                        <div class="mt-8 pt-6 border-t border-white/10">
+                            <p class="text-forest-200/80 text-sm mb-3">Have questions first?</p>
+                            <a href="https://wa.me/2348133149989?text=Hi%2C%20I%20just%20completed%20my%20Acne%20assessment%20and%20I%20have%20some%20questions%20about%20the%20treatment%20plan"
+                                target="_blank"
+                                class="inline-flex items-center gap-2 text-white/90 hover:text-white text-sm font-medium transition-colors">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.932 11.932 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.316 0-4.458-.764-6.186-2.056l-.432-.332-3.29 1.103 1.103-3.29-.332-.432A9.955 9.955 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+                                Chat with a Acne Specialist on WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- No Data State -->
+        <div x-show="!isLoading && !assessmentData"
+            class="text-center py-24 min-h-[50vh] flex flex-col items-center justify-center">
+            <h2 class="text-3xl font-serif font-bold text-forest-900 mb-4">No Assessment Data Found</h2>
+            <p class="text-gray-500 font-light mb-8 text-lg">It looks like you haven't completed the assessment yet.</p>
+            <a href="assessment.html"
+                class="bg-forest-900 hover:bg-forest-800 text-sand font-bold text-lg px-10 py-4 rounded-full transition-all shadow-lg hover:-translate-y-1">
+                Take Assessment →
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-sage-200 py-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <p class="text-forest-900/40 text-sm">© <span id="footer-year"></span> GlowClear by 1wellness. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Results Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const footerYearSpan = document.getElementById('footer-year');
+            if (footerYearSpan) {
+                footerYearSpan.textContent = new Date().getFullYear();
+            }
+        });
+
+        function acneResults() {
+            return {
+                isLoading: true,
+                assessmentData: null,
+                acneTypeInfo: {},
+                startingPrice: 0,
+                pricingLoaded: false,
+
+                init() {
+                    this.loadAssessmentData();
+                    this.loadPricing();
+                },
+
+                async loadPricing() {
+                    try {
+                        const response = await fetch('../backend/api/get-pricing.php');
+                        const result = await response.json();
+                        if (result.success && result.data.plans.acne) {
+                            const plans = result.data.plans.acne;
+                            // Use the lowest plan price as "Starting from" price
+                            const prices = [];
+                            if (plans['30-day']) prices.push(Number(plans['30-day'].price));
+                            if (plans['90-day']) prices.push(Number(plans['90-day'].price));
+                            this.startingPrice = Math.min(...prices);
+                        }
+                    } catch (e) {
+                        console.error('Failed to load pricing', e);
+                        this.startingPrice = 0;
+                    } finally {
+                        this.pricingLoaded = true;
+                    }
+                },
+
+                loadAssessmentData() {
+                    // Simulate loading delay
+                    setTimeout(() => {
+                        const data = localStorage.getItem('acneAssessmentData');
+                        if (data) {
+                            this.assessmentData = JSON.parse(data);
+                            this.acneTypeInfo = this.getAcneTypeInfo(this.assessmentData.acneType.primary);
+
+                            // Save Acne type to localStorage for member area pre-fill
+                            const acneTypeMap = {
+                                'insulin': 'Insulin Resistant',
+                                'inflammatory': 'Inflammatory',
+                                'adrenal': 'Adrenal',
+                                'postPill': 'Post-Pill'
+                            };
+                            const acneTypeForMember = acneTypeMap[this.assessmentData.acneType.primary] || 'Insulin Resistant';
+                            localStorage.setItem('1w_acne_type', acneTypeForMember);
+                            localStorage.setItem('1w_acne_type_confidence', this.assessmentData.acneType.confidence || 'medium');
+
+                            // Track results view
+                            if (window.WebhookManager) {
+                                window.WebhookManager.trackConversion('results_page_view', {
+                                    page: 'glowclear-acne-results',
+                                    acneType: this.assessmentData.acneType.primary,
+                                    confidence: this.assessmentData.acneType.confidence
+                                });
+                            }
+
+                            // Fire Meta Pixel Lead event — assessment completed with Acne type
+                            if (window.WellnessTracking) {
+                                window.WellnessTracking.trackLead('Acne', this.assessmentData.acneType.primary);
+                                window.WellnessTracking.trackCompleteRegistration('Acne');
+                            }
+                        }
+                        this.isLoading = false;
+                    }, 2000);
+                },
+
+                getAcneTypeInfo(type) {
+                    const typeInfo = {
+                        insulin: {
+                            name: "Insulin-Triggered Acne",
+                            description: "Your acne is driven by high insulin levels causing an androgen excess, which sends your sebaceous glands into sebum overdrive.",
+                            symptoms: [
+                                "Deep, painful cystic breakouts on the jawline, chin, and neck",
+                                "Persistent oily T-zone and cheeks within hours of washing",
+                                "Breakouts that worsen after eating sweets, carbs, or heavy starches",
+                                "Frequent afternoon energy crashes and strong sugar cravings",
+                                "Clogged pores, blackheads, and bumpy skin texture",
+                                "Occasional irregular cycles or excess hair thinning on scalp"
+                            ],
+                            causes: [
+                                "Insulin spikes stimulating insulin-like growth factor (IGF-1)",
+                                "IGF-1 directly upregulating active androgen levels in skin",
+                                "Androgen excess triggers sebaceous gland hyper-activity",
+                                "Overproduction of sebum clogging pores and feeding acne bacteria"
+                            ],
+                            protocols: [
+                                {
+                                    title: "Insulin-Reset Skin Diet",
+                                    teaser: "A specific nutrition protocol designed to lower fasting insulin, stabilize glucose levels, and reduce IGF-1 stimulation of oil glands.",
+                                    locked: "Full meal plan inside portal"
+                                },
+                                {
+                                    title: "Androgen Deflector Herb Stack",
+                                    teaser: "A daily morning and evening herbal ritual using organic Spearmint and Berberine to lower androgen levels and regulate sebum production.",
+                                    locked: "Herbal protocol inside portal"
+                                },
+                                {
+                                    title: "Sebum Regulation Protocol",
+                                    teaser: "Targeted internal and external guidelines to calm sebaceous gland hyper-activity and clear deep pores from the inside out.",
+                                    locked: "Full system inside portal"
+                                }
+                            ]
+                        },
+                        inflammatory: {
+                            name: "Gut-Skin Inflammatory Acne",
+                            description: "Your acne is driven by gut dysbiosis, where barrier permeability leaks inflammatory markers into circulation, triggering red, inflamed surface breakouts.",
+                            symptoms: [
+                                "Red, angry, inflamed breakouts primarily on cheeks and forehead",
+                                "Frequent bloating, gas, reflux, or sluggish digestion",
+                                "Dry, tight, or flaky skin surface that still breaks out underneath",
+                                "Breakouts that flare directly after dairy, gluten, or processed foods",
+                                "Slow healing skin with red or dark spots that persist for months",
+                                "Skin sensitivities or reaction to harsh topical treatments"
+                            ],
+                            causes: [
+                                "Gut barrier permeability (leaky gut) triggering systemic inflammation",
+                                "Dysbiosis (imbalanced gut bacteria) upregulating immune responses",
+                                "Food sensitivities triggering inflammatory cytokine release",
+                                "Sluggish metabolic clearance causing waste to exit through skin"
+                            ],
+                            protocols: [
+                                {
+                                    title: "Gut-Skin Reset Diet",
+                                    teaser: "A targeted anti-inflammatory meal plan that removes reactive foods and introduces gut-healing superfoods to repair the intestinal lining.",
+                                    locked: "Full meal plan inside portal"
+                                },
+                                {
+                                    title: "Microbiome & Barrier Rebuild Stack",
+                                    teaser: "An herbal and mineral protocol using Zinc and gut-restorative herbs to seal the gut lining and block systemic inflammatory signals to your skin.",
+                                    locked: "Herbal protocol inside portal"
+                                },
+                                {
+                                    title: "Cellular Clearance Protocol",
+                                    teaser: "Internal guidelines to support liver clearance and lymphatic drainage, preventing waste from showing up on your face.",
+                                    locked: "Full system inside portal"
+                                }
+                            ]
+                        },
+                        adrenal: {
+                            name: "Stress/Adrenal Acne",
+                            description: "Your acne is triggered by stress hormones like cortisol and DHEA-S, which stimulate oil production and cause hormonal jawline breakouts.",
+                            symptoms: [
+                                "Breakouts that flare up during stressful, busy, or sleepless weeks",
+                                "Painful, inflamed bumps primarily along the jawline, chin, and neck",
+                                "Difficulty falling asleep or waking up at 3-4 AM feeling wired",
+                                "Chronic fatigue combined with nervous energy (tired but wired)",
+                                "Strong cravings for salty foods or a high dependency on caffeine",
+                                "Dry or dull complexion with sudden breakouts"
+                            ],
+                            causes: [
+                                "Cortisol directly binding to sebaceous glands to trigger oil production",
+                                "Adrenal DHEA-S hormone converting into active androgens in the skin",
+                                "Chronic stress depleting skin-critical nutrients like zinc and magnesium",
+                                "Disrupted sleep cycles preventing nighttime skin barrier repair"
+                            ],
+                            protocols: [
+                                {
+                                    title: "Cortisol-Calming Skin Protocol",
+                                    teaser: "A specific nutrition timing plan designed to balance cortisol spikes and prevent stress hormones from over-activating your oil glands.",
+                                    locked: "Full meal plan inside portal"
+                                },
+                                {
+                                    title: "HPA-Axis Support Stack",
+                                    teaser: "A daily adaptogenic herbal protocol using Ashwagandha and Magnesium to calm your nervous system and regulate adrenal androgen output.",
+                                    locked: "Herbal protocol inside portal"
+                                },
+                                {
+                                    title: "Nervous System Reset Rituals",
+                                    teaser: "Simple phase-based daily practices to downregulate sympathetic nervous system dominance, improving sleep and speeding skin healing.",
+                                    locked: "Full system inside portal"
+                                }
+                            ]
+                        },
+                        postPill: {
+                            name: "Post-Pill Rebound Acne",
+                            description: "Your acne is a direct result of stopping hormonal birth control, causing a sebum rebound and temporary surge in androgen activity.",
+                            symptoms: [
+                                "Breakouts that started or worsened 3 to 9 months after stopping birth control",
+                                "Sudden, aggressive surge of oily skin and breakouts all over the face",
+                                "Irregular cycles, heavy periods, or absent periods since stopping the pill",
+                                "Mood swings, fatigue, or temporary hair thinning on the scalp",
+                                "Skin that feels like it's in a constant state of shock",
+                                "Acne that doesn't respond to standard topical skin treatments"
+                            ],
+                            causes: [
+                                "Androgen rebound as the ovaries wake up from synthetic hormone suppression",
+                                "Sebaceous glands overcompensating with oil after being chemically suppressed",
+                                "Liver congestion from filtering out residual synthetic hormones",
+                                "Critical nutrient depletion (zinc, B vitamins, magnesium) caused by the pill"
+                            ],
+                            protocols: [
+                                {
+                                    title: "Androgen Rebound Diet",
+                                    teaser: "A nutrient-dense meal plan designed to soothe the androgen rebound and support your ovaries as they resume natural hormone production.",
+                                    locked: "Full meal plan inside portal"
+                                },
+                                {
+                                    title: "Liver clearing Herb Stack",
+                                    teaser: "An herbal protocol using Milk Thistle and liver-supportive herbs to accelerate the detoxification of synthetic pill residues.",
+                                    locked: "Herbal protocol inside portal"
+                                },
+                                {
+                                    title: "Nutrient Replenishment Protocol",
+                                    teaser: "A targeted supplementation guide to restore the critical skin-supporting vitamins and minerals depleted during birth control use.",
+                                    locked: "Full system inside portal"
+                                }
+                            ]
+                        }
+                    };
+
+                    return typeInfo[type] || typeInfo.insulin;
+                },
+
+                viewSolution() {
+                    // Track sales page visit intent
+                    if (window.WebhookManager) {
+                        window.WebhookManager.trackSalesVisit({
+                            acneType: this.assessmentData.acneType.primary,
+                            source: 'results_page',
+                            confidence: this.assessmentData.acneType.confidence
+                        });
+                    }
+
+                    // Redirect to sales page
+                    window.location.href = '90-day-plan.html';
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

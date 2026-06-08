@@ -1,0 +1,17 @@
+{
+    "site_name": "OJG Wellness",
+    "site_description": "Natural herbal solutions for health and wellness",
+    "admin_email": "admin@ojg-wellness.com",
+    "webhook_url": "",
+    "webhook_enabled": false,
+    "email_notifications": true,
+    "data_retention_days": 365,
+    "backup_enabled": true,
+    "maintenance_mode": false,
+    "analytics_enabled": true,
+    "max_file_size": 5,
+    "allowed_file_types": "jpg,jpeg,png,pdf,doc,docx",
+    "timezone": "America\/New_York",
+    "date_format": "Y-m-d H:i:s",
+    "items_per_page": 20
+}

@@ -1,0 +1,863 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth overflow-x-hidden">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Welcome to Your Weight Loss Transformation Journey!</title>
+    <meta name="description"
+        content="Thank you for your purchase! Get instant access to your Weight Loss program and start your transformation today.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'forest': {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#16a34a', // Legacy map
+                            600: '#16a34a', // Legacy map
+                            700: '#15803d', // Legacy map
+                            800: '#166534',
+                            900: '#0f3922', // Deep luxury green
+                        },
+                        'sage': {
+                            100: '#E6EBE6',
+                            200: '#CDD6CD',
+                            500: '#8DA38D',
+                        },
+                        'terracotta': {
+                            500: '#C77D63', // Warm accent
+                            600: '#A85D45',
+                        },
+                        'cream': '#FDFCF8',
+                        'sand': '#F4F1EA',
+                        // Compatibility mapping
+                        primary: {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#166534',
+                            600: '#14532d',
+                            700: '#0f3922',
+                            800: '#0f3922',
+                            900: '#051f11'
+                        }
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(22, 101, 52, 0.1)',
+                        'glow': '0 0 20px rgba(199, 125, 99, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FDFCF8;
+            color: #0f3922;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+    </style>
+
+    <!-- Webhook Manager -->
+    <script src="../js/config.js"></script>
+    <script src="../js/webhook-manager.js"></script>
+    <!-- Flutterwave Script -->
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script src="../js/flutterwave-integration.js"></script>
+    <script src="../js/tracking.js"></script>
+</head>
+
+<body class="antialiased relative min-h-screen overflow-x-hidden w-full max-w-[100vw]">
+
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-40 mix-blend-overlay"></div>
+    <div class="blob bg-sage-200 w-96 h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="blob bg-terracotta-500 w-80 h-80 rounded-full top-1/2 right-0 translate-x-1/3 opacity-20"></div>
+
+    <!-- Header -->
+    <header
+        class="fixed w-full max-w-[100vw] top-0 z-40 glass-panel border-b border-sage-200/50 overflow-hidden left-0 right-0">
+        <div class="max-w-6xl mx-auto px-4 py-3 md:py-4">
+            <div class="flex items-center justify-between gap-2 overflow-hidden">
+                <div class="flex items-center gap-2 md:gap-3 min-w-0">
+                    <div
+                        class="w-8 h-8 md:w-10 md:h-10 bg-forest-900 rounded-full flex items-center justify-center shadow-lg shrink-0">
+                        <span class="text-sand font-serif italic text-lg md:text-xl">P</span>
+                    </div>
+                    <span class="text-base md:text-lg font-serif font-bold tracking-tight text-forest-900 truncate">
+                        Transformation <span class="hidden sm:inline">Journey</span>
+                    </span>
+                </div>
+                <div class="shrink-0">
+                    <span
+                        class="bg-forest-100 text-forest-800 px-2.5 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold tracking-wide uppercase whitespace-nowrap">
+                        <span class="sm:hidden">Confirmed</span>
+                        <span class="hidden sm:inline">Order Confirmed</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-20 px-4 md:px-6" x-data="thankYouPage()">
+        <!-- Success Message -->
+        <section class="text-center mb-16">
+            <div class="max-w-3xl mx-auto">
+                <!-- Success Icon -->
+                <div
+                    class="w-24 h-24 bg-sage-100 text-forest-900 rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm text-4xl">
+                    🎉
+                </div>
+
+                <h1 class="text-3xl md:text-5xl font-serif font-bold text-forest-900 mb-6 leading-[1.1]">
+                    Your <span class="italic text-terracotta-600">Private Healing Portal</span> is Ready.<br>
+                    Step Inside.
+                </h1>
+
+                <p class="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed font-light">
+                    Forget generic diets and static PDFs. You just unlocked a <strong>living, smart-personalized
+                        dashboard</strong> that adapts to your cycle, your Weight Loss type, and your progress — every single
+                    day.
+                </p>
+
+                <!-- Order Summary -->
+                <div
+                    class="glass-panel p-6 md:p-8 rounded-3xl shadow-soft mb-12 border border-white/60 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-forest-500"></div>
+                    <h2 class="text-2xl font-serif font-bold text-forest-900 mb-6">Order Confirmation</h2>
+
+                    <div class="bg-forest-50/50 rounded-xl p-6 mb-6 border border-forest-100">
+                        <div class="flex items-center justify-center mb-6">
+                            <span class="text-forest-600 text-2xl mr-3">✓</span>
+                            <span class="text-forest-800 font-bold text-lg uppercase tracking-wide">Payment
+                                Successful</span>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6 text-sm text-left px-2 md:px-12">
+                            <div class="flex justify-between md:block">
+                                <span class="text-gray-500 font-medium">Plan:</span>
+                                <span
+                                    class="font-bold text-forest-900 ml-2 md:ml-0 md:block mt-1 text-right md:text-left"
+                                    x-text="orderDetails.planName"></span>
+                            </div>
+                            <div class="flex justify-between md:block">
+                                <span class="text-gray-500 font-medium">Amount:</span>
+                                <span class="font-bold text-forest-900 ml-2 md:ml-0 md:block mt-1"
+                                    x-text="orderDetails.amount"></span>
+                            </div>
+                            <div class="flex justify-between md:block">
+                                <span class="text-gray-500 font-medium">Transaction ID:</span>
+                                <span class="font-mono text-xs text-forest-900 ml-2 md:ml-0 md:block mt-1"
+                                    x-text="orderDetails.transactionId"></span>
+                            </div>
+                            <div class="flex justify-between md:block">
+                                <span class="text-gray-500 font-medium">Date:</span>
+                                <span class="font-bold text-forest-900 ml-2 md:ml-0 md:block mt-1"
+                                    x-text="orderDetails.date"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- New User Credentials Section -->
+                    <div x-show="newCredentials"
+                        class="bg-gradient-to-br from-forest-50 to-terracotta-50/30 rounded-2xl p-6 md:p-8 mb-6 border-2 border-forest-200 shadow-lg">
+                        <div class="text-center mb-5">
+                            <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Your Login Details</h3>
+                            <p class="text-sm text-gray-600">Save these credentials — you'll need them to access your dashboard.
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto mb-6">
+                            <div
+                                class="bg-white p-4 rounded-xl border border-forest-100 flex flex-col items-center shadow-sm">
+                                <span class="text-xs text-gray-400 uppercase tracking-wide font-bold mb-1">Email (Login)</span>
+                                <span class="font-mono font-bold text-forest-900 text-base break-all"
+                                    x-text="newCredentials.email || orderDetails.email"></span>
+                            </div>
+                            <div
+                                class="bg-white p-4 rounded-xl border border-forest-100 flex flex-col items-center shadow-sm">
+                                <span class="text-xs text-gray-400 uppercase tracking-wide font-bold mb-1">Password</span>
+                                <span class="font-mono font-bold text-forest-900 text-base break-all"
+                                    x-text="newCredentials.password"></span>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button @click="autoLogin()"
+                                class="bg-forest-900 hover:bg-forest-800 text-white px-10 py-5 rounded-full font-bold text-lg md:text-xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 hover:scale-105 w-full md:w-auto animate-pulse border-2 border-forest-700">
+                                Go to My Dashboard &rarr;
+                            </button>
+                            <p class="text-xs text-gray-400 mt-3">Instant access — no setup required</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="text-gray-500 text-sm">
+                            A confirmation email has been sent to <span class="font-bold text-forest-900"
+                                x-text="orderDetails.email"></span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Value Highlights Section -->
+                <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-8 mt-16 text-left">
+                    <div class="space-y-3">
+                        <div class="text-terracotta-600 text-2xl">✨</div>
+                        <h4 class="font-serif font-bold text-forest-900 text-lg">Smart-Personalized Daily Meals</h4>
+                        <p class="text-sm text-gray-600 font-light leading-relaxed">Wake up to a fresh meal plan every
+                            morning — Salmon, Berries, Oatmeal — all hormone-balancing and made for YOUR Weight Loss type.</p>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="text-terracotta-600 text-2xl">🍵</div>
+                        <h4 class="font-serif font-bold text-forest-900 text-lg">Herbal Tea Rituals & Tracking</h4>
+                        <p class="text-sm text-gray-600 font-light leading-relaxed">Morning and evening tea protocols
+                            with reminders. Your dashboard tracks your consistency and adapts with you.</p>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="text-terracotta-600 text-2xl">📈</div>
+                        <h4 class="font-serif font-bold text-forest-900 text-lg">Body Data & Progress Tracking</h4>
+                        <p class="text-sm text-gray-600 font-light leading-relaxed">Log weight, cycles, symptoms — watch
+                            your transformation unfold week by week inside your private portal.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OTO: Egbon Cross-Sell -->
+        <section class="max-w-4xl mx-auto px-4 mb-16">
+            <div class="bg-forest-900 rounded-[2.5rem] shadow-2xl p-8 md:p-12 transform hover:scale-[1.01] transition-all relative overflow-hidden group"
+                x-show="!otoPurchased">
+                <div class="absolute inset-0 bg-grain opacity-10 mix-blend-overlay"></div>
+                <div
+                    class="absolute top-0 right-0 bg-terracotta-500 text-white px-8 py-2 font-bold text-sm transform rotate-45 translate-x-8 translate-y-8 shadow-lg z-10">
+                    50% OFF</div>
+
+                <div class="text-center mb-8 relative z-10">
+                    <h3 class="text-2xl font-serif font-bold text-sand mb-3">WAIT! Special One-Time Offer for Your
+                        Partner?</h3>
+                    <p class="text-forest-200/80 font-light">Add <span class="text-white font-bold">"Egbon"
+                            Formula</span> to your order potentially for the men in your life.</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center gap-8 mb-8 relative z-10">
+                    <div class="w-full md:w-1/3">
+                        <img src="https://1wellness.club/assets/supplement-bottle.png" alt="Egbon Supplement"
+                            class="w-full rounded-2xl shadow-2xl border border-white/10 grayscale-[20%] group-hover:grayscale-0 transition-all duration-500">
+                    </div>
+                    <div class="w-full md:w-2/3 text-left">
+                        <h4 class="text-2xl font-serif font-bold text-white mb-4">Egbon: The Ultimate Manhood Booster
+                        </h4>
+                        <ul class="space-y-3 text-forest-100 mb-6 font-light">
+                            <li class="flex items-center"><span class="text-terracotta-500 mr-3 text-xl">✓</span>
+                                Enhanced Libido & Stamina</li>
+                            <li class="flex items-center"><span class="text-terracotta-500 mr-3 text-xl">✓</span>
+                                Natural Testosterone Support</li>
+                            <li class="flex items-center"><span class="text-terracotta-500 mr-3 text-xl">✓</span>
+                                Improved Energy Levels</li>
+                        </ul>
+                        <div
+                            class="flex items-center space-x-6 mb-4 bg-white/5 inline-block p-4 rounded-xl backdrop-blur-sm border border-white/10">
+                            <span class="text-4xl font-bold text-terracotta-400">$10</span>
+                            <span class="text-forest-400/60 line-through text-lg">$20</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4 relative z-10">
+                    <button @click="purchaseOTO()" :disabled="isProcessingOTO"
+                        class="w-full bg-terracotta-500 hover:bg-terracotta-600 text-white font-bold py-5 rounded-full shadow-glow hover:shadow-lg transition-all flex justify-center items-center text-lg disabled:opacity-70 disabled:cursor-not-allowed">
+                        <span x-show="!isProcessingOTO">Add to Order - $10</span>
+                        <span x-show="isProcessingOTO" class="flex items-center">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            Processing...
+                        </span>
+                    </button>
+                    <button @click="dismissOTO()"
+                        class="w-full text-forest-300 hover:text-white text-sm font-medium transition-colors">
+                        No thanks, I don't want to add this
+                    </button>
+                </div>
+            </div>
+
+            <!-- Success Message for OTO -->
+            <div class="glass-panel p-8 rounded-2xl text-center shadow-md animate-fade-in-up border border-green-200 bg-green-50/50"
+                x-show="otoPurchased" style="display: none;">
+                <p class="text-forest-900 font-bold text-2xl mb-2 font-serif">🎉 Offer Added Successfully!</p>
+                <p class="text-gray-600">The Egbon Formula has been added to your shipment.</p>
+            </div>
+        </section>
+
+        <!-- Next Steps -->
+        <section class="mb-20 max-w-5xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-serif font-bold text-center text-forest-900 mb-12">
+                Your Next Steps to Success
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Step 1 -->
+                <div
+                    class="glass-panel p-8 rounded-3xl hover:shadow-soft transition-all duration-300 text-center group">
+                    <div
+                        class="w-16 h-16 bg-forest-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl font-serif font-bold text-forest-800 shadow-sm group-hover:bg-forest-900 group-hover:text-sand transition-colors">
+                        1
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-forest-900 mb-3">Check Your Email</h3>
+                    <p class="text-gray-500 font-light text-sm mb-4 leading-relaxed">
+                        Your program materials and access links have been sent to your email.
+                        Check your inbox and spam folder.
+                    </p>
+                    <div class="text-xs font-bold text-terracotta-600 uppercase tracking-widest">Expected in 5 mins
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div
+                    class="glass-panel p-8 rounded-3xl hover:shadow-soft transition-all duration-300 text-center group">
+                    <div
+                        class="w-16 h-16 bg-forest-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl font-serif font-bold text-forest-800 shadow-sm group-hover:bg-forest-900 group-hover:text-sand transition-colors">
+                        2
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-forest-900 mb-3">WhatsApp Expert Access</h3>
+                    <p class="text-gray-500 font-light text-sm mb-6 leading-relaxed">
+                        Direct 1-on-1 access to our Weight Loss specialists for questions, guidance, and daily motivation.
+                    </p>
+                    <button @click="contactWhatsApp()"
+                        class="bg-forest-600 hover:bg-forest-700 text-sand px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-md active:scale-95">
+                        Consult an Expert →
+                    </button>
+                </div>
+
+                <!-- Step 3 -->
+                <div
+                    class="glass-panel p-8 rounded-3xl hover:shadow-soft transition-all duration-300 text-center group">
+                    <div
+                        class="w-16 h-16 bg-forest-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl font-serif font-bold text-forest-800 shadow-sm group-hover:bg-forest-900 group-hover:text-sand transition-colors">
+                        3
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-forest-900 mb-3">Log In & Start Today</h3>
+                    <p class="text-gray-500 font-light text-sm mb-4 leading-relaxed">
+                        Use your credentials to access your private member portal. Your smart-personalized meal plan is
+                        already waiting.
+                    </p>
+                    <div class="text-xs font-bold text-terracotta-600 uppercase tracking-widest">Begin transformation
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Program Access & Support -->
+        <section class="mb-20 max-w-4xl mx-auto">
+            <div class="bg-forest-50 rounded-[2.5rem] p-8 md:p-12 border border-forest-100 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl opacity-50 -mr-32 -mt-32">
+                </div>
+
+                <h2 class="text-3xl font-serif font-bold text-center text-forest-900 mb-10 relative z-10">
+                    Your Complete Transformation Protocol
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-10 relative z-10">
+                    <!-- Program Materials -->
+                    <div>
+                        <h3
+                            class="text-lg font-bold text-forest-900 mb-6 uppercase tracking-wide flex items-center gap-2">
+                            📚 Your Program Materials
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-center group">
+                                <span
+                                    class="w-6 h-6 rounded-full bg-forest-200 text-forest-800 flex items-center justify-center mr-3 text-xs group-hover:bg-forest-900 group-hover:text-sand transition-colors">✓</span>
+                                <span class="text-gray-700 font-light"><strong class="font-medium">Smart-Personalized
+                                        Daily
+                                        Meals</strong>: US/UK friendly meals tailored to your Weight Loss type, updated
+                                    daily</span>
+                            </li>
+                            <li class="flex items-center group">
+                                <span
+                                    class="w-6 h-6 rounded-full bg-forest-200 text-forest-800 flex items-center justify-center mr-3 text-xs group-hover:bg-forest-900 group-hover:text-sand transition-colors">✓</span>
+                                <span class="text-gray-700 font-light"><strong class="font-medium">Herbal Tea
+                                        Rituals</strong>: Morning & evening protocols with tracking and reminders</span>
+                            </li>
+                            <li class="flex items-center group">
+                                <span
+                                    class="w-6 h-6 rounded-full bg-forest-200 text-forest-800 flex items-center justify-center mr-3 text-xs group-hover:bg-forest-900 group-hover:text-sand transition-colors">✓</span>
+                                <span class="text-gray-700 font-light"><strong class="font-medium">Phase-Synced
+                                        Movement</strong>: Daily walking protocols that adapt to your cycle</span>
+                            </li>
+                            <li class="flex items-center group">
+                                <span
+                                    class="w-6 h-6 rounded-full bg-forest-200 text-forest-800 flex items-center justify-center mr-3 text-xs group-hover:bg-forest-900 group-hover:text-sand transition-colors">✓</span>
+                                <span class="text-gray-700 font-light"><strong class="font-medium">Body Data
+                                        Tracking</strong>: Log weight, cycles, symptoms — watch progress in
+                                    real-time</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Support & Specialist Access -->
+                    <div>
+                        <h3
+                            class="text-lg font-bold text-forest-900 mb-6 uppercase tracking-wide flex items-center gap-2">
+                            💬 Support & Specialist Access
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-center group">
+                                <span
+                                    class="w-6 h-6 rounded-full bg-forest-200 text-forest-800 flex items-center justify-center mr-3 text-xs group-hover:bg-forest-900 group-hover:text-sand transition-colors">✓</span>
+                                <span class="text-gray-700 font-light"><strong class="font-medium">Weekly Expert Q&A
+                                        Sessions</strong>: Get answers to your pressing questions</span>
+                            </li>
+                            <li class="flex items-center group">
+                                <span
+                                    class="w-6 h-6 rounded-full bg-forest-200 text-forest-800 flex items-center justify-center mr-3 text-xs group-hover:bg-forest-900 group-hover:text-sand transition-colors">✓</span>
+                                <span class="text-gray-700 font-light"><strong class="font-medium">Direct Specialist
+                                        Access</strong>: Direct WhatsApp line for 1-on-1 guidance</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-forest-200/50 text-center relative z-10">
+                    <p class="text-forest-800 mb-6 font-medium">
+                        Having trouble accessing your materials? We're here to help!
+                    </p>
+                    <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4">
+                        <a href="mailto:support@1wellness.club"
+                            class="bg-white border-2 border-forest-100 hover:border-forest-300 text-forest-900 px-8 py-3 rounded-full font-bold transition-all shadow-sm hover:shadow-md">
+                            Email Support
+                        </a>
+                        <button @click="contactWhatsApp()"
+                            class="bg-forest-900 hover:bg-forest-800 text-sand px-8 py-3 rounded-full font-bold transition-all shadow-lg hover:shadow-xl">
+                            Message Your Specialist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Guarantee Reminder -->
+        <section class="text-center pb-12">
+            <div class="max-w-3xl mx-auto px-4">
+                <div
+                    class="w-20 h-20 bg-forest-50 text-terracotta-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                    🛡️
+                </div>
+                <h2 class="text-2xl font-serif font-bold text-forest-900 mb-3">Your Investment is Protected</h2>
+                <p class="text-gray-600 font-light mb-2">
+                    Remember, you have our <span class="font-bold text-forest-900"
+                        x-text="orderDetails.guarantee"></span> money-back guarantee.
+                </p>
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">
+                    We're confident you'll see amazing results!
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-forest-900 text-sand py-12 border-t border-forest-800">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="text-forest-200/60 font-light text-sm mb-4">
+                © <span x-data x-text="new Date().getFullYear()"></span> 1wellness. All rights reserved.
+            </p>
+            <div class="flex justify-center space-x-6 text-xs text-forest-200/40">
+                <a href="#" class="hover:text-sand transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-sand transition-colors">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Thank You Page Logic (Strictly Preserved) -->
+    <script>
+        function thankYouPage() {
+            return {
+                orderDetails: {
+                    planName: '',
+                    amount: '',
+                    transactionId: '',
+                    date: '',
+                    email: '',
+                    guarantee: '',
+                    name: '',
+                    phone: ''
+                },
+                newCredentials: null,
+                otoPurchased: false,
+                isProcessingOTO: false,
+                userCreationTriggered: false,
+
+                async testFlutterwaveInit() {
+                    console.log('Testing Flutterwave initialization...');
+                    setTimeout(async () => {
+                        try {
+                            if (window.FlutterwaveIntegration) {
+                                await window.FlutterwaveIntegration.initialize();
+                            }
+                        } catch (e) { }
+                    }, 2000);
+                },
+
+                // Load order details from URL params and localStorage
+                loadOrderDetails() {
+                    const urlParams = new URLSearchParams(window.location.search);
+
+                    // Try URL params first, then localStorage
+                    const storedOrder = JSON.parse(localStorage.getItem('1w_last_order') || '{}');
+                    const storedCustomer = JSON.parse(localStorage.getItem('1w_customer_info') || '{}');
+                    const assessmentData = JSON.parse(localStorage.getItem('weightAssessmentData') || '{}');
+
+                    this.orderDetails = {
+                        planName: urlParams.get('plan') || storedOrder.plan || storedOrder.planName || '90-Day Weight Loss Plan',
+                        amount: urlParams.get('amount') || storedOrder.amount || '45',
+                        transactionId: urlParams.get('tx_ref') || urlParams.get('transaction_id') || storedOrder.transactionId || storedOrder.tx_ref || '',
+                        date: urlParams.get('date') || storedOrder.date || new Date().toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'long', day: 'numeric'
+                        }),
+                        email: urlParams.get('email') || storedCustomer.email || storedOrder.email || assessmentData.contactInfo?.email || '',
+                        guarantee: this.getGuarantee(urlParams.get('plan') || storedOrder.plan),
+                        name: urlParams.get('name') || storedCustomer.name || storedOrder.name || assessmentData.contactInfo?.name || '',
+                        phone: urlParams.get('phone') || storedCustomer.phone || storedOrder.phone || assessmentData.contactInfo?.phone || ''
+                    };
+
+                    // Format amount if it's a number
+                    if (this.orderDetails.amount && !isNaN(parseInt(String(this.orderDetails.amount).replace(/,/g, '')))) {
+                        const numAmount = parseInt(String(this.orderDetails.amount).replace(/,/g, ''));
+                        this.orderDetails.amount = this.formatPrice(numAmount);
+                    }
+
+                    console.log('Order details loaded:', this.orderDetails);
+                },
+
+                getGuarantee(plan) {
+                    if (plan && plan.includes('90')) {
+                        return '90-Day';
+                    }
+                    return '30-Day';
+                },
+
+                // Load any existing credentials from localStorage
+                loadCredentials() {
+                    const storedCreds = localStorage.getItem('1w_new_user_creds');
+                    if (storedCreds) {
+                        try {
+                            this.newCredentials = JSON.parse(storedCreds);
+                            console.log('Loaded existing credentials from localStorage');
+                        } catch (e) {
+                            console.warn('Failed to parse stored credentials');
+                        }
+                    }
+                },
+
+                // Trigger user account creation via webhook
+                async triggerUserCreation() {
+                    if (this.userCreationTriggered) return;
+                    if (!this.orderDetails.email || !this.orderDetails.transactionId) {
+                        console.warn('Missing email or transaction ID for user creation');
+                        return;
+                    }
+
+                    // Skip if credentials were already obtained from confirmPurchase (pre-redirect)
+                    if (this.newCredentials && this.newCredentials.auto_login_token) {
+                        console.log('✅ Credentials already available from payment callback — skipping duplicate creation');
+                        this.userCreationTriggered = true;
+                        return;
+                    }
+
+                    this.userCreationTriggered = true;
+                    console.log('Triggering user account creation...');
+
+                    try {
+                        // Get assessment data for Weight Loss type
+                        const assessmentData = JSON.parse(localStorage.getItem('weightAssessmentData') || '{}');
+
+                        const payload = {
+                            email: this.orderDetails.email,
+                            name: this.orderDetails.name,
+                            phone: this.orderDetails.phone,
+                            transaction_id: this.orderDetails.transactionId,
+                            tx_ref: this.orderDetails.transactionId,
+                            amount: parseInt(String(this.orderDetails.amount).replace(/[^0-9.-]+/g,'')) || 0,
+                            currency: 'USD',
+                            product: this.orderDetails.planName,
+                            weight_type: assessmentData.weightType || localStorage.getItem('weightType') || 'General',
+                            cycle_length: assessmentData.cycleLength || 28,
+                            last_period_date: assessmentData.lastPeriodDate || null,
+                            allergies: assessmentData.allergies || 'None'
+                        };
+
+                        console.log('Sending to webhook_weight.php:', payload);
+
+                        const response = await fetch('../backend/api/webhook_weight.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const result = await response.json();
+                        console.log('User creation response:', result);
+
+                        if (result.success && result.credentials) {
+                            // Store credentials immediately
+                            this.newCredentials = {
+                                email: this.orderDetails.email,
+                                username: result.credentials.username || result.username,
+                                password: result.credentials.password || 'Check your email',
+                                auto_login_token: result.auto_login_token
+                            };
+                            localStorage.setItem('1w_new_user_creds', JSON.stringify(this.newCredentials));
+                            if (result.auto_login_token) {
+                                localStorage.setItem('1w_auto_login', result.auto_login_token);
+                            }
+                            console.log('User account created successfully!');
+                        } else if (result.success) {
+                            // User created but credentials not in response (existing user)
+                            console.log('User processed (may be existing user)');
+                        }
+
+                        return result;
+                    } catch (error) {
+                        console.error('User creation error:', error);
+                        this.userCreationTriggered = false; // Allow retry
+                    }
+                },
+
+                // ROBUST CREDENTIAL FETCHING
+                async pollForCredentials() {
+                    if (this.newCredentials && this.newCredentials.auto_login_token) return; // Already have them
+
+                    const txRef = this.orderDetails.transactionId;
+                    if (!txRef) {
+                        console.warn('No transaction ID for polling');
+                        return;
+                    }
+
+                    let attempts = 0;
+                    const maxAttempts = 15; // Try for 30 seconds (15 * 2s)
+
+                    const checkEndpoint = async () => {
+                        try {
+                            console.log(`Checking account status (Attempt ${attempts + 1}/${maxAttempts})...`);
+                            const response = await fetch(`../backend/api/get-credentials.php?tx_ref=${encodeURIComponent(txRef)}&email=${encodeURIComponent(this.orderDetails.email)}`);
+                            const data = await response.json();
+
+                            if (data.success) {
+                                console.log('Account found via polling:', data);
+                                this.newCredentials = {
+                                    email: data.email || this.orderDetails.email,
+                                    username: data.username,
+                                    password: 'Check your email', // Cannot retrieve raw password securely
+                                    auto_login_token: data.auto_login_token
+                                };
+                                localStorage.setItem('1w_new_user_creds', JSON.stringify(this.newCredentials));
+                                localStorage.setItem('1w_auto_login', data.auto_login_token);
+                                return true;
+                            } else {
+                                console.log('Account not ready yet:', data.error);
+                            }
+                        } catch (e) {
+                            console.warn('Polling error:', e);
+                        }
+                        return false;
+                    };
+
+                    // First check immediately
+                    if (await checkEndpoint()) return;
+
+                    const interval = setInterval(async () => {
+                        attempts++;
+                        const success = await checkEndpoint();
+                        if (success || attempts >= maxAttempts) {
+                            clearInterval(interval);
+                            if (!success && attempts >= maxAttempts) {
+                                console.warn('Max polling attempts reached. User may need to check email for credentials.');
+                            }
+                        }
+                    }, 2000);
+                },
+
+                // Enhanced init
+                async init() {
+                    console.log('Thank You page initializing...');
+
+                    // Step 1: Load order details from URL/localStorage
+                    this.loadOrderDetails();
+
+                    // Step 2: Check for existing credentials
+                    this.loadCredentials();
+
+                    // Step 3: Trigger user creation if we have order data
+                    if (this.orderDetails.email && this.orderDetails.transactionId) {
+                        await this.triggerUserCreation();
+                    }
+
+                    // Step 4: Poll for credentials (in case webhook was slow or already processed)
+                    this.pollForCredentials();
+
+                    // Step 5: Track conversion and send to external webhook
+                    this.trackConversion();
+                    this.sendPaymentDataToWebhook();
+
+                    // Step 6: Fire Meta Pixel Purchase event
+                    if (window.WellnessTracking) {
+                        const rawAmount = parseInt(String(this.orderDetails.amount).replace(/[^0-9.-]+/g,'')) || 0;
+                        window.WellnessTracking.trackPurchase(rawAmount, 'USD', this.orderDetails.planName);
+                    }
+
+                    console.log('Thank You page initialization complete');
+                },
+
+                async purchaseOTO() {
+                    this.isProcessingOTO = true;
+                    try {
+                        if (!window.FlutterwaveIntegration) throw new Error('Payment system loading...');
+
+                        const customer = {
+                            email: this.orderDetails.email || 'weight@1wellness.club',
+                            phone: this.orderDetails.phone || '+1 (555) 000-000000000',
+                            name: this.orderDetails.name || 'Valued Customer'
+                        };
+
+                        const paymentData = {
+                            plan: 'oto_egbon',
+                            amount: 10,
+                            title: 'Egbon Manhood Booster',
+                            description: 'Add-on: Egbon Herbal Supplement',
+                            customer: customer,
+                            category: 'weight',
+                            meta: {
+                                is_oto: true,
+                                parent_order: this.orderDetails.transactionId
+                            }
+                        };
+
+                        await window.FlutterwaveIntegration.processPayment(paymentData);
+
+                        this.otoPurchased = true;
+
+                    } catch (error) {
+                        console.error('OTO Payment error:', error);
+                        if (error.message !== 'Payment modal closed') {
+                            alert('Could not process payment: ' + error.message);
+                        }
+                    } finally {
+                        this.isProcessingOTO = false;
+                    }
+                },
+
+                autoLogin() {
+                    if (this.newCredentials && this.newCredentials.auto_login_token) {
+                        window.location.href = `../member/login.html?autologin=${this.newCredentials.auto_login_token}`;
+                    } else {
+                        // Fallback to manual login
+                        window.location.href = '../member/login.html';
+                    }
+                },
+
+                dismissOTO() {
+                    this.otoPurchased = true; // Hides via x-show
+                    const el = document.querySelector('[x-show="!otoPurchased"]');
+                    if (el) el.style.display = 'none';
+                },
+
+                trackConversion() {
+                    // Track successful purchase conversion
+                    if (window.WebhookManager) {
+                        const plan = new URLSearchParams(window.location.search).get('plan') || '90-day';
+                        const amount = plan === '90-day' ? 45 : 18000;
+
+                        window.WebhookManager.trackConversion({
+                            event: 'purchase_completed',
+                            plan: plan,
+                            amount: amount,
+                            transaction_id: this.orderDetails.transactionId,
+                            customer_email: this.orderDetails.email
+                        });
+                    }
+                },
+
+                async sendPaymentDataToWebhook() {
+                    // Send complete payment data to the process-payment webhook
+                    try {
+                        const paymentData = {
+                            phone: this.orderDetails.phone,
+                            name: this.orderDetails.name,
+                            transaction_id: this.orderDetails.transactionId,
+                            email: this.orderDetails.email,
+                            product: this.orderDetails.planName,
+                            amount: this.orderDetails.amount
+                        };
+
+                        console.log('📤 Sending payment data to webhook:', paymentData);
+
+                        const response = await fetch('https://n8n.ai20.city/webhook/process-payment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(paymentData)
+                        });
+
+                        if (response.ok) {
+                            console.log('✅ Payment data successfully sent to webhook');
+                        } else {
+                            console.warn('⚠️ Webhook response not OK:', response.status, response.statusText);
+                        }
+                    } catch (error) {
+                        console.error('❌ Failed to send payment data to webhook:', error);
+                        // Don't show error to user as this is a background operation
+                    }
+                },
+
+                contactWhatsApp() {
+                    // Direct WhatsApp support - replace with actual number
+                    const supportNumber = '+2348133149989';
+                    const message = encodeURIComponent('Hi! I just purchased the Weight Loss program and need help accessing my materials.');
+                    const whatsappUrl = `https://wa.me/${supportNumber}?text=${message}`;
+                    window.open(whatsappUrl, '_blank');
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
