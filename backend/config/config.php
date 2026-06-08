@@ -4,6 +4,9 @@
  * 1wellness - Health Assessment System
  */
 
+// Load environment variables from .env file
+require_once __DIR__ . '/env_loader.php';
+
 // Prevent direct access
 if (!defined('APP_ROOT')) {
     define('APP_ROOT', dirname(__DIR__));
@@ -36,51 +39,46 @@ if (!defined('DB_PORT'))
     define('DB_PORT', getenv('DB_PORT') ?: 3306);
 
 // Webhook Settings
-define('WEBHOOK_MAX_RETRIES', 5);
-define('WEBHOOK_TIMEOUT', 10);
+define('WEBHOOK_MAX_RETRIES', env('WEBHOOK_MAX_RETRIES', 5));
+define('WEBHOOK_TIMEOUT', env('WEBHOOK_TIMEOUT', 10));
 
 // Application Settings
-define('APP_NAME', '1wellness Admin');
+define('APP_NAME', env('APP_NAME', '1wellness Admin'));
 define('APP_VERSION', '2.0.0');
-if (getenv('APP_ENV')) {
-    define('APP_ENV', getenv('APP_ENV'));
-} else {
-    define('APP_ENV', 'development');
-}
+define('APP_ENV', env('APP_ENV', 'development'));
+define('APP_URL', env('APP_URL', 'https://1wellness.club'));
 
 // Security Settings
-define('SESSION_NAME', '1wellness_admin_session');
-define('SESSION_LIFETIME', 3600 * 8); // 8 hours
+define('SESSION_NAME', env('SESSION_NAME', '1wellness_admin_session'));
+define('SESSION_LIFETIME', (int) env('SESSION_LIFETIME', 3600 * 8));
+define('SESSION_SECRET', env('SESSION_SECRET', bin2hex(random_bytes(32))));
 define('CSRF_TOKEN_NAME', 'csrf_token');
+define('JWT_SECRET', env('JWT_SECRET', bin2hex(random_bytes(32))));
 
 // Admin Settings
-define('ADMIN_USERNAME', 'admin');
-if (getenv('ADMIN_PASSWORD_HASH')) {
-    define('ADMIN_PASSWORD_HASH', getenv('ADMIN_PASSWORD_HASH'));
-} else {
-    define('ADMIN_PASSWORD_HASH', password_hash('admin123', PASSWORD_DEFAULT));
-}
-define('ADMIN_EMAIL', 'admin@1wellness.club');
+define('ADMIN_USERNAME', env('ADMIN_USERNAME', 'admin'));
+define('ADMIN_PASSWORD_HASH', env('ADMIN_PASSWORD_HASH', password_hash('admin123', PASSWORD_DEFAULT)));
+define('ADMIN_EMAIL', env('ADMIN_EMAIL', 'admin@1wellness.club'));
 
 // API Settings
-define('API_VERSION', 'v1');
-define('API_RATE_LIMIT', 100); // requests per hour per IP
+define('API_VERSION', env('API_VERSION', 'v1'));
+define('API_RATE_LIMIT', (int) env('API_RATE_LIMIT', 100));
 
 // N8N API Access Key
-define('N8N_API_KEY', 'n8n_sk_7d9f2a1b8c3e4d5f6a9b0c1d2e3f4a5b');
+define('N8N_API_KEY', env('N8N_API_KEY', ''));
 
 // File Upload Settings
-define('UPLOAD_MAX_SIZE', 5 * 1024 * 1024); // 5MB
+define('UPLOAD_MAX_SIZE', (int) env('UPLOAD_MAX_SIZE', 5 * 1024 * 1024));
 define('UPLOAD_ALLOWED_TYPES', ['jpg', 'jpeg', 'png', 'pdf']);
-define('UPLOAD_PATH', APP_ROOT . '/uploads/');
+define('UPLOAD_PATH', env('UPLOAD_PATH', APP_ROOT . '/uploads/'));
 
 // Email Settings (for notifications)
-define('SMTP_HOST', 'localhost');
-define('SMTP_PORT', 587);
-define('SMTP_USERNAME', '');
-define('SMTP_PASSWORD', '');
-define('FROM_EMAIL', 'noreply@1wellness.club');
-define('FROM_NAME', '1wellness');
+define('SMTP_HOST', env('SMTP_HOST', 'localhost'));
+define('SMTP_PORT', env('SMTP_PORT', 587));
+define('SMTP_USERNAME', env('SMTP_USERNAME', ''));
+define('SMTP_PASSWORD', env('SMTP_PASSWORD', ''));
+define('FROM_EMAIL', env('SMTP_FROM_EMAIL', 'noreply@1wellness.club'));
+define('FROM_NAME', env('SMTP_FROM_NAME', '1wellness'));
 
 // Categories Configuration
 define('HEALTH_CATEGORIES', [
@@ -120,7 +118,7 @@ define('CORS_ALLOWED_ORIGINS', [
     'http://localhost',
     'http://127.0.0.1',
     'http://localhost:8080',
-    'https://1wellness.club',
+    env('APP_URL', 'https://1wellness.club'),
     'https://www.1wellness.club',
     'https://pcos.1wellness.club',
     'https://skin.1wellness.club',
