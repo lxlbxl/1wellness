@@ -50,13 +50,14 @@ class Database
             // Determine database type
             $dbType = defined('DB_TYPE') ? DB_TYPE : 'sqlite';
 
-            if ($dbType === 'mysql') {
+            if ($dbType === 'pgsql') {
+                $dsn = "pgsql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME;
+                $this->connection = new PDO($dsn, DB_USER, DB_PASS);
+            } elseif ($dbType === 'mysql') {
                 $this->connectMySQL();
             } else {
                 $this->connectSQLite();
             }
-
-            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
             // Initialize database if it's empty

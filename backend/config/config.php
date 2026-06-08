@@ -20,7 +20,7 @@ if (file_exists($dbConfigFile)) {
 
 // Default Configuration (Fallback) - Ensure these are defined even if db_config.php exists
 if (!defined('DB_TYPE'))
-    define('DB_TYPE', getenv('DB_TYPE') ?: 'sqlite'); // 'mysql' or 'sqlite'
+    define('DB_TYPE', getenv('DB_TYPE') ?: 'pgsql'); // 'mysql', 'sqlite' or 'pgsql'
 
 // SQLite Configuration
 if (!defined('DB_PATH'))
@@ -30,13 +30,13 @@ if (!defined('DB_PATH'))
 if (!defined('DB_HOST'))
     define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
 if (!defined('DB_NAME'))
-    define('DB_NAME', getenv('DB_NAME') ?: '1wellness');
+    define('DB_NAME', getenv('DB_NAME') ?: 'wellness_db');
 if (!defined('DB_USER'))
-    define('DB_USER', getenv('DB_USER') ?: 'root');
+    define('DB_USER', getenv('DB_USER') ?: 'wellness_user');
 if (!defined('DB_PASS'))
-    define('DB_PASS', getenv('DB_PASS') ?: '');
+    define('DB_PASS', getenv('DB_PASS') ?: 'securepassword123');
 if (!defined('DB_PORT'))
-    define('DB_PORT', getenv('DB_PORT') ?: 3306);
+    define('DB_PORT', getenv('DB_PORT') ?: 5432); // Postgres port
 
 // Webhook Settings
 define('WEBHOOK_MAX_RETRIES', env('WEBHOOK_MAX_RETRIES', 5));
