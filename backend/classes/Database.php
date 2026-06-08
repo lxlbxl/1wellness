@@ -130,7 +130,15 @@ class Database
 
     private function initializeSchema()
     {
-        $schemaFile = APP_ROOT . '/database/schema.sql';
+        // Use PostgreSQL-compatible schema when using pgsql
+        if ($this->connection->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
+            $schemaFile = APP_ROOT . '/database/schema.pgsql.sql';
+            if (!file_exists($schemaFile)) {
+                $schemaFile = APP_ROOT . '/database/schema.sql';
+            }
+        } else {
+            $schemaFile = APP_ROOT . '/database/schema.sql';
+        }
 
         if (file_exists($schemaFile)) {
             $schema = file_get_contents($schemaFile);
