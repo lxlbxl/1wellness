@@ -4,22 +4,30 @@ try {
     $db = Database::getInstance();
     $conn = $db->getConnection();
 
-    // Check for trigger_type column in daily_plans
-    $hasTrigger = false;
-    $driver = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
+    if ($conn !== null) {
+        $hasTrigger = false;
+        $driver = $conn->getAttribute(PDO::ATTR_DRIVER_NAME);
 
-    if ($driver === 'mysql') {
-        $stmt = $conn->query("SHOW COLUMNS FROM daily_plans LIKE 'trigger_type'");
-        $hasTrigger = ($stmt->fetch() !== false);
-    } else {
-        $cols = $db->fetchAll("PRAGMA table_info(daily_plans)");
-        foreach ($cols as $c)
-            if ($c['name'] === 'trigger_type')
-                $hasTrigger = true;
-    }
+        try {
+            if ($driver === 'mysql') {
+                $stmt = $conn->query("SHOW COLUMNS FROM daily_plans LIKE 'trigger_type'");
+                $hasTrigger = ($stmt->fetch() !== false);
+            } elseif ($driver === 'pgsql') {
+                $stmt = $conn->query("SELECT column_name FROM information_schema.columns WHERE table_name='daily_plans' AND column_name='trigger_type'");
+                $hasTrigger = ($stmt->fetch() !== false);
+            } else {
+                $cols = $db->fetchAll("PRAGMA table_info(daily_plans)");
+                foreach ($cols as $c)
+                    if ($c['name'] === 'trigger_type')
+                        $hasTrigger = true;
+            }
 
-    if (!$hasTrigger) {
-        $db->query("ALTER TABLE daily_plans ADD COLUMN trigger_type VARCHAR(20) DEFAULT 'auto'");
+            if (!$hasTrigger) {
+                $db->query("ALTER TABLE daily_plans ADD COLUMN trigger_type VARCHAR(20) DEFAULT 'auto'");
+            }
+        } catch (Exception $e) {
+            // Schema migration errors are non-fatal
+        }
     }
 } catch (Exception $e) {
     // Ignore errors if table doesn't exist yet or other schema issues

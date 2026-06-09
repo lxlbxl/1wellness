@@ -35,7 +35,7 @@ if (isset($_GET['view_plan'])) {
     $plan = $db->fetch("SELECT p.*, u.first_name, u.last_name FROM daily_plans p JOIN users u ON p.user_id = u.id WHERE p.id = ?", [$planId]);
     if ($plan) {
         $planData = json_decode($plan['plan_data'], true);
-        echo json_encode(['success' => true, 'data' => $planData, 'date' => $plan['plan_date'], 'user' => $plan['first_name'] . ' ' . $plan['last_name']]);
+        echo json_encode(['success' => true, 'data' => $planData, 'date' => $plan['plan_date'], 'user' => (($plan['first_name'] ?? '') ?? '') . ' ' . (($plan['last_name'] ?? '') ?? '')]);
         exit;
     }
     echo json_encode(['success' => false]);
@@ -56,7 +56,7 @@ if (isset($_GET['get_latest'])) {
 
     if ($plan) {
         $planData = json_decode($plan['plan_data'], true);
-        echo json_encode(['success' => true, 'data' => $planData, 'date' => $plan['plan_date'], 'user' => $plan['first_name'] . ' ' . $plan['last_name'], 'raw' => $plan['plan_data']]);
+        echo json_encode(['success' => true, 'data' => $planData, 'date' => $plan['plan_date'], 'user' => ($plan['first_name'] ?? '') . ' ' . ($plan['last_name'] ?? ''), 'raw' => $plan['plan_data']]);
         exit;
     }
     echo json_encode(['success' => false]);
@@ -149,11 +149,11 @@ include 'includes/header.php';
                             <div class="flex items-center">
                                 <div
                                     class="w-8 h-8 rounded-full bg-[#E3E8E1] flex items-center justify-center text-[#2C3E35] font-serif font-bold text-sm mr-3">
-                                    <?php echo strtoupper(substr($user['first_name'], 0, 1)); ?>
+                                    <?php echo strtoupper(substr(($user['first_name'] ?? ''), 0, 1)); ?>
                                 </div>
                                 <div>
                                     <div class="text-sm font-medium text-[#2C3E35]">
-                                        <?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>
+                                        <?php echo htmlspecialchars(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')); ?>
                                     </div>
                                     <div class="text-xs text-[#6B7C70]"><?php echo htmlspecialchars($user['email']); ?>
                                     </div>
@@ -225,7 +225,7 @@ include 'includes/header.php';
                     class="p-3 bg-[#FAFAF8] border-l-4 rounded-r-xl <?php echo $log['status'] === 'success' ? 'border-[#2C3E35]' : ($log['status'] === 'failed' ? 'border-[#E57373]' : 'border-[#D97757]'); ?>">
                     <div class="flex justify-between items-start mb-1">
                         <span class="text-xs font-bold text-[#2C3E35] uppercase tracking-wider">
-                            <?php echo htmlspecialchars($log['first_name'] . ' ' . $log['last_name']); ?>
+                            <?php echo htmlspecialchars(($log['first_name'] ?? '') . ' ' . ($log['last_name'] ?? '')); ?>
                             <span class="text-[#6B7C70] font-normal lowercase">— <?php echo $log['action']; ?></span>
                         </span>
                         <span
