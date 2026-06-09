@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 header('Content-Type: application/json');
 $allowedOrigins = ['http://localhost:5173', 'http://localhost:8080'];
 if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowedOrigins)) {

@@ -147,7 +147,7 @@ function setSecurityHeaders()
 
 // Auto-load classes
 spl_autoload_register(function ($class) {
-    $classFile = APP_ROOT . '/classes/' . $class . '.php';
+    $classFile = APP_ROOT . '/backend/classes/' . $class . '.php';
     if (file_exists($classFile)) {
         require_once $classFile;
     }

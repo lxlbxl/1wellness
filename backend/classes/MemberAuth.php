@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 class MemberAuth
 {
     private $db;
@@ -12,34 +12,17 @@ class MemberAuth
         }
     }
 
-    public function login($email, $password)
+    public function login($identifier, $password)
     {
-        // Clean email
-        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+        $identifier = filter_var($identifier, FILTER_SANITIZE_EMAIL) ?: $identifier;
 
-        // Get user
-        $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
-        $user = $this->db->fetch($sql, [':email' => $email]);
+        // Try email first, then username
+        $sql = "SELECT * FROM users WHERE email = :id OR username = :id2 LIMIT 1";
+        $user = $this->db->fetch($sql, [':id' => $identifier, ':id2' => $identifier]);
 
-        // Check if user exists
         if (!$user) {
             return ['success' => false, 'message' => 'User not found.'];
         }
-
-        // In a real scenario, we'd check password. 
-        // But for this system, it seems users are created from sales/leads without passwords initially?
-        // Or maybe they set one up. 
-        // If password_hash is missing, we might need a flow to set it.
-        // For now, assuming standard password verification if hash exists, 
-        // OR checking if it's a "magic link" style or just email login for MVP (risky).
-        // Let's implement standard password check assuming 'password' column exists or needs to be added to users.
-        // Wait, 'users' table in schema.sql does NOT have a password column. 
-        // 'admin_users' has 'password_hash'.
-        // logic: User might need to "activate" account or we generate a temp password.
-        // For this task, I will add a password handling mechanism. 
-        // I will add 'password_hash' to users table implicitly or handle it here.
-        // Let's assume we need to add a password column if it's not there.
-        // Given constraints, I'll check if 'password_hash' exists in $user.
 
         if (!isset($user['password_hash']) || empty($user['password_hash'])) {
             return ['success' => false, 'message' => 'Account not activated. Please reset password.'];
@@ -50,15 +33,21 @@ class MemberAuth
         }
 
         if (password_verify($password, $user['password_hash'])) {
-            // Set session
+            $displayName = !empty($user['first_name']) ? $user['first_name'] : ($user['name'] ?? $user['username'] ?? $user['email']);
+
             $_SESSION[$this->sessionName] = [
                 'user_id' => $user['id'],
                 'email' => $user['email'],
-                'first_name' => $user['first_name'],
+                'first_name' => $displayName,
+                'username' => $user['username'] ?? '',
                 'type' => $user['type'] ?? 'user'
             ];
 
-            // Log successful login? (Optional)
+            // Update last login
+            $this->db->update('users', [
+                'last_login' => date('Y-m-d H:i:s'),
+                'login_count' => ($user['login_count'] ?? 0) + 1
+            ], "id = :id", [':id' => $user['id']]);
 
             return ['success' => true, 'redirect' => 'index.php'];
         }

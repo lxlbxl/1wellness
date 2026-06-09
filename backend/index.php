@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Main Entry Point
  * 1wellness - Health Assessment System Backend

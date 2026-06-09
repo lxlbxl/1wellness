@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once '../backend/classes/Database.php';
 require_once '../backend/classes/MemberAuth.php';

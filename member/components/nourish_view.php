@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * 1wellness Member Nourish View Component
  */

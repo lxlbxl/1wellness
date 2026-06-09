@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . '/../config/config.php';
 
 // Session is already started in config.php if not started

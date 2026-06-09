@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Default title if not set
 $pageTitle = isset($pageTitle) ? $pageTitle : '1wellness Admin';
 ?>

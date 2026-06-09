@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'auth.php';
 require_once '../classes/Database.php';
 // Assuming Settings and FunnelDiscovery are autoloaded or included in auth.php or via composer if available

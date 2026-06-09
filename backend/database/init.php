@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Database Initialization Script
  * Creates and sets up the SQLite database with schema

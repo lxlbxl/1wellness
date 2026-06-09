@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * PcosGenerator — Generates personalized 90-Day PCOS Protocol PDFs
  *

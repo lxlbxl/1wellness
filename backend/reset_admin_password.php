@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Password Reset Script
  * Upload to backend/ folder and run via browser

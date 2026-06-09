@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // backend/cron/daily_nudge.php
 
 // run this via cron every morning at 7am

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once 'auth.php';
 
 // Check if user is logged in

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Database Connection Class
  * Handles database operations for 1wellness system
@@ -117,6 +117,8 @@ class Database
         // Check if admin_users table exists
         if ($this->isMySQL()) {
             $stmt = $this->connection->query("SHOW TABLES LIKE 'admin_users'");
+        } elseif ($this->isPgSQL()) {
+            $stmt = $this->connection->query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name='admin_users'");
         } else {
             $stmt = $this->connection->query("SELECT name FROM sqlite_master WHERE type='table' AND name='admin_users'");
         }

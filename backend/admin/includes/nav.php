@@ -1,4 +1,4 @@
-﻿<!-- Navigation Content (Alpine x-data handled here) -->
+<!-- Navigation Content (Alpine x-data handled here) -->
 <nav class="bg-transparent" x-data="{ mobileMenuOpen: false, userMenuOpen: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
