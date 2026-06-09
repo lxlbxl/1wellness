@@ -291,7 +291,7 @@
                                 <p id="cycleDay" class="text-sage-200 text-sm leading-relaxed">Calculating...</p>
                             </div>
                             <div class="mt-12 flex items-center justify-between">
-                                <span id="pcosTag"
+                                <span id="conditionTag"
                                     class="text-xs font-bold uppercase tracking-widest bg-white/10 px-3 py-1.5 rounded-full">PCOS
                                     Support</span>
                                 <i data-lucide="chevron-right"
@@ -1193,12 +1193,33 @@
             }
 
             const week = user.program_week;
-            document.getElementById('phaseIndicator').textContent = week <= 4 ? "Month 1: Repair" : (week <= 8 ? "Month 2: Reset" : "Month 3: Restore");
+            const condition = user.condition_type || 'pcos';
 
-            document.getElementById('cyclePhase').textContent = cycle.phase;
-            document.getElementById('cycleDay').textContent = `Day ${cycle.day} of cycle`;
-            document.getElementById('pcosTag').textContent = user.pcos_type + " Type";
-            document.getElementById('hydrationVal').textContent = (plan.hydration || 0).toFixed(1) + 'L';
+            // Condition-aware phase indicators
+            const phaseLabels = {
+                'pcos': { phase: week <= 4 ? 'Repair' : (week <= 8 ? 'Reset' : 'Restore'), cycle: 'Cycle Phase' },
+                'acne': { phase: week <= 4 ? 'Cleanse' : (week <= 8 ? 'Heal' : 'Maintain'), cycle: 'Skin Phase' },
+                'weight': { phase: week <= 4 ? 'Ignite' : (week <= 8 ? 'Accelerate' : 'Sustain'), cycle: 'Metabolic Phase' },
+                'mens': { phase: week <= 4 ? 'Activate' : (week <= 8 ? 'Build' : 'Optimize'), cycle: 'Vitality Phase' }
+            };
+            const pl = phaseLabels[condition] || phaseLabels['pcos'];
+            document.getElementById('phaseIndicator').textContent = `Month ${Math.ceil(week/4)}: ${pl.phase}`;
+
+            document.getElementById('cyclePhase').textContent = cycle.phase || cycle.focus || pl.cycle;
+            document.getElementById('cycleDay').textContent = cycle.day ? `Day ${cycle.day} of cycle` : cycle.focus || pl.cycle;
+            document.getElementById('conditionTag').textContent = (user.condition_value || user.condition_label || 'PCOS') + ' ' + (user.condition_label || '');
+            // Update plan title
+            const planTitleEl = document.getElementById('planTitle');
+            if (planTitleEl) {
+                const planTitles = {
+                    'pcos': 'PCOS Protocol',
+                    'acne': 'Skin Health Protocol',
+                    'weight': 'Weight Management Protocol',
+                    'mens': 'Men\'s Vitality Protocol'
+                };
+                planTitleEl.textContent = (user.tier || '30') + ' Day ' + (planTitles[condition] || 'Wellness Protocol');
+            }
+            document.getElementById('hydrationVal').textContent = (plan.hydration || plan.hydration_goal || '2.0').toString().replace(' liters','').replace('L','.0') + 'L';
 
             // Daily Fruit Protocol
             const fruit = plan.fruit_ritual || {};

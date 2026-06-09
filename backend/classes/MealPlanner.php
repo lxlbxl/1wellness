@@ -38,9 +38,12 @@ class MealPlanner
 
     public function calculateCyclePhase($lastPeriodDate, $cycleLength = 28, $targetDate = null)
     {
-        $lastPeriod = new DateTime($lastPeriodDate ?? 'now');
+        if (!$lastPeriodDate || $lastPeriodDate === '0000-00-00') {
+            return ['phase' => 'General', 'day' => 1];
+        }
+        $lastPeriod = new DateTime($lastPeriodDate);
         $now = new DateTime($targetDate ?? 'now');
-        $dayOfCycle = ($now->diff($lastPeriod)->days % $cycleLength) + 1;
+        $dayOfCycle = ($now->diff($lastPeriod)->days % ($cycleLength ?: 28)) + 1;
 
         if ($dayOfCycle <= 5)
             return ['phase' => 'Menstrual', 'day' => $dayOfCycle];
@@ -49,6 +52,23 @@ class MealPlanner
         if ($dayOfCycle <= 17)
             return ['phase' => 'Ovulatory', 'day' => $dayOfCycle];
         return ['phase' => 'Luteal', 'day' => $dayOfCycle];
+    }
+
+    public function getFunnelPhase($condition, $profile)
+    {
+        switch ($condition) {
+            case 'acne':
+                return ['phase' => 'Skin Healing', 'focus' => 'Reduce inflammation, balance microbiome'];
+            case 'weight':
+                return ['phase' => 'Metabolic Activation', 'focus' => 'Boost metabolism, regulate appetite'];
+            case 'mens':
+                return ['phase' => 'Vitality Optimization', 'focus' => 'Support testosterone, increase energy'];
+            default:
+                return $this->calculateCyclePhase(
+                    $profile['last_period_date'] ?? null,
+                    $profile['cycle_length'] ?? 28
+                );
+        }
     }
 
     public function getTodayPlan($userId, $dateStr = null)
@@ -131,11 +151,16 @@ class MealPlanner
             $contextStr .= "- Program Week: " . ($vars['PROGRAM_WEEK'] ?? '1') . "\n";
             $contextStr .= "- Location/Cuisine: Nigerian (unless preferences state otherwise)\n";
 
+            // Build funnel-specific prompt
             $pcosTypeStr = $vars['PCOS_TYPE'] ?? 'General';
             $cyclePhaseStr = $vars['CYCLE_PHASE'] ?? 'Follicular';
             $cycleDayStr = isset($cycleData['day']) ? $cycleData['day'] . "/28" : "Day 1";
 
-            $userPrompt = "
+            $funnelName = strtoupper($conditionType);
+
+            // Define funnel-specific prompt templates
+            $funnelPrompts = [
+                'pcos' => "
             Generate a personalized daily PCOS meal plan for this user:
             - Profile: {$pcosTypeStr} Type PCOS
             - Cycle Phase: {$cyclePhaseStr} ({$cycleDayStr})
@@ -145,74 +170,68 @@ class MealPlanner
             1. MEALS: All meals MUST be Nigerian/West African dishes (e.g., Moi Moi, Egusi, Jollof with brown rice, Pepper Soup).
             2. FRUIT PROTOCOL: Instead of supplements, recommend ONE specific Nigerian fruit for the day (e.g., Garden Egg, Udara, African Star Apple, Papaya, Guava).
                - Include 'why_it_works' explaining the hormonal benefit.
-               - Include nutritional benefits (vitamins/minerals).
             3. HERBAL TEA: You must include 2 herbal tea recommendations (Morning & Evening).
-            4. MOVEMENT: Suggest a walking-based routine. NO YOGA. Include step counts (min 6000 steps).
+            4. MOVEMENT: Suggest a walking-based routine. Include step counts (min 6000 steps).
             5. TIME RANGES: You MUST provide a 'time_start' and 'time_end' for EVERY meal and activity.
-               Example: Breakfast 07:00 - 08:00.
 
             Required JSON Structure:
             {
               \"meals\": {
-                \"breakfast\": { 
-                  \"name\": \"Dishe Name\", 
-                  \"description\": \"Short desc\", 
-                  \"calories\": 500, 
-                  \"time_start\": \"06:30\",
-                  \"time_end\": \"08:00\",
-                  \"ingredients\": [{\"item\": \"Name\", \"quantity\": \"Qty\"}], 
-                  \"instructions\": [\"Step 1\", \"Step 2\"] 
-                },
-                \"lunch\": { ...same structure with time_start: \"12:30\", time_end: \"14:00\"... },
-                \"dinner\": { ...same structure with time_start: \"18:30\", \"time_end\": \"20:00\"... },
-                \"snack\": { 
-                  \"name\": \"Healthy Nigerian snack\", 
-                  \"description\": \"...\", 
-                  \"time_start\": \"15:30\", 
-                  \"time_end\": \"16:30\" 
-                }
+                \"breakfast\": { \"name\": \"Dish Name\", \"description\": \"Short desc\", \"calories\": 500, \"time_start\": \"06:30\", \"time_end\": \"08:00\", \"ingredients\": [{\"item\": \"Name\", \"quantity\": \"Qty\"}], \"instructions\": [\"Step 1\", \"Step 2\"] },
+                \"lunch\": { ... },
+                \"dinner\": { ... },
+                \"snack\": { \"name\": \"Healthy snack\", \"description\": \"...\", \"time_start\": \"15:30\", \"time_end\": \"16:30\" }
               },
-              \"fruit_ritual\": {
-                \"name\": \"Garden Egg (Solanum aethiopicum)\",
-                \"portion\": \"2 medium fruits\",
-                \"benefits\": \"Rich in Potassium, Fiber, and B-Vitamins\",
-                \"why_it_works\": \"Garden egg is excellent for weight management and sugar regulation due to its high fiber and low glycemic index.\",
-                \"time_start\": \"10:00\",
-                \"time_end\": \"11:00\"
-              },
-              \"herbal_tea\": {
-                \"morning\": {
-                  \"name\": \"PCOS Morning Harmony Blend or Morning Detox Green Blend\",
-                  \"time_start\": \"10:00\",
-                  \"time_end\": \"10:30\",
-                  \"benefits\": \"Brief benefit description\",
-                  \"product_key\": \"pcos_morning_blend\"
-                },
-                \"evening\": {
-                  \"name\": \"PCOS Evening Calm Blend\",
-                  \"time_start\": \"20:30\",
-                  \"time_end\": \"21:00\",
-                  \"benefits\": \"Brief benefit description\",
-                  \"product_key\": \"pcos_evening_blend\"
-                }
-              },
-              \"workout\": {
-                \"name\": \"Morning and Evening Walk\",
-                \"description\": \"Brisk walking routine for hormonal balance\",
-                \"intensity\": \"Moderate\",
-                \"duration\": \"30-45 mins total\",
-                \"time_start\": \"06:00\",
-                \"time_end\": \"06:30\",
-                \"steps_target\": 6000,
-                \"activities\": [
-                  {\"name\": \"Morning Walk\", \"steps\": 3000, \"duration\": \"20 mins\", \"time\": \"06:00 - 06:30\"},
-                  {\"name\": \"Evening Walk\", \"steps\": 3000, \"duration\": \"20 mins\", \"time\": \"18:00 - 18:30\"}
-                ]
-              },
-              \"shopping_list\": [{ \"item\": \"Nigerian Ingredient\", \"quantity\": \"Qty\", \"category\": \"Produce/Meat/Pantry\" }],
+              \"fruit_ritual\": { \"name\": \"Garden Egg\", \"portion\": \"2 medium\", \"benefits\": \"...\", \"why_it_works\": \"...\", \"time_start\": \"10:00\", \"time_end\": \"11:00\" },
+              \"herbal_tea\": { \"morning\": { \"name\": \"Morning Blend\", \"time_start\": \"10:00\", \"time_end\": \"10:30\", \"benefits\": \"...\", \"product_key\": \"pcos_morning_blend\" }, \"evening\": { ... } },
+              \"workout\": { \"name\": \"Morning and Evening Walk\", \"description\": \"Brisk walking\", \"intensity\": \"Moderate\", \"duration\": \"30-45 mins\", \"time_start\": \"06:00\", \"time_end\": \"06:30\", \"steps_target\": 6000, \"activities\": [{\"name\": \"Morning Walk\", \"steps\": 3000, \"duration\": \"20 mins\", \"time\": \"06:00 - 06:30\"}, {\"name\": \"Evening Walk\", \"steps\": 3000, \"duration\": \"20 mins\", \"time\": \"18:00 - 18:30\"}] },
+              \"shopping_list\": [{ \"item\": \"Ingredient\", \"quantity\": \"Qty\", \"category\": \"Produce/Meat/Pantry\" }],
               \"hydration_goal\": \"8 glasses (2 liters)\",
               \"daily_quote\": \"Motivational quote for the day\"
-            }";
+            }",
+
+                'acne' => "
+            Generate a personalized daily anti-acne / skin health meal plan for this user:
+            - Goal: Reduce inflammation, balance skin microbiome, clear acne
+            - Focus on low-glycemic, anti-inflammatory foods
+
+            CRITICAL REQUIREMENTS:
+            1. MEALS: Nigerian/West African dishes with skin-healthy ingredients (leafy greens, fatty fish, citrus, turmeric). Avoid high-glycemic dishes.
+            2. FRUIT PROTOCOL: Recommend ONE Nigerian fruit for skin health (e.g., Pawpaw, Orange, Ugiri, Pineapple) with why_it_works.
+            3. HERBAL TEA: Morning detox + evening calming. Include product_key: 'acne_morning_blend' / 'acne_evening_blend'.
+            4. MOVEMENT: Walking routine + facial exercises. Min 5000 steps.
+            5. TIME RANGES on all meals/activities.
+            Same JSON structure as PCOS plan.",
+
+                'weight' => "
+            Generate a personalized daily weight management meal plan for this user:
+            - Goal: Calorie-controlled, metabolism-boosting, appetite regulation
+            - Focus on protein-rich, high-fiber, low-calorie Nigerian dishes
+
+            CRITICAL REQUIREMENTS:
+            1. MEALS: Nigerian dishes portion-controlled for weight loss (grilled fish with vegetables, vegetable soups, brown rice).
+            2. FRUIT PROTOCOL: Low-sugar Nigerian fruit (Garden Egg, Udara, Lime) with why_it_works for weight loss.
+            3. HERBAL TEA: Metabolism-boosting morning tea + evening detox. product_key: 'weight_morning_blend' / 'weight_evening_blend'.
+            4. MOVEMENT: Walking + bodyweight exercises. Min 7000 steps.
+            5. TIME RANGES on all meals/activities.
+            Same JSON structure as PCOS plan, but calories should be 300-400 per meal.",
+
+                'mens' => "
+            Generate a personalized daily men's vitality meal plan for this user:
+            - Goal: Support testosterone, increase energy, build strength
+            - Focus on zinc-rich, protein-packed Nigerian dishes
+
+            CRITICAL REQUIREMENTS:
+            1. MEALS: High-protein Nigerian dishes (grilled meats, fish, eggs, beans, nuts). Energy-dense.
+            2. FRUIT PROTOCOL: Testosterone-supporting Nigerian fruit (Banana, Avocado, Dates, Coconut).
+            3. HERBAL TEA: Energy-boosting morning tea + evening recovery. product_key: 'mens_morning_blend' / 'mens_evening_blend'.
+            4. MOVEMENT: Strength-focused routine (push-ups, squats, walking). Min 6000 steps.
+            5. TIME RANGES on all meals/activities.
+            Same JSON structure as PCOS plan, but calories should be 500-700 per meal."
+            ];
+
+            $userPrompt = $funnelPrompts[$conditionType] ?? $funnelPrompts['pcos'];
+            $userPrompt .= "\n\nAdditional context:\n- Allergies: " . ($vars['ALLERGIES'] ?? 'None') . "\n- Preferences: " . ($vars['PREFERENCES'] ?? 'None') . "\n- Program Week: " . ($vars['PROGRAM_WEEK'] ?? 'Week 1') . "\n- Date: " . $date;
 
 
             $maxRetries = 1;
@@ -345,17 +364,19 @@ class MealPlanner
 
         // Get Profile for AI context
         $profile = $this->db->fetch("SELECT * FROM member_profiles WHERE user_id = :uid", [':uid' => $userId]);
+        $conditionType = $profile['condition_type'] ?? 'pcos';
 
-        $prompt = "The user wants to swap their $mealType: '{$currentMeal['name']}'.
-            User PCOS Type: {$profile['pcos_type']}.
+        $prompt = "The user ($conditionType) wants to swap their $mealType: '{$currentMeal['name']}'.
+            Condition: {$conditionType}.
             Allergies: {$profile['allergies']}.
+            Preferences: {$profile['dietary_preferences']}.
 
             Suggest ONE alternative meal that fits their protocol.
             Output ONLY valid JSON in this format:
             { \"name\": \"Meal Name\", \"description\": \"Short description\", \"calories\": 0, \"shopping_list\": [{
             \"item\": \"...\", \"category\": \"...\", \"quantity\": \"...\" }] }";
 
-        $response = $this->ai->generateResponse('pcos_meal_planner', $prompt, []);
+        $response = $this->ai->generateResponse($conditionType . '_meal_planner', $prompt, []);
         $newMeal = null;
         if (is_string($response)) {
             $newMeal = json_decode($this->cleanJson($response), true);

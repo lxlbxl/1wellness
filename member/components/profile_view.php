@@ -105,7 +105,7 @@
                                 <span class="text-[10px] font-bold uppercase tracking-widest">Active</span>
                             </div>
                         </div>
-                        <h3 class="text-3xl font-serif mb-4">90 Day PCOS Protocol</h3>
+                        <h3 id="planTitle" class="text-3xl font-serif mb-4">90 Day PCOS Protocol</h3>
                         <div class="flex items-center gap-3 text-white/50 text-sm mb-10">
                             <i data-lucide="calendar" class="w-4 h-4"></i>
                             Renews on <span id="renewalDate" class="text-white font-medium">...</span>

@@ -112,81 +112,81 @@ try {
             $weight = floatval($_POST['weight'] ?? 0);
             $height = floatval($_POST['height'] ?? 0);
             $age = intval($_POST['age'] ?? 0);
-            $pcosType = $_POST['pcos_type'] ?? 'General';
+            $conditionType = $_POST['condition_type'] ?? $_POST['pcos_type'] ?? 'pcos';
+            $conditionType = in_array($conditionType, ['pcos','acne','weight','mens']) ? $conditionType : 'pcos';
             $cycleLength = intval($_POST['cycle_length'] ?? 28);
             $lastPeriod = $_POST['last_period_date'] ?? '';
             $allergies = $_POST['allergies'] ?? '';
             $dietPrefs = $_POST['dietary_preferences'] ?? '';
 
-            // CRITICAL FIX: Calculate BMI *before* using it in DB operations
+            // Calculate BMI
             $bmi = ($height > 0) ? ($weight / (($height / 100) ** 2)) : 0;
             $bmi = round($bmi, 2);
 
             // Check if profile exists
             $profileExists = $db->fetch("SELECT id FROM member_profiles WHERE user_id = :uid", [':uid' => $userId]);
 
+            $profileData = [
+                'age' => $age,
+                'weight' => $weight,
+                'height' => $height,
+                'bmi' => $bmi,
+                'allergies' => $allergies,
+                'dietary_preferences' => $dietPrefs,
+                'condition_type' => $conditionType,
+                'cycle_length' => $cycleLength,
+                'last_period_date' => $lastPeriod,
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+
+            // Set condition-specific label
+            if ($conditionType === 'pcos') $profileData['pcos_type'] = $_POST['pcos_type'] ?? 'General';
+            if ($conditionType === 'acne') $profileData['skin_type'] = $_POST['skin_type'] ?? 'Combination';
+
             if ($profileExists) {
-                // Update existing profile
-                $db->update('member_profiles', [
-                    'pcos_type' => $pcosType,
-                    'age' => $age,
-                    'weight' => $weight,
-                    'height' => $height,
-                    'bmi' => $bmi,
-                    'allergies' => $allergies,
-                    'dietary_preferences' => $dietPrefs,
-                    'cycle_length' => $cycleLength,
-                    'last_period_date' => $lastPeriod,
-                    'updated_at' => date('Y-m-d H:i:s')
-                ], "user_id = :uid", [':uid' => $userId]);
+                $db->update('member_profiles', $profileData, "user_id = :uid", [':uid' => $userId]);
             } else {
-                // Create new profile
-                $db->insert('member_profiles', [
+                $db->insert('member_profiles', array_merge($profileData, [
                     'user_id' => $userId,
-                    'pcos_type' => $pcosType,
-                    'age' => $age,
-                    'weight' => $weight,
-                    'height' => $height,
-                    'bmi' => $bmi,
-                    'allergies' => $allergies,
-                    'dietary_preferences' => $dietPrefs,
-                    'cycle_length' => $cycleLength,
-                    'last_period_date' => $lastPeriod,
-                    'subscription_tier' => '30-day', // Default
-                    'subscription_status' => 'active', // Grant access immediately
+                    'subscription_tier' => '30-day',
+                    'subscription_status' => 'active',
                     'start_date' => date('Y-m-d'),
                     'subscription_expiry' => date('Y-m-d', strtotime('+30 days')),
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s')
-                ]);
+                    'created_at' => date('Y-m-d H:i:s')
+                ]));
             }
 
-            // Update pcos_assessments if exists, else create
-            $existsGen = $db->fetch("SELECT id FROM pcos_assessments WHERE user_id = :uid", [':uid' => $userId]);
+            // Update the correct assessment table based on condition
+            $assessmentTables = [
+                'pcos' => 'pcos_assessments',
+                'acne' => 'acne_assessments',
+                'weight' => 'weight_assessments',
+                'mens' => 'mens_assessments'
+            ];
+            $assessTable = $assessmentTables[$conditionType] ?? 'pcos_assessments';
+            $existsGen = $db->fetch("SELECT id FROM \"{$assessTable}\" WHERE user_id = :uid", [':uid' => $userId]);
+
+            $assessData = [
+                'age' => $age,
+                'weight' => $weight,
+                'height' => $height,
+                'bmi' => $bmi,
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
 
             if ($existsGen) {
-                $db->update('pcos_assessments', [
-                    'age' => $age,
-                    'weight' => $weight,
-                    'height' => $height,
-                    'bmi' => $bmi,
-                    'updated_at' => date('Y-m-d H:i:s')
-                ], "user_id = :uid", [':uid' => $userId]);
+                $db->update($assessTable, $assessData, "user_id = :uid", [':uid' => $userId]);
             } else {
-                $db->insert('pcos_assessments', [
+                $db->insert($assessTable, array_merge($assessData, [
                     'id' => 'GEN_' . uniqid(),
                     'user_id' => $userId,
                     'email' => $user['email'],
-                    'age' => $age,
-                    'weight' => $weight,
-                    'height' => $height,
-                    'bmi' => $bmi,
                     'assessment_type' => 'manual',
                     'created_at' => date('Y-m-d H:i:s')
-                ]);
+                ]));
             }
 
-            // Sync age to users table too
+            // Sync age to users table
             $db->update('users', ['age' => $age], "id = :id", [':id' => $userId]);
 
             $response = ['success' => true];
