@@ -26,9 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 function validateCsrfToken($token) {
-    // Allow bypass for local development if defined
     if (defined('APP_ENV') && APP_ENV === 'development') {
         return true;
+    }
+    
+    // Auto-generate CSRF token if not set
+    if (!isset($_SESSION[CSRF_TOKEN_NAME])) {
+        $_SESSION[CSRF_TOKEN_NAME] = bin2hex(random_bytes(32));
     }
     
     if (empty($token)) {

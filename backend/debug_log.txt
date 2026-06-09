@@ -1,0 +1,32 @@
+[2026-06-08 23:49:28] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:49:28] [LOGIN] Error: SQLSTATE[HY000] [1045] Access denied for user 'qjixoiuxhk_ojgherbal'@'localhost' (using password: YES)
+[2026-06-08 23:55:50] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:55:50] [LOGIN] Error: SQLSTATE[HY000] [1045] Access denied for user 'qjixoiuxhk_ojgherbal'@'localhost' (using password: YES)
+[2026-06-08 23:56:14] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:56:14] [LOGIN] Error: SQLSTATE[HY000] [1045] Access denied for user 'qjixoiuxhk_ojgherbal'@'localhost' (using password: YES)
+[2026-06-08 23:56:32] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:56:32] [LOGIN] Error: SQLSTATE[HY000] [1045] Access denied for user 'qjixoiuxhk_ojgherbal'@'localhost' (using password: YES)
+[2026-06-08 23:56:32] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:56:32] [LOGIN] Error: SQLSTATE[HY000] [1045] Access denied for user 'qjixoiuxhk_ojgherbal'@'localhost' (using password: YES)
+[2026-06-08 23:57:17] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:57:17] [LOGIN] Error: SQLSTATE[HY000] [1045] Access denied for user 'qjixoiuxhk_ojgherbal'@'localhost' (using password: YES)
+[2026-06-08 23:57:58] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:57:58] [LOGIN] Error: SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for table admin_users
+[2026-06-08 23:57:58] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:57:58] [LOGIN] Error: SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for table admin_users
+[2026-06-08 23:58:14] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:58:14] [LOGIN] Error: SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for table admin_users
+[2026-06-08 23:58:14] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:58:14] [LOGIN] Error: SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for table admin_users
+[2026-06-08 23:58:39] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:58:39] [LOGIN] Error: SQLSTATE[42501]: Insufficient privilege: 7 ERROR:  permission denied for table admin_users
+[2026-06-08 23:58:47] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:58:47] [LOGIN] Failed: Invalid password for user admin
+[2026-06-08 23:58:56] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:58:56] [LOGIN] Failed: Invalid password for user admin
+[2026-06-08 23:58:56] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:58:56] [LOGIN] Failed: Invalid password for user admin
+[2026-06-08 23:59:04] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:59:04] [LOGIN] Failed: Invalid password for user admin
+[2026-06-08 23:59:29] [LOGIN] Login attempt for username: admin
+[2026-06-08 23:59:29] [LOGIN] Success: Admin logged in - admin

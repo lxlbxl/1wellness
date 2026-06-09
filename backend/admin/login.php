@@ -16,6 +16,12 @@ function log_debug($message)
 // Function to get database connection based on DB_TYPE
 function getDBConnection()
 {
+    if (defined('DB_TYPE') && DB_TYPE === 'pgsql') {
+        $dsn = "pgsql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME;
+        $pdo = new PDO($dsn, DB_USER, DB_PASS);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
+    }
     if (defined('DB_TYPE') && DB_TYPE === 'mysql') {
         // MySQL connection
         $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
@@ -82,7 +88,7 @@ if ($_POST) {
                 log_debug("Failed: User not found for username $username");
             }
         } catch (Exception $e) {
-            $error = 'Database connection error';
+            $error = 'Database connection error: ' . $e->getMessage();
             log_debug("Error: " . $e->getMessage());
         }
     }
