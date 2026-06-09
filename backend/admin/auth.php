@@ -3,9 +3,8 @@
  * Admin Authentication Middleware
  * Include this file at the top of protected admin pages
  */
-
-require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../classes/BaseModel.php';
 require_once __DIR__ . '/../classes/Admin.php';
 
