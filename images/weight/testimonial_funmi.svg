@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+  <defs>
+    <clipPath id="circle"><circle cx="40" cy="40" r="40"/></clipPath>
+  </defs>
+  <circle cx="40" cy="40" r="40" fill="#8FB89A"/>
+  <g clip-path="url(#circle)">
+    <circle cx="40" cy="30" r="14" fill="white" opacity="0.3"/>
+    <ellipse cx="40" cy="70" rx="22" ry="18" fill="white" opacity="0.3"/>
+  </g>
+  <text x="40" y="45" text-anchor="middle" fill="white" font-family="Syne,sans-serif" font-size="24" font-weight="700">F</text>
+</svg>
