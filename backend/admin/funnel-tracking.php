@@ -8,7 +8,8 @@ $db = Database::getInstance();
 function getFunnels($db)
 {
     if ($db->isFileStorage()) {
-        $tracking = json_decode(file_get_contents('../database/data/tracking.json'), true) ?: [];
+        $trackingFile = '../database/data/tracking.json';
+        $tracking = (file_exists($trackingFile) ? json_decode(file_get_contents($trackingFile), true) : []) ?: [];
         $funnels = array_unique(array_column($tracking, 'funnel_name'));
         return $funnels;
     } else {
@@ -35,7 +36,11 @@ $logs = [];
 $total_logs = 0;
 
 if ($db->isFileStorage()) {
-    $all_logs = json_decode(file_get_contents('../database/data/tracking.json'), true) ?: [];
+    $all_logs = [];
+    $trackingFile = '../database/data/tracking.json';
+    if (file_exists($trackingFile)) {
+        $all_logs = json_decode(file_get_contents($trackingFile), true) ?: [];
+    }
 
     // Sort by date desc
     usort($all_logs, function ($a, $b) {
