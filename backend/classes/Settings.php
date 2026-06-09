@@ -32,12 +32,12 @@ class Settings
             return $settings[$key]['value'] ?? $default;
         } else {
             try {
-                $stmt = $this->db->prepare("SELECT setting_value, setting_type FROM settings WHERE setting_key = ?");
+                $stmt = $this->db->prepare("SELECT value, type FROM settings WHERE key = ?");
                 $stmt->execute([$key]);
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($result) {
-                    return $this->castValue($result['setting_value'], $result['setting_type']);
+                    return $this->castValue($result['value'], $result['type']);
                 }
 
                 // Fallback: Check file storage even if DB is active (Migration/Sync issue)
@@ -72,7 +72,7 @@ class Settings
         } else {
             try {
                 // Check if exists
-                $stmt = $this->db->prepare("SELECT id FROM settings WHERE setting_key = ?");
+                $stmt = $this->db->prepare("SELECT id FROM settings WHERE key = ?");
                 $stmt->execute([$key]);
                 $exists = $stmt->fetch();
 
@@ -80,10 +80,10 @@ class Settings
 
                 $result = false;
                 if ($exists) {
-                    $stmt = $this->db->prepare("UPDATE settings SET setting_value = ?, setting_type = ?, updated_at = ? WHERE setting_key = ?");
+                    $stmt = $this->db->prepare("UPDATE settings SET value = ?, type = ?, updated_at = ? WHERE key = ?");
                     $result = $stmt->execute([$serializedValue, $type, date('Y-m-d H:i:s'), $key]);
                 } else {
-                    $stmt = $this->db->prepare("INSERT INTO settings (setting_key, setting_value, setting_type, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)");
+                    $stmt = $this->db->prepare("INSERT INTO settings (key, value, type, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)");
                     $result = $stmt->execute([$key, $serializedValue, $type, $description, date('Y-m-d H:i:s'), date('Y-m-d H:i:s')]);
                 }
 
@@ -128,7 +128,7 @@ class Settings
                 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $settings = [];
                 foreach ($results as $row) {
-                    $settings[$row['setting_key']] = $this->castValue($row['setting_value'], $row['setting_type']);
+                    $settings[$row['key']] = $this->castValue($row['value'], $row['type']);
                 }
                 return $settings;
             } catch (Exception $e) {

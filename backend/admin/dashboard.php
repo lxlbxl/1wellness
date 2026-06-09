@@ -17,7 +17,7 @@ $stats = [
     'pcos_assessments' => 0,
     'acne_assessments' => 0,
     'weight_assessments' => 0,
-    'egbon_assessments' => 0,
+    'mens_assessments' => 0,
     'sales' => 0,
     'contacts' => 0
 ];
@@ -28,24 +28,24 @@ try {
     $stats['pcos_assessments'] = $db->getAssessmentCount(null, 'pcos');
     $stats['acne_assessments'] = $db->getAssessmentCount(null, 'acne');
     $stats['weight_assessments'] = $db->getAssessmentCount(null, 'weight');
-    $stats['egbon_assessments'] = $db->getAssessmentCount(null, 'egbon');
+    $stats['mens_assessments'] = $db->getAssessmentCount(null, 'mens');
 
     // Get sales counts for conversion calculation
     $stats['pcos_sales'] = $db->getSalesCount('completed', 'pcos');
     $stats['acne_sales'] = $db->getSalesCount('completed', 'acne');
     $stats['weight_sales'] = $db->getSalesCount('completed', 'weight');
-    $stats['egbon_sales'] = $db->getSalesCount('completed', 'egbon');
+    $stats['mens_sales'] = $db->getSalesCount('completed', 'mens');
 
     // Calculate conversion rates (Overall)
     $conversionRates = [
         'PCOS' => $stats['pcos_assessments'] > 0 ? round(($stats['pcos_sales'] / $stats['pcos_assessments']) * 100, 1) : 0,
         'Acne' => $stats['acne_assessments'] > 0 ? round(($stats['acne_sales'] / $stats['acne_assessments']) * 100, 1) : 0,
         'Weight' => $stats['weight_assessments'] > 0 ? round(($stats['weight_sales'] / $stats['weight_assessments']) * 100, 1) : 0,
-        'Egbon' => $stats['egbon_assessments'] > 0 ? round(($stats['egbon_sales'] / $stats['egbon_assessments']) * 100, 1) : 0,
+        'Mens' => $stats['mens_assessments'] > 0 ? round(($stats['mens_sales'] / $stats['mens_assessments']) * 100, 1) : 0,
     ];
 
     // Get Daily Conversion Data for Chart
-    $funnels = ['pcos', 'acne', 'weight', 'egbon'];
+    $funnels = ['pcos', 'acne', 'weight', 'mens'];
     $dailyConversionData = [];
     $chartLabels = [];
 
@@ -189,7 +189,7 @@ include 'includes/header.php';
         </div>
     </div>
 
-    <!-- Weight & Egbon (Shared Column for space) -->
+    <!-- Weight & Mens (Shared Column for space) -->
     <div class="col-span-1 md:col-span-2 lg:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Weight Stats -->
         <div class="luxury-card p-6 flex items-center justify-between">
@@ -211,22 +211,22 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- Egbon Stats -->
+        <!-- Mens Stats -->
         <div class="luxury-card p-6 flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-full bg-[#E8EAF6] flex items-center justify-center text-[#3F51B5]">
                     <i class="fas fa-leaf"></i>
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-[#A4B4A6] uppercase tracking-wide">Egbon (General)</p>
+                    <p class="text-xs font-bold text-[#A4B4A6] uppercase tracking-wide">Mens (General)</p>
                     <h4 class="text-2xl font-serif text-[#2C3E35]">
-                        <?php echo number_format($stats['egbon_assessments'] ?? 0); ?> <span
+                        <?php echo number_format($stats['mens_assessments'] ?? 0); ?> <span
                             class="text-sm text-[#6B7C70] font-sans font-normal">Assessments</span>
                     </h4>
                 </div>
             </div>
             <div class="text-right">
-                <span class="block text-xl font-bold text-[#2C3E35]"><?php echo $conversionRates['Egbon']; ?>%</span>
+                <span class="block text-xl font-bold text-[#2C3E35]"><?php echo $conversionRates['Mens']; ?>%</span>
                 <span class="text-xs text-[#6B7C70]">Conv. Rate</span>
             </div>
         </div>
@@ -334,7 +334,7 @@ include 'includes/header.php';
         <div class="mt-8 pt-6 border-t border-[#EAEAE5]">
             <h4 class="text-sm font-bold text-[#2C3E35] mb-4">Funnel Distribution</h4>
             <?php
-            $total = $stats['pcos_assessments'] + $stats['acne_assessments'] + $stats['weight_assessments'] + $stats['egbon_assessments'];
+            $total = $stats['pcos_assessments'] + $stats['acne_assessments'] + $stats['weight_assessments'] + $stats['mens_assessments'];
             if ($total > 0):
                 $pcosPct = round(($stats['pcos_assessments'] / $total) * 100);
                 $acnePct = round(($stats['acne_assessments'] / $total) * 100);
@@ -523,8 +523,8 @@ include 'includes/header.php';
                 barPercentage: 0.6
             },
             {
-                label: 'Egbon',
-                data: <?php echo json_encode($dailyConversionData['egbon']); ?>,
+                label: 'Mens',
+                data: <?php echo json_encode($dailyConversionData['mens']); ?>,
                 backgroundColor: '#3F51B5', // Indigo
                 borderRadius: 4,
                 barPercentage: 0.6
