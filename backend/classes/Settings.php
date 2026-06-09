@@ -128,7 +128,12 @@ class Settings
                 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $settings = [];
                 foreach ($results as $row) {
-                    $settings[$row['key']] = $this->castValue($row['value'], $row['type']);
+                    $val = $row['value'];
+                    if (is_array($val)) {
+                        $settings[$row['key']] = $val;
+                    } else {
+                        $settings[$row['key']] = $this->castValue($val, $row['type']);
+                    }
                 }
                 return $settings;
             } catch (Exception $e) {
@@ -140,13 +145,18 @@ class Settings
 
     private function castValue($value, $type)
     {
+        // Defensive: if value is already an array, return as-is
+        if (is_array($value)) return $value;
+
         switch ($type) {
             case 'integer':
                 return intval($value);
             case 'boolean':
                 return (bool) $value;
             case 'json':
-                return json_decode($value, true);
+                if (!is_string($value)) return $value;
+                $decoded = json_decode($value, true);
+                return is_array($decoded) ? $decoded : ($value ?: []);
             default:
                 return $value;
         }
