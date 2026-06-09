@@ -98,7 +98,7 @@ class WebhookManager {
 
     getCurrentFunnel() {
         const path = window.location.pathname;
-        if (path.includes('egbon')) return 'egbon';
+        if (path.includes('mens')) return 'mens';
         if (path.includes('pcos')) return 'pcos';
         if (path.includes('acne')) return 'acne';
         if (path.includes('weight')) return 'weight';
@@ -237,34 +237,50 @@ class WebhookManager {
         let n8nResult = null;
         try {
             const funnel = this.getCurrentFunnel();
-            // CRITICAL: For PCOS, we MUST call the local webhook to create the user account immediately
-            if (funnel === 'pcos') {
-                console.log('🚀 Triggering direct PCOS account creation...');
-                const localPcosPayload = {
-                    ...purchaseData,
-                    email: purchaseData.customer?.email || '',
-                    name: purchaseData.customer?.name || '',
-                    order_id: purchaseData.transactionId,
-                    pcos_type: (() => {
-                        try {
-                            const ad = JSON.parse(localStorage.getItem('pcosAssessmentData') || '{}');
-                            return ad.pcosType?.primary || localStorage.getItem('pcosType') || 'General';
-                        } catch(e) { return 'General'; }
-                    })()
-                };
+            // CRITICAL: Call local webhook to create user account immediately (for ALL funnels)
+            const localWebhookMap = {
+                'pcos': 'webhook_pcos.php',
+                'acne': 'webhook_acne.php',
+                'weight': 'webhook_weight.php',
+                'mens': 'webhook_mens.php'
+            };
+            const webhookFile = localWebhookMap[funnel] || 'webhook_pcos.php';
 
-                // Call local webhook directly
-                const pcosResponse = await fetch(`${this.config.localBaseUrl}/webhook_pcos.php`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(localPcosPayload)
-                });
+            console.log(`🚀 Triggering direct ${funnel} account creation...`);
 
-                if (pcosResponse.ok) {
-                    const pcosResult = await pcosResponse.json();
-                    console.log('✅ PCOS Account Created:', pcosResult);
-                    return pcosResult; // Return this result as it contains credentials
-                }
+            const localPayload = {
+                ...purchaseData,
+                email: purchaseData.customer?.email || '',
+                name: purchaseData.customer?.name || '',
+                order_id: purchaseData.transactionId,
+            };
+
+            // Add funnel-specific assessment data from localStorage
+            const localStorageKeys = {
+                'pcos': 'pcosAssessmentData',
+                'acne': 'acneAssessmentData',
+                'weight': 'weightAssessmentData',
+                'mens': 'mensAssessmentData'
+            };
+            const assessmentKey = localStorageKeys[funnel] || 'pcosAssessmentData';
+            try {
+                const ad = JSON.parse(localStorage.getItem(assessmentKey) || '{}');
+                localPayload.assessment_data = ad;
+                // Also add the type field the backend expects
+                localPayload[`${funnel}_type`] = ad[`${funnel}Type`]?.primary || localStorage.getItem(`${funnel}Type`) || 'General';
+            } catch(e) {}
+
+            // Call local webhook directly
+            const webhookResponse = await fetch(`${this.config.localBaseUrl}/${webhookFile}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(localPayload)
+            });
+
+            if (webhookResponse.ok) {
+                const result = await webhookResponse.json();
+                console.log(`✅ ${funnel} Account Created:`, result);
+                return result; // Return this result as it contains credentials
             }
 
             const n8nData = {

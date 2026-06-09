@@ -119,7 +119,7 @@
 
                 <div class="mt-10 pt-10 border-t border-sage-50 text-center">
                     <p class="text-sage-400 text-sm">
-                        Don't have an account? <a href="../pcos/90-day-plan.html"
+                        Don't have an account? <a href="../index.html#products"
                             class="text-sage-500 font-bold hover:underline">View Plans</a>
                     </p>
                 </div>

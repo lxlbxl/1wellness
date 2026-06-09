@@ -1,64 +1,65 @@
 <?php
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST');
-
-require_once '../admin/auth.php';
+require_once '../config/config.php';
 require_once '../classes/Database.php';
+require_once '../classes/User.php';
 
-$db = Database::getInstance();
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+    exit;
+}
 
-$tx_ref = $_GET['tx_ref'] ?? $_POST['tx_ref'] ?? '';
-$email = $_GET['email'] ?? $_POST['email'] ?? '';
+$txRef = $_GET['tx_ref'] ?? '';
+$email = $_GET['email'] ?? '';
 
-if (empty($tx_ref)) {
-    echo json_encode(['success' => false, 'error' => 'Transaction reference required']);
+if (!$txRef && !$email) {
+    echo json_encode(['success' => false, 'error' => 'Missing tx_ref or email']);
     exit;
 }
 
 try {
-    // 1. Find the sale by transaction ref
-    $sale = $db->fetch("SELECT user_id, email, payment_status, created_at FROM sales WHERE tx_ref = ? OR transaction_id = ?", [$tx_ref, $tx_ref]);
-
-    if (!$sale) {
-        // Fallback: Check if we have a pending webhook record or if it's too early
-        echo json_encode(['success' => false, 'error' => 'Transaction not found yet.']);
+    $db = Database::getInstance();
+    if ($db->isFileStorage()) {
+        echo json_encode(['success' => false, 'error' => 'Database unavailable']);
         exit;
     }
 
-    $userId = $sale['user_id'];
+    $pdo = $db->getConnection();
 
-    // 2. Fetch User Details
-    $user = $db->fetch("SELECT * FROM users WHERE id = ?", [$userId]);
+    if ($txRef) {
+        $stmt = $pdo->prepare("SELECT s.user_id, s.email, s.name FROM sales s WHERE s.tx_ref = ? AND s.payment_status = 'completed' LIMIT 1");
+        $stmt->execute([$txRef]);
+    } else {
+        $stmt = $pdo->prepare("SELECT s.user_id, s.email, s.name FROM sales s WHERE s.email = ? AND s.payment_status = 'completed' ORDER BY s.created_at DESC LIMIT 1");
+        $stmt->execute([$email]);
+    }
+
+    $sale = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$sale || !$sale['user_id']) {
+        echo json_encode(['success' => false, 'error' => 'No completed sale found']);
+        exit;
+    }
+
+    $stmt = $pdo->prepare("SELECT id, email, username, password_hash, name, plan_duration, plan_start_date, plan_end_date FROM users WHERE id = ?");
+    $stmt->execute([$sale['user_id']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$user) {
-        echo json_encode(['success' => false, 'error' => 'User account not found']);
+        echo json_encode(['success' => false, 'error' => 'User not found']);
         exit;
     }
-
-    // 3. Generate Auto-Login Token
-    $token = bin2hex(random_bytes(16));
-    $expiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
-
-    $stmt = $db->query(
-        "INSERT INTO auth_tokens (user_id, token, expires_at) VALUES (?, ?, ?)",
-        [$userId, $token, $expiry]
-    );
-
-    // 4. Return Data
-    // Note: We cannot return the password safely if it wasn't captured in session/local storage
-    // But we CAN return the username and the auto-login token which is enough to access.
 
     echo json_encode([
         'success' => true,
-        'username' => $user['username'] ?? $user['email'], // Fallback to email if no username
-        'auto_login_token' => $token,
+        'user_id' => $user['id'],
         'email' => $user['email'],
-        'name' => $user['name'] ?? $user['first_name'],
-        'message' => 'Account ready'
+        'username' => $user['username'],
+        'name' => $user['name'],
+        'plan_duration' => $user['plan_duration'],
+        'plan_start_date' => $user['plan_start_date'],
+        'plan_end_date' => $user['plan_end_date']
     ]);
-
 } catch (Exception $e) {
-    error_log("Credential Fetch Error: " . $e->getMessage());
-    echo json_encode(['success' => false, 'error' => 'Server error']);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }

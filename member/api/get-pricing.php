@@ -82,7 +82,7 @@ try {
                     'features' => ['Starter meal plan', 'Basic exercise guide', 'Community access', 'Daily protocol tracking']
                 ]
             ],
-            'egbon' => [
+            'mens' => [
                 '90-day' => [
                     'name' => '90-Day Men\'s Vitality Complete Plan',
                     'price' => 197,

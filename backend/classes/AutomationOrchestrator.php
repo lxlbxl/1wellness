@@ -207,6 +207,11 @@ class AutomationOrchestrator
         return $this->handlePurchase($orderData, $assessmentData, 'acne');
     }
 
+    public function handleMensPurchase($orderData, $assessmentData)
+    {
+        return $this->handlePurchase($orderData, $assessmentData, 'mens');
+    }
+
     private function saveMemberProfile($userId, $data, $type = 'pcos')
     {
         // Calculate Subscription Duration

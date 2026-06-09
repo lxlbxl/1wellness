@@ -1,9 +1,9 @@
 <?php
 /**
- * API Endpoint: Generate PCOS Plan PDF
+ * API Endpoint: Generate Plan PDF (all funnels)
  *
  * POST /api/generate-plan.php
- * Body: { email, name, assessment: {...} }
+ * Body: { email, name, type, assessment: {...} }
  * Returns: PDF binary (application/pdf)
  */
 
@@ -51,6 +51,7 @@ if (!$input) {
 
 $name = $input['name'] ?? 'Friend';
 $email = $input['email'] ?? '';
+$type = $input['type'] ?? 'pcos';
 $assessment = $input['assessment'] ?? [];
 
 if (empty($assessment)) {
@@ -61,15 +62,14 @@ if (empty($assessment)) {
 }
 
 try {
-    // Increase limits for AI + PDF generation
-    set_time_limit(180); // 3 minutes
+    set_time_limit(180);
     ini_set('memory_limit', '256M');
 
     $generator = new PcosGenerator();
     $pdfBinary = $generator->generate($assessment, $name, $email);
 
-    // Return PDF
-    $filename = preg_replace('/\s+/', '_', $name) . '_90Day_PCOS_Protocol.pdf';
+    $typeLabel = strtoupper($type);
+    $filename = preg_replace('/\s+/', '_', $name) . "_90Day_{$typeLabel}_Protocol.pdf";
     header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Content-Length: ' . strlen($pdfBinary));
