@@ -907,7 +907,7 @@ async function fetchRenewalPlans() {
                         </ul>
                     </div>
                     <div class="mt-auto">
-                        <div class="text-3xl font-serif text-sage-600 mb-6">₦${new Intl.NumberFormat().format(plan.price)}</div>
+                        <div class="text-3xl font-serif text-sage-600 mb-6">$${new Intl.NumberFormat().format(plan.price)}</div>
                         <button onclick="processRenewal('${key}', ${plan.price}, '${pubKey}')" class="w-full bg-sage-500 text-white py-4 rounded-2xl font-bold hover:shadow-xl hover:shadow-sage-500/20 transition-all">
                             Choose Plan
                         </button>

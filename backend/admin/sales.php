@@ -802,7 +802,7 @@ include 'includes/header.php';
                         <div class="luxury-card p-6 bg-[#2C3E35] text-white relative overflow-hidden group">
                             <div class="absolute right-[-20px] top-[-20px] w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
                             <p class="text-[#A4B4A6] text-xs font-bold uppercase tracking-wider mb-2">Total Revenue</p>
-                            <h3 class="text-4xl font-serif">₦${new Intl.NumberFormat().format(d.totalRevenue)}</h3>
+                            <h3 class="text-4xl font-serif">${new Intl.NumberFormat().format(d.totalRevenue)}</h3>
                         </div>
                         <div class="luxury-card p-6 flex flex-col justify-center">
                             <p class="text-[#A4B4A6] text-xs font-bold uppercase tracking-wider mb-2">Total Orders</p>
@@ -810,7 +810,7 @@ include 'includes/header.php';
                         </div>
                         <div class="luxury-card p-6 flex flex-col justify-center">
                             <p class="text-[#A4B4A6] text-xs font-bold uppercase tracking-wider mb-2">Avg. Order Value</p>
-                            <h3 class="text-3xl font-serif text-[#D97757]">₦${new Intl.NumberFormat().format(d.avgOrderValue)}</h3>
+                            <h3 class="text-3xl font-serif text-[#D97757]">${new Intl.NumberFormat().format(d.avgOrderValue)}</h3>
                         </div>
                     `;
                     document.getElementById('statsContainer').innerHTML = statsHtml;

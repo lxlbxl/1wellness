@@ -497,7 +497,7 @@ include 'includes/header.php';
                     <label class="block text-xs font-bold text-[#A4B4A6] uppercase tracking-wider mb-2">Currency</label>
                     <select name="pcos_currency"
                         class="w-full px-4 py-3 border border-[#EAEAE5] rounded-xl focus:outline-none focus:border-[#2C3E35] bg-white text-[#2C3E35]">
-                        <?php foreach (['USD' => '$ US Dollar (USD)', 'GBP' => '£ British Pound (GBP)', 'NGN' => '₦ Nigerian Naira (NGN)'] as $val => $label): ?>
+                        <?php foreach (['USD' => '$ US Dollar (USD)', 'GBP' => '£ British Pound (GBP)', 'MXN' => '$ Mexican Peso (MXN)'] as $val => $label): ?>
                             <option value="<?php echo $val; ?>" <?php echo ($pcosPlan['currency'] ?? 'USD') === $val ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($label); ?>
                             </option>
