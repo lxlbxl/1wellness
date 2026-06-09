@@ -129,5 +129,10 @@ backend/database/data/users.json
 backend/database/data/assessments.json
 
 # Other sensitive data
-backend/database/settings.jsonbackend/debug_log.txt
 backend/database/settings.json
+backend/debug_log.txt
+backend/database/settings.json
+backend/database/settings.json
+backend/debug_log.txt
+*.php~
+*- Copy.php

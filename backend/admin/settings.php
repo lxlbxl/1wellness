@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'flutterwave_public_key',
                     'flutterwave_secret_key',
                     'flutterwave_encryption_key',
+                    'flutterwave_environment',
                     'ai_provider',
                     'ai_api_key',
                     'ai_model',
@@ -113,6 +114,7 @@ $defaults = [
     'flutterwave_public_key' => '',
     'flutterwave_secret_key' => '',
     'flutterwave_encryption_key' => '',
+    'flutterwave_environment' => 'sandbox',
     'ai_provider' => 'openrouter',
     'ai_api_key' => '',
     'ai_model' => 'google/gemini-2.0-flash-exp:free',
@@ -287,8 +289,14 @@ include 'includes/header.php';
                         <label class="block text-sm font-medium text-[#2C3E35] mb-2">Encryption Key</label>
                         <input type="password" name="flutterwave_encryption_key"
                             value="<?php echo htmlspecialchars($settings['flutterwave_encryption_key']); ?>"
-                            class="luxury-input w-full px-4 py-2 border border-[#EAEAE5] rounded-lg focus:outline-none focus:border-[#2C3E35] text-[#2C3E35] font-mono text-sm">
+                            class="luxury-input w-full" placeholder="Encryption key for payment processing">
                     </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Environment</label>
+                        <select name="flutterwave_environment" class="luxury-input w-full">
+                            <option value="sandbox" <?php echo ($settings['flutterwave_environment'] ?? 'sandbox') === 'sandbox' ? 'selected' : ''; ?>>Sandbox (Testing)</option>
+                            <option value="production" <?php echo ($settings['flutterwave_environment'] ?? 'sandbox') === 'production' ? 'selected' : ''; ?>>Production (Live)</option>
+                        </select>
                 </div>
             </div>
 

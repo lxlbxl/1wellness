@@ -426,3 +426,30 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 console.log('🌿 1wellness Config loaded - Multi-currency support enabled');
+
+// Auto-load Flutterwave keys from backend settings
+(async function loadPaymentSettings() {
+    try {
+        const res = await fetch('../backend/api/get-settings.php');
+        const json = await res.json();
+        if (json.success && json.data) {
+            const d = json.data;
+            if (d.flutterwave_public_key && d.flutterwave_public_key !== '' && !d.flutterwave_public_key.includes('xxxxxxxxx')) {
+                CONFIG.payment.flutterwave.publicKey = d.flutterwave_public_key;
+            }
+            if (d.flutterwave_environment) {
+                CONFIG.payment.flutterwave.environment = d.flutterwave_environment;
+                // Update Flutterwave SDK environment
+                if (typeof FlutterwaveCheckout !== 'undefined') {
+                    FlutterwaveCheckout({
+                        public_key: d.flutterwave_public_key,
+                        env: d.flutterwave_environment
+                    });
+                }
+            }
+            console.log('💰 Payment settings loaded from admin');
+        }
+    } catch (e) {
+        console.log('Using default payment settings');
+    }
+})();

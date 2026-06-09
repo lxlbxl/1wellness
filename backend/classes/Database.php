@@ -244,8 +244,6 @@ class Database
             $this->ensureAiLogsColumns();
 
         } catch (Exception $e) {
-
-        } catch (Exception $e) {
             error_log("Ensure schema error: " . $e->getMessage());
         }
     }
@@ -403,7 +401,35 @@ class Database
 
     private function isMySQL()
     {
-        return $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
+        return $this->connection !== null && $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
+    }
+
+    private function isPgSQL()
+    {
+        return $this->connection !== null && $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql';
+    }
+
+    private function addColumnIfNotExists($table, $name, $type)
+    {
+        if ($this->connection === null) return;
+        $driver = $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'pgsql') {
+            $this->connection->exec("ALTER TABLE \"{$table}\" ADD COLUMN IF NOT EXISTS \"{$name}\" {$type}");
+        } elseif ($driver === 'mysql') {
+            try {
+                $this->connection->exec("ALTER TABLE `{$table}` ADD COLUMN `{$name}` {$type}");
+            } catch (PDOException $e) {
+                // Column likely already exists — ignore
+            }
+        } else {
+            try {
+                $cols = $this->fetchAll("PRAGMA table_info({$table})");
+                $colNames = array_map(function($c) { return $c['name']; }, $cols);
+                if (!in_array($name, $colNames)) {
+                    $this->connection->exec("ALTER TABLE {$table} ADD COLUMN {$name} {$type}");
+                }
+            } catch (Exception $e) {}
+        }
     }
 
     public function getConnection()
