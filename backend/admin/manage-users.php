@@ -41,7 +41,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
                         'updated_at' => date('Y-m-d H:i:s')
                     ], "id = :id", [':id' => $id]);
                 }
-                echo json_encode(['success' => true, 'message' => "User status changed to {$newStatus}", 'new_status' => $newStatus]);
+
+                // If activating a user without credentials, generate them
+                $userModel = new User();
+                $userData = $userModel->find($id);
+                $generatedCreds = null;
+                if ($newStatus === 'active' && $userData && (empty($userData['password_hash']) || empty($userData['username']))) {
+                    $creds = $userModel->generateCredentials($userData['name'] ?? $userData['first_name'] ?? 'User');
+                    $hash = password_hash($creds['password'], PASSWORD_DEFAULT);
+                    $userModel->update($id, [
+                        'username' => $creds['username'],
+                        'password_hash' => $hash,
+                        'type' => 'customer'
+                    ]);
+                    $generatedCreds = "Username: {$creds['username']} | Password: {$creds['password']}";
+                }
+
+                $response = ['success' => true, 'message' => "User status changed to {$newStatus}", 'new_status' => $newStatus];
+                if ($generatedCreds) {
+                    $response['credentials'] = $generatedCreds;
+                }
+                echo json_encode($response);
             } catch (Exception $e) {
                 echo json_encode(['success' => false, 'message' => 'Error updating status: ' . $e->getMessage()]);
             }
