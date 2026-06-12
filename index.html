@@ -1,939 +1,950 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-    <script src="js/config.js"></script>
-    <script src="js/webhook-manager.js"></script>
-    <script src="js/tracking.js"></script>
-    <script src="js/gdpr-cookie-consent.js" defer></script>
+    <title>1wellness — Natural Health Solutions</title>
+    <meta name="description" content="Discover personalized herbal wellness plans crafted from centuries of traditional wisdom, backed by modern science. Clear skin, balanced hormones, sustainable weight, renewed vitality.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Syne', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                        body: ['Lora', 'serif'],
+                        mono: ['DM Mono', 'monospace'],
+                    },
+                    colors: {
+                        'forest': {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#1D4532',
+                            800: '#1D4532',
+                            900: '#1A1A18',
+                        },
+                        'sage': {
+                            100: '#E6EBE6',
+                            200: '#CDD6CD',
+                            500: '#8FB89A',
+                        },
+                        'terracotta': {
+                            500: '#C85A3C',
+                            600: '#C85A3C',
+                        },
+                        'cream': '#FFFBF4',
+                        'sand': '#F9F5EE',
+                        'midnight': '#1A1A18',
+                        'amber': '#D4860A',
+                        'charcoal': '#2C2C2A',
+                        'dusk': '#6B6560',
+                        'stone': '#E8E0D5',
+                        primary: {
+                            50: '#f2f8f5',
+                            100: '#dcece3',
+                            500: '#1D4532',
+                            600: '#1D4532',
+                            700: '#1A1A18',
+                            800: '#1A1A18',
+                            900: '#1A1A18'
+                        }
+                    },
+                    backgroundImage: {
+                        'grain': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -15px rgba(29, 69, 50, 0.1)',
+                        'glow': '0 0 20px rgba(200, 90, 60, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        :root {
-            --brand-midnight: #1A1A18;
-            --brand-forest: #1D4532;
-            --brand-amber: #D4860A;
-            --brand-canvas: #F9F5EE;
-            --brand-sage: #8FB89A;
-            --brand-terra: #C85A3C;
-            --brand-cream: #FFFBF4;
-            --brand-stone: #E8E0D5;
-            --brand-dusk: #6B6560;
-            --brand-charcoal: #2C2C2A;
-        }
-
         body {
+            background-color: #FFFBF4;
+            color: #2C2C2A;
             font-family: 'Lora', Georgia, serif;
-            background: var(--brand-canvas);
-            color: var(--brand-charcoal);
         }
 
-        h1, h2, h3, h4 {
-            font-family: 'Syne', sans-serif;
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden;
         }
 
-        .font-display {
-            font-family: 'Cormorant Garamond', Georgia, serif;
+        * { box-sizing: border-box; }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
-        .gradient-text {
-            background: linear-gradient(135deg, #1D4532 0%, #2A5C3E 50%, #8FB89A 100%);
+        .blob {
+            position: absolute;
+            filter: blur(90px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Reveal animation */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(28px);
+            animation: revealUp 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        @keyframes revealUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Float animation for hero card */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+
+        /* Product card hover */
+        .product-card {
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 48px -12px rgba(29, 69, 50, 0.18);
+        }
+
+        /* Nav scroll shadow */
+        .nav-scrolled {
+            box-shadow: 0 1px 24px rgba(26, 26, 24, 0.08);
+        }
+
+        /* Divider botanical */
+        .divider-leaf {
+            width: 48px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #8FB89A, transparent);
+            margin: 0 auto;
+        }
+
+        /* FAQ accordion transition */
+        [x-cloak] { display: none !important; }
+
+        /* Currency modal backdrop */
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        /* Gradient text */
+        .text-gradient {
+            background: linear-gradient(135deg, #1D4532 0%, #3a7a5a 50%, #8FB89A 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
-        .hero-gradient {
-            background: linear-gradient(135deg, #F9F5EE 0%, #FFFBF4 30%, #E8E0D5 100%);
-        }
-
-        .bg-brand-50 { background: #F0F7F2; }
-        .bg-brand-100 { background: #D4EBDA; }
-        .bg-brand-500 { background: #8FB89A; }
-        .bg-brand-600 { background: #1D4532; }
-        .bg-brand-700 { background: #153525; }
-        .bg-brand-800 { background: #0E2419; }
-
-        .text-brand-600 { color: #1D4532; }
-        .text-brand-700 { color: #153525; }
-        .text-brand-100 { color: #D4EBDA; }
-        .text-brand-200 { color: #A8CFB0; }
-
-        .border-brand-500 { border-color: #8FB89A; }
-        .border-brand-300 { border-color: #D4EBDA; }
-
-        .hover\:bg-brand-700:hover { background: #153525; }
-        .hover\:bg-brand-300:hover { background: #D4EBDA; }
-        .hover\:text-brand-400:hover { color: #A8CFB0; }
-        .hover\:text-brand-600:hover { color: #1D4532; }
-
-        .shadow-brand-500\/30 { box-shadow: 0 4px 14px rgba(29, 69, 50, 0.3); }
-
-        .bg-amber-400 { background: #D4860A; }
-        .text-amber-400 { color: #D4860A; }
-
-        .bg-midnight { background: var(--brand-midnight); }
-        .text-midnight { color: var(--brand-midnight); }
-        .bg-stone { background: var(--brand-stone); }
-        .bg-cream { background: var(--brand-cream); }
-        .bg-forest { background: var(--brand-forest); }
-        .text-forest { color: var(--brand-forest); }
-
-        .card-hover { transition: all 0.3s ease; }
-        .card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(26, 26, 24, 0.12);
-        }
-        .animate-float { animation: float 6s ease-in-out infinite; }
-        .animate-pulse-slow { animation: pulse 3s ease-in-out infinite; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* Product card gradients — brand palette */
-        .card-skin { background: linear-gradient(135deg, #8FB89A, #1D4532); }
-        .card-cycle { background: linear-gradient(135deg, #C85A3C, #8B3E2A); }
-        .card-lean { background: linear-gradient(135deg, #D4860A, #A06508); }
-        .card-vitality { background: linear-gradient(135deg, #1D4532, #0E2419); }
-
-        .tag-skin { background: #D4EBDA; color: #1D4532; }
-        .tag-cycle { background: #F5D5CC; color: #8B3E2A; }
-        .tag-lean { background: #FCE8C5; color: #A06508; }
-        .tag-vitality { background: #D4EBDA; color: #153525; }
-
-        .btn-skin { background: #1D4532; }
-        .btn-skin:hover { background: #153525; }
-        .btn-cycle { background: #C85A3C; }
-        .btn-cycle:hover { background: #8B3E2A; }
-        .btn-lean { background: #D4860A; }
-        .btn-lean:hover { background: #A06508; }
-        .btn-vitality { background: #1D4532; }
-        .btn-vitality:hover { background: #0E2419; }
-
-        .price-skin { color: #1D4532; }
-        .price-cycle { color: #C85A3C; }
-        .price-lean { color: #D4860A; }
-        .price-vitality { color: #1D4532; }
-
-        .save-skin { color: #1D4532; }
-        .save-cycle { color: #8B3E2A; }
-        .save-lean { color: #A06508; }
-        .save-vitality { color: #153525; }
     </style>
+
+    <script src="js/config.js" defer></script>
+    <script src="js/webhook-manager.js" defer></script>
+    <script src="js/tracking.js" defer></script>
 </head>
 
-<body class="bg-gray-50 font-sans" x-data="{ 
-    currency: 'USD',
-    currencySymbol: '$',
-    exchangeRate: 1,
-    showCurrencyModal: false,
-    
-    init() {
-        if (window.ConfigManager) {
-            const region = window.ConfigManager.detectRegion();
-            const settings = window.ConfigManager.getRegionSettings(region);
-            this.currency = settings.currency;
-            this.currencySymbol = window.ConfigManager.getCurrencyDisplay(this.currency).symbol;
-            this.exchangeRate = window.CONFIG.payment.exchangeRates[this.currency] || 1;
-        }
-    },
-    
-    formatPrice(usdPrice) {
-        if (window.ConfigManager) {
-            return window.ConfigManager.formatAmount(usdPrice, this.currency);
-        }
-        return `$${usdPrice}`;
-    },
-    
-    setCurrency(code, symbol, rate) {
-        this.currency = code;
-        this.currencySymbol = symbol;
-        this.exchangeRate = rate;
-        this.showCurrencyModal = false;
-        if (window.WebhookManager) {
-            window.WebhookManager.trackConversion('currency_change', { currency: code });
-        }
-    }
-}">
+<body class="antialiased relative overflow-x-hidden"
+    x-data="{
+        currency: 'USD',
+        currencySymbol: '$',
+        exchangeRate: 1,
+        showCurrencyModal: false,
+        mobileMenuOpen: false,
 
-    <!-- Currency Selector Modal -->
-    <div x-show="showCurrencyModal" x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+        // Default prices from config.js CONFIG.pricing — overwritten by live API on load
+        prices: {
+            acne:   { sale: 67,  original: 147, discount: 54 },
+            pcos:   { sale: 97,  original: 197, discount: 51 },
+            weight: { sale: 77,  original: 167, discount: 54 },
+            mens:   { sale: 87,  original: 157, discount: 45 }
+        },
+
+        async init() {
+            if (window.ConfigManager) {
+                const region = window.ConfigManager.detectRegion();
+                const settings = window.ConfigManager.getRegionSettings(region);
+                this.currency = settings.currency;
+                this.currencySymbol = window.ConfigManager.getCurrencyDisplay(this.currency).symbol;
+                this.exchangeRate = (window.CONFIG && window.CONFIG.payment && window.CONFIG.payment.exchangeRates)
+                    ? (window.CONFIG.payment.exchangeRates[this.currency] || 1) : 1;
+            }
+            await this.loadPrices();
+        },
+
+        async loadPrices() {
+            try {
+                const res = await fetch('backend/api/get-pricing.php');
+                if (!res.ok) return;
+                const json = await res.json();
+                if (!json.success || !json.data || !json.data.plans) return;
+                const plans = json.data.plans;
+                ['acne', 'pcos', 'weight', 'mens'].forEach(funnel => {
+                    if (!plans[funnel]) return;
+                    const planPrices = Object.values(plans[funnel])
+                        .map(p => parseFloat(p.price))
+                        .filter(p => !isNaN(p) && p > 0);
+                    if (planPrices.length === 0) return;
+                    const sale     = Math.min(...planPrices);
+                    const original = Math.max(...planPrices);
+                    const discount = original > sale ? Math.round((1 - sale / original) * 100) : 0;
+                    this.prices[funnel] = { sale, original, discount };
+                });
+            } catch (e) {
+                // Network error or backend unavailable — keep defaults silently
+            }
+        },
+
+        getSalePrice(funnel) {
+            return this.formatPrice(this.prices[funnel]?.sale ?? 0);
+        },
+
+        getOriginalPrice(funnel) {
+            return this.formatPrice(this.prices[funnel]?.original ?? 0);
+        },
+
+        getDiscount(funnel) {
+            const d = this.prices[funnel]?.discount ?? 0;
+            return d > 0 ? 'Save ' + d + '%' : '';
+        },
+
+        formatPrice(usdPrice) {
+            const converted = usdPrice * this.exchangeRate;
+            if (window.ConfigManager) {
+                return window.ConfigManager.formatAmount(converted, this.currency);
+            }
+            return '$' + converted.toFixed(0);
+        },
+
+        setCurrency(code, symbol, rate) {
+            this.currency = code;
+            this.currencySymbol = symbol;
+            this.exchangeRate = rate;
+            this.showCurrencyModal = false;
+            if (window.WebhookManager) {
+                window.WebhookManager.trackConversion('currency_change', { currency: code });
+            }
+        }
+    }"
+>
+
+    <!-- Grain Texture Overlay -->
+    <div class="fixed inset-0 bg-grain pointer-events-none z-50 opacity-40 mix-blend-overlay"></div>
+
+    <!-- ===================== CURRENCY MODAL ===================== -->
+    <div
+        x-show="showCurrencyModal"
+        x-cloak
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" style="display: none;">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6" @click.away="showCurrencyModal = false">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-gray-900">Select Your Currency</h3>
-                <button @click="showCurrencyModal = false" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
+        class="fixed inset-0 bg-midnight/60 modal-backdrop z-[60] flex items-center justify-center p-4"
+        @click.self="showCurrencyModal = false"
+    >
+        <div class="glass-panel rounded-2xl max-w-sm w-full p-6 shadow-2xl" @click.away="showCurrencyModal = false">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-sans text-lg font-bold text-midnight">Select Currency</h3>
+                <button @click="showCurrencyModal = false" class="w-8 h-8 flex items-center justify-center rounded-full bg-stone text-dusk hover:text-midnight transition-colors">
+                    <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
-            <div class="space-y-3">
-                <button @click="setCurrency('USD', '$', 1)"
-                    :class="currency === 'USD' ? 'bg-brand-50 border-brand-500' : 'border-gray-200'"
-                    class="w-full flex items-center justify-between p-4 border-2 rounded-xl hover:border-brand-300 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">🇺🇸</span>
-                        <div>
-                            <p class="font-semibold text-gray-900">US Dollar</p>
-                            <p class="text-sm text-gray-500">United States</p>
+            <div class="space-y-2">
+                <template x-for="c in [
+                    {code:'USD', flag:'🇺🇸', name:'US Dollar', country:'United States', symbol:'$', rate:1},
+                    {code:'GBP', flag:'🇬🇧', name:'British Pound', country:'United Kingdom', symbol:'£', rate:0.79},
+                    {code:'EUR', flag:'🇪🇺', name:'Euro', country:'European Union', symbol:'€', rate:0.92},
+                    {code:'CAD', flag:'🇨🇦', name:'Canadian Dollar', country:'Canada', symbol:'C$', rate:1.36},
+                    {code:'AUD', flag:'🇦🇺', name:'Australian Dollar', country:'Australia', symbol:'A$', rate:1.52},
+                    {code:'NZD', flag:'🇳🇿', name:'New Zealand Dollar', country:'New Zealand', symbol:'NZ$', rate:1.64}
+                ]" :key="c.code">
+                    <button
+                        @click="setCurrency(c.code, c.symbol, c.rate)"
+                        :class="currency === c.code ? 'border-forest-500 bg-forest-50' : 'border-stone hover:border-sage-200'"
+                        class="w-full flex items-center justify-between px-4 py-3 border-2 rounded-xl transition-all"
+                    >
+                        <div class="flex items-center gap-3">
+                            <span class="text-xl" x-text="c.flag"></span>
+                            <div class="text-left">
+                                <p class="font-sans font-semibold text-sm text-midnight" x-text="c.name"></p>
+                                <p class="text-xs text-dusk" x-text="c.country"></p>
+                            </div>
                         </div>
-                    </div>
-                    <span class="text-lg font-bold text-brand-600">$</span>
-                </button>
-
-                <button @click="setCurrency('GBP', '£', 0.79)"
-                    :class="currency === 'GBP' ? 'bg-brand-50 border-brand-500' : 'border-gray-200'"
-                    class="w-full flex items-center justify-between p-4 border-2 rounded-xl hover:border-brand-300 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">🇬🇧</span>
-                        <div>
-                            <p class="font-semibold text-gray-900">British Pound</p>
-                            <p class="text-sm text-gray-500">United Kingdom</p>
-                        </div>
-                    </div>
-                    <span class="text-lg font-bold text-brand-600">£</span>
-                </button>
-
-                <button @click="setCurrency('EUR', '€', 0.92)"
-                    :class="currency === 'EUR' ? 'bg-brand-50 border-brand-500' : 'border-gray-200'"
-                    class="w-full flex items-center justify-between p-4 border-2 rounded-xl hover:border-brand-300 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">🇪🇺</span>
-                        <div>
-                            <p class="font-semibold text-gray-900">Euro</p>
-                            <p class="text-sm text-gray-500">European Union</p>
-                        </div>
-                    </div>
-                    <span class="text-lg font-bold text-brand-600">€</span>
-                </button>
-
-                <button @click="setCurrency('CAD', 'C$', 1.36)"
-                    :class="currency === 'CAD' ? 'bg-brand-50 border-brand-500' : 'border-gray-200'"
-                    class="w-full flex items-center justify-between p-4 border-2 rounded-xl hover:border-brand-300 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">🇨🇦</span>
-                        <div>
-                            <p class="font-semibold text-gray-900">Canadian Dollar</p>
-                            <p class="text-sm text-gray-500">Canada</p>
-                        </div>
-                    </div>
-                    <span class="text-lg font-bold text-brand-600">C$</span>
-                </button>
-
-                <button @click="setCurrency('AUD', 'A$', 1.52)"
-                    :class="currency === 'AUD' ? 'bg-brand-50 border-brand-500' : 'border-gray-200'"
-                    class="w-full flex items-center justify-between p-4 border-2 rounded-xl hover:border-brand-300 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">🇦🇺</span>
-                        <div>
-                            <p class="font-semibold text-gray-900">Australian Dollar</p>
-                            <p class="text-sm text-gray-500">Australia</p>
-                        </div>
-                    </div>
-                    <span class="text-lg font-bold text-brand-600">A$</span>
-                </button>
-
-                <button @click="setCurrency('NZD', 'NZ$', 1.64)"
-                    :class="currency === 'NZD' ? 'bg-brand-50 border-brand-500' : 'border-gray-200'"
-                    class="w-full flex items-center justify-between p-4 border-2 rounded-xl hover:border-brand-300 transition-colors">
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">🇳🇿</span>
-                        <div>
-                            <p class="font-semibold text-gray-900">New Zealand Dollar</p>
-                            <p class="text-sm text-gray-500">New Zealand</p>
-                        </div>
-                    </div>
-                    <span class="text-lg font-bold text-brand-600">NZ$</span>
-                </button>
+                        <span class="font-mono font-semibold text-forest-500" x-text="c.symbol"></span>
+                    </button>
+                </template>
             </div>
         </div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-40">
+    <!-- ===================== NAVIGATION ===================== -->
+    <nav class="sticky top-0 z-40 bg-cream/90 backdrop-blur-md border-b border-stone/60 transition-shadow" id="mainNav">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <a href="./" class="flex items-center gap-2">
-                        <div
-                            class="w-10 h-10 bg-gradient-to-br from-brand-500 to-brand-700 rounded-full flex items-center justify-center">
-                            <i class="fas fa-leaf text-white text-lg"></i>
-                        </div>
-                        <span class="text-2xl font-display font-bold text-gray-900">1wellness</span>
+
+                <!-- Logo -->
+                <a href="./" class="flex items-center gap-2.5 group">
+                    <div class="w-9 h-9 bg-forest-500 rounded-full flex items-center justify-center group-hover:bg-forest-900 transition-colors">
+                        <i class="fas fa-leaf text-sage-500 text-sm"></i>
+                    </div>
+                    <span class="font-serif text-2xl font-bold text-midnight tracking-tight">1wellness</span>
+                </a>
+
+                <!-- Desktop Links -->
+                <div class="hidden md:flex items-center gap-7">
+                    <a href="#products" class="font-sans text-sm font-medium text-dusk hover:text-forest-500 transition-colors">Products</a>
+                    <a href="#how-it-works" class="font-sans text-sm font-medium text-dusk hover:text-forest-500 transition-colors">How It Works</a>
+                    <a href="#testimonials" class="font-sans text-sm font-medium text-dusk hover:text-forest-500 transition-colors">Reviews</a>
+                    <a href="#faq" class="font-sans text-sm font-medium text-dusk hover:text-forest-500 transition-colors">FAQ</a>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-3">
+                    <button
+                        @click="showCurrencyModal = true"
+                        class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone/70 hover:bg-stone transition-colors"
+                    >
+                        <i class="fas fa-globe text-dusk text-xs"></i>
+                        <span class="font-mono text-xs font-medium text-charcoal" x-text="currency"></span>
+                    </button>
+                    <a href="#products" class="hidden sm:inline-flex items-center gap-2 px-5 py-2 bg-forest-500 hover:bg-forest-900 text-cream text-sm font-sans font-semibold rounded-full transition-colors">
+                        Get Started
                     </a>
                 </div>
 
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="#products"
-                        class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Products</a>
-                    <a href="#how-it-works" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">How
-                        It Works</a>
-                    <a href="#testimonials"
-                        class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Reviews</a>
-                    <a href="#faq" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">FAQ</a>
-                </div>
-
-                <div class="flex items-center gap-4">
-                    <button @click="showCurrencyModal = true"
-                        class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
-                        <i class="fas fa-globe text-gray-600"></i>
-                        <span class="font-medium text-gray-700" x-text="currency"></span>
-                    </button>
-                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-gradient min-h-[90vh] flex items-center">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <div class="space-y-8">
-                    <div
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-brand-100 text-brand-700 rounded-full text-sm font-medium">
-                        <i class="fas fa-star"></i>
-                        <span>Trusted by 50,000+ customers worldwide</span>
+    <!-- ===================== HERO ===================== -->
+    <section class="relative min-h-[92vh] flex items-center overflow-hidden bg-sand">
+
+        <!-- Background blobs -->
+        <div class="blob bg-sage-100 w-[600px] h-[600px] rounded-full -top-40 -left-40 opacity-70"></div>
+        <div class="blob bg-forest-50 w-[400px] h-[400px] rounded-full bottom-0 right-0 translate-x-1/4 translate-y-1/4 opacity-80"></div>
+        <div class="blob bg-amber/10 w-64 h-64 rounded-full top-1/2 left-1/2 -translate-x-1/2"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+                <!-- Left: Copy -->
+                <div class="space-y-7">
+                    <div class="reveal-up inline-flex items-center gap-2 px-4 py-2 bg-forest-100 text-forest-500 rounded-full text-xs font-sans font-semibold uppercase tracking-widest">
+                        <i class="fas fa-star text-amber text-xs"></i>
+                        Trusted by 50,000+ customers worldwide
                     </div>
 
-                    <h1 class="text-5xl lg:text-6xl font-display font-bold text-midnight leading-tight">
-                        Natural Health Solutions for the <span class="gradient-text">Modern World</span>
+                    <h1 class="reveal-up delay-100 font-serif text-5xl lg:text-6xl xl:text-7xl font-bold text-midnight leading-[1.05]">
+                        Natural Health<br>
+                        <em class="text-gradient not-italic">Personalised</em><br>
+                        for You
                     </h1>
 
-                    <p class="text-xl text-gray-600 leading-relaxed">
-                        Discover personalized herbal wellness plans crafted from centuries of traditional wisdom,
-                        backed by modern science. From clear skin to balanced hormones, sustainable weight management
-                        to renewed vitality—your journey to optimal health starts here.
+                    <p class="reveal-up delay-200 font-body text-lg text-dusk leading-relaxed max-w-lg">
+                        Herbal wellness plans rooted in centuries of traditional wisdom, refined by modern science. Clear skin, balanced hormones, sustainable weight, restored vitality — your journey starts here.
                     </p>
 
-                    <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="reveal-up delay-300 flex flex-col sm:flex-row gap-3">
                         <a href="#products"
-                            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-full transition-all transform hover:scale-105 shadow-lg shadow-brand-500/30">
-                            <span>Find Your Solution</span>
-                            <i class="fas fa-arrow-right"></i>
+                            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-forest-500 hover:bg-forest-900 text-cream font-sans font-semibold rounded-full transition-all hover:shadow-soft hover:-translate-y-0.5">
+                            Find Your Solution
+                            <i class="fas fa-arrow-right text-sage-500 text-sm"></i>
                         </a>
                         <a href="#how-it-works"
-                            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white hover:bg-gray-50 text-gray-700 font-semibold rounded-full border-2 border-gray-200 transition-all">
-                            <i class="fas fa-play-circle text-brand-600"></i>
-                            <span>How It Works</span>
+                            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/80 hover:bg-white text-charcoal font-sans font-semibold rounded-full border border-stone transition-all">
+                            <i class="fas fa-play-circle text-forest-500"></i>
+                            How It Works
                         </a>
                     </div>
 
-                    <div class="flex items-center gap-8 pt-4">
-                        <div class="flex items-center gap-2">
+                    <!-- Trust Row -->
+                    <div class="reveal-up delay-400 flex items-center gap-6 pt-2">
+                        <div class="flex items-center gap-3">
                             <div class="flex -space-x-2">
-                                <img src="https://randomuser.me/api/portraits/women/1.jpg"
-                                    class="w-10 h-10 rounded-full border-2 border-white" alt="Customer">
-                                <img src="https://randomuser.me/api/portraits/men/2.jpg"
-                                    class="w-10 h-10 rounded-full border-2 border-white" alt="Customer">
-                                <img src="https://randomuser.me/api/portraits/women/3.jpg"
-                                    class="w-10 h-10 rounded-full border-2 border-white" alt="Customer">
+                                <img src="https://randomuser.me/api/portraits/women/1.jpg" class="w-9 h-9 rounded-full border-2 border-cream" alt="">
+                                <img src="https://randomuser.me/api/portraits/men/2.jpg" class="w-9 h-9 rounded-full border-2 border-cream" alt="">
+                                <img src="https://randomuser.me/api/portraits/women/3.jpg" class="w-9 h-9 rounded-full border-2 border-cream" alt="">
+                                <div class="w-9 h-9 rounded-full border-2 border-cream bg-forest-100 flex items-center justify-center">
+                                    <span class="font-mono text-xs font-bold text-forest-500">+</span>
+                                </div>
                             </div>
-                            <div class="ml-2">
+                            <div>
                                 <div class="flex items-center gap-1">
-                                    <i class="fas fa-star text-yellow-400"></i>
-                                    <span class="font-bold text-gray-900">4.9</span>
+                                    <i class="fas fa-star text-amber text-xs"></i>
+                                    <span class="font-sans font-bold text-midnight text-sm">4.9</span>
                                 </div>
-                                <p class="text-sm text-gray-500">from 2,000+ reviews</p>
+                                <p class="font-body text-xs text-dusk">2,000+ reviews</p>
                             </div>
                         </div>
-
-                        <div class="flex items-center gap-2 text-gray-600">
-                            <i class="fas fa-shield-check text-brand-500 text-xl"></i>
-                            <span class="font-medium">90-Day Guarantee</span>
+                        <div class="h-8 w-px bg-stone"></div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-shield-check text-forest-500 text-lg"></i>
+                            <span class="font-sans text-sm font-semibold text-midnight">90-Day Guarantee</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="relative">
-                    <div
-                        class="absolute inset-0 bg-gradient-to-br from-brand-200 to-brand-400 rounded-3xl transform rotate-3 opacity-30">
-                    </div>
-                    <div class="relative bg-white rounded-3xl shadow-2xl p-8 animate-float">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="space-y-4">
-                                <div
-                                    class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-6 text-center">
-                                    <i class="fas fa-spa text-4xl text-emerald-600 mb-3"></i>
-                                    <p class="font-semibold text-gray-800">Clear Skin</p>
-                                    <p class="text-sm text-gray-600">Natural Acne Care</p>
-                                </div>
-                                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 text-center">
-                                    <i class="fas fa-female text-4xl text-purple-600 mb-3"></i>
-                                    <p class="font-semibold text-gray-800">Hormone Balance</p>
-                                    <p class="text-sm text-gray-600">PCOS Support</p>
-                                </div>
-                            </div>
-                            <div class="space-y-4 mt-8">
-                                <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 text-center">
-                                    <i class="fas fa-fire text-4xl text-orange-600 mb-3"></i>
-                                    <p class="font-semibold text-gray-800">Healthy Weight</p>
-                                    <p class="text-sm text-gray-600">Metabolism Boost</p>
-                                </div>
-                                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 text-center">
-                                    <i class="fas fa-male text-4xl text-blue-600 mb-3"></i>
-                                    <p class="font-semibold text-gray-800">Vitality</p>
-                                    <p class="text-sm text-gray-600">Men's Wellness</p>
-                                </div>
+                <!-- Right: Floating Product Preview -->
+                <div class="relative flex justify-center lg:justify-end">
+                    <div class="relative w-full max-w-sm animate-float">
+                        <!-- Decorative ring -->
+                        <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-forest-100 to-sage-100 opacity-60 transform rotate-2 scale-105"></div>
+
+                        <div class="relative glass-panel rounded-3xl p-6 shadow-soft">
+                            <p class="font-sans text-xs font-semibold uppercase tracking-widest text-dusk mb-5 text-center">Your Wellness Journey</p>
+                            <div class="grid grid-cols-2 gap-3">
+
+                                <!-- GlowClear -->
+                                <a href="acne/" class="group block bg-gradient-to-br from-forest-500 to-forest-900 rounded-2xl p-5 text-center hover:scale-[1.03] transition-transform">
+                                    <div class="w-12 h-12 bg-white/15 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <i class="fas fa-spa text-2xl text-sage-500"></i>
+                                    </div>
+                                    <p class="font-sans font-bold text-cream text-sm">GlowClear</p>
+                                    <p class="font-body text-xs text-sage-500 mt-0.5">Clear Skin</p>
+                                </a>
+
+                                <!-- CycleSync -->
+                                <a href="pcos/" class="group block bg-gradient-to-br from-terracotta-500 to-[#8B3E2A] rounded-2xl p-5 text-center hover:scale-[1.03] transition-transform">
+                                    <div class="w-12 h-12 bg-white/15 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <i class="fas fa-venus text-2xl text-[#F5D5CC]"></i>
+                                    </div>
+                                    <p class="font-sans font-bold text-cream text-sm">CycleSync</p>
+                                    <p class="font-body text-xs text-[#F5D5CC] mt-0.5">Hormone Balance</p>
+                                </a>
+
+                                <!-- LeanFlow -->
+                                <a href="weight/" class="group block bg-gradient-to-br from-amber to-[#A06508] rounded-2xl p-5 text-center hover:scale-[1.03] transition-transform">
+                                    <div class="w-12 h-12 bg-white/15 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <i class="fas fa-fire text-2xl text-[#FCE8C5]"></i>
+                                    </div>
+                                    <p class="font-sans font-bold text-cream text-sm">LeanFlow</p>
+                                    <p class="font-body text-xs text-[#FCE8C5] mt-0.5">Healthy Weight</p>
+                                </a>
+
+                                <!-- Men's Vitality -->
+                                <a href="mens/" class="group block bg-gradient-to-br from-[#1D4532] to-midnight rounded-2xl p-5 text-center hover:scale-[1.03] transition-transform border border-white/10">
+                                    <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <i class="fas fa-mars text-2xl text-sage-200"></i>
+                                    </div>
+                                    <p class="font-sans font-bold text-cream text-sm">Men's Vitality</p>
+                                    <p class="font-body text-xs text-sage-200 mt-0.5">Strength & Energy</p>
+                                </a>
+
                             </div>
                         </div>
                     </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== PRODUCTS ===================== -->
+    <section id="products" class="py-24 bg-cream relative overflow-hidden">
+        <div class="blob bg-sage-100 w-96 h-96 rounded-full top-0 right-0 translate-x-1/2 opacity-50"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <p class="font-mono text-xs uppercase tracking-widest text-forest-500 mb-3">Personalised Solutions</p>
+                <h2 class="font-serif text-4xl lg:text-5xl font-bold text-midnight mb-5 leading-tight">
+                    Your Health Goals.<br><em class="not-italic text-gradient">Our Expertise.</em>
+                </h2>
+                <div class="divider-leaf my-5"></div>
+                <p class="font-body text-dusk text-lg">Each journey begins with a comprehensive assessment. We analyse your unique needs and create a customised herbal protocol just for you.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- GlowClear — Acne -->
+                <div class="product-card glass-panel rounded-2xl overflow-hidden border border-white/80">
+                    <div class="h-44 bg-gradient-to-br from-forest-500 to-forest-900 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-grain opacity-20"></div>
+                        <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-spa text-4xl text-sage-500"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 bg-forest-100 text-forest-500 text-xs font-sans font-semibold rounded-full uppercase tracking-wide mb-3">Skin Health</span>
+                        <h3 class="font-sans text-xl font-bold text-midnight mb-1.5">GlowClear</h3>
+                        <p class="font-body text-dusk text-sm mb-5 leading-relaxed">Natural herbal solutions for acne-prone skin. Address root causes for lasting clarity.</p>
+                        <div class="flex items-end justify-between mb-5">
+                            <div>
+                                <span class="font-sans text-2xl font-bold text-forest-500" x-text="getSalePrice('acne')"></span>
+                                <span class="font-body text-stone line-through text-sm ml-2" x-text="getOriginalPrice('acne')"></span>
+                            </div>
+                            <span class="font-mono text-xs font-semibold text-forest-500 bg-forest-50 px-2 py-1 rounded-lg" x-text="getDiscount('acne')"></span>
+                        </div>
+                        <a href="acne/" class="block w-full py-3 bg-forest-500 hover:bg-forest-900 text-cream text-center font-sans font-semibold text-sm rounded-xl transition-colors">
+                            Start Assessment
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CycleSync — PCOS -->
+                <div class="product-card glass-panel rounded-2xl overflow-hidden border border-white/80">
+                    <div class="h-44 bg-gradient-to-br from-terracotta-500 to-[#6B2E1E] flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-grain opacity-20"></div>
+                        <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-venus text-4xl text-[#F5D5CC]"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 bg-[#F5D5CC] text-[#8B3E2A] text-xs font-sans font-semibold rounded-full uppercase tracking-wide mb-3">Hormone Balance</span>
+                        <h3 class="font-sans text-xl font-bold text-midnight mb-1.5">CycleSync</h3>
+                        <p class="font-body text-dusk text-sm mb-5 leading-relaxed">Comprehensive support for hormonal harmony, cycle regulation, and fertility wellness.</p>
+                        <div class="flex items-end justify-between mb-5">
+                            <div>
+                                <span class="font-sans text-2xl font-bold text-terracotta-500" x-text="getSalePrice('pcos')"></span>
+                                <span class="font-body text-stone line-through text-sm ml-2" x-text="getOriginalPrice('pcos')"></span>
+                            </div>
+                            <span class="font-mono text-xs font-semibold text-[#8B3E2A] bg-[#F5D5CC] px-2 py-1 rounded-lg" x-text="getDiscount('pcos')"></span>
+                        </div>
+                        <a href="pcos/" class="block w-full py-3 bg-terracotta-500 hover:bg-[#8B3E2A] text-cream text-center font-sans font-semibold text-sm rounded-xl transition-colors">
+                            Start Assessment
+                        </a>
+                    </div>
+                </div>
+
+                <!-- LeanFlow — Weight -->
+                <div class="product-card glass-panel rounded-2xl overflow-hidden border border-white/80">
+                    <div class="h-44 bg-gradient-to-br from-amber to-[#7A4A05] flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-grain opacity-20"></div>
+                        <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-fire text-4xl text-[#FCE8C5]"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 bg-[#FCE8C5] text-[#A06508] text-xs font-sans font-semibold rounded-full uppercase tracking-wide mb-3">Metabolism</span>
+                        <h3 class="font-sans text-xl font-bold text-midnight mb-1.5">LeanFlow</h3>
+                        <p class="font-body text-dusk text-sm mb-5 leading-relaxed">Sustainable weight management through metabolic support and natural appetite balance.</p>
+                        <div class="flex items-end justify-between mb-5">
+                            <div>
+                                <span class="font-sans text-2xl font-bold text-amber" x-text="getSalePrice('weight')"></span>
+                                <span class="font-body text-stone line-through text-sm ml-2" x-text="getOriginalPrice('weight')"></span>
+                            </div>
+                            <span class="font-mono text-xs font-semibold text-[#A06508] bg-[#FCE8C5] px-2 py-1 rounded-lg" x-text="getDiscount('weight')"></span>
+                        </div>
+                        <a href="weight/" class="block w-full py-3 bg-amber hover:bg-[#A06508] text-cream text-center font-sans font-semibold text-sm rounded-xl transition-colors">
+                            Start Assessment
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Men's Vitality -->
+                <div class="product-card glass-panel rounded-2xl overflow-hidden border border-white/80">
+                    <div class="h-44 bg-gradient-to-br from-midnight to-[#0E2419] flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-grain opacity-20"></div>
+                        <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-mars text-4xl text-sage-500"></i>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 bg-forest-100 text-forest-500 text-xs font-sans font-semibold rounded-full uppercase tracking-wide mb-3">Vitality</span>
+                        <h3 class="font-sans text-xl font-bold text-midnight mb-1.5">Men's Vitality</h3>
+                        <p class="font-body text-dusk text-sm mb-5 leading-relaxed">Natural support for energy, strength, and masculine wellness at any age.</p>
+                        <div class="flex items-end justify-between mb-5">
+                            <div>
+                                <span class="font-sans text-2xl font-bold text-midnight" x-text="getSalePrice('mens')"></span>
+                                <span class="font-body text-stone line-through text-sm ml-2" x-text="getOriginalPrice('mens')"></span>
+                            </div>
+                            <span class="font-mono text-xs font-semibold text-forest-500 bg-forest-50 px-2 py-1 rounded-lg" x-text="getDiscount('mens')"></span>
+                        </div>
+                        <a href="mens/" class="block w-full py-3 bg-midnight hover:bg-forest-500 text-cream text-center font-sans font-semibold text-sm rounded-xl transition-colors">
+                            Start Assessment
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== HOW IT WORKS ===================== -->
+    <section id="how-it-works" class="py-24 bg-stone relative overflow-hidden">
+        <div class="blob bg-cream w-96 h-96 rounded-full bottom-0 left-0 -translate-x-1/4 translate-y-1/4 opacity-60"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <p class="font-mono text-xs uppercase tracking-widest text-forest-500 mb-3">The Process</p>
+                <h2 class="font-serif text-4xl lg:text-5xl font-bold text-midnight mb-4">Your Journey to Wellness</h2>
+                <div class="divider-leaf my-5"></div>
+                <p class="font-body text-dusk text-lg">A simple, personalised approach that puts your unique needs first.</p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6 lg:gap-8 relative">
+                <!-- Connecting line -->
+                <div class="hidden md:block absolute top-10 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-transparent via-sage-500 to-transparent"></div>
+
+                <!-- Step 1 -->
+                <div class="text-center relative">
+                    <div class="w-20 h-20 bg-forest-500 rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-soft">
+                        <span class="font-serif text-2xl font-bold text-cream">1</span>
+                    </div>
+                    <h3 class="font-sans text-lg font-bold text-midnight mb-3">Take the Assessment</h3>
+                    <p class="font-body text-dusk text-sm leading-relaxed">Answer a few questions about your health history, lifestyle, and goals. Takes just 3 minutes.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="text-center relative">
+                    <div class="w-20 h-20 bg-forest-500 rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-soft">
+                        <span class="font-serif text-2xl font-bold text-cream">2</span>
+                    </div>
+                    <h3 class="font-sans text-lg font-bold text-midnight mb-3">Get Your Analysis</h3>
+                    <p class="font-body text-dusk text-sm leading-relaxed">Our system analyses your responses and identifies the root causes of your health concerns.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="text-center relative">
+                    <div class="w-20 h-20 bg-forest-500 rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-soft">
+                        <span class="font-serif text-2xl font-bold text-cream">3</span>
+                    </div>
+                    <h3 class="font-sans text-lg font-bold text-midnight mb-3">Receive Your Plan</h3>
+                    <p class="font-body text-dusk text-sm leading-relaxed">Get a customised herbal protocol with specific recommendations tailored to your body.</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="text-center relative">
+                    <div class="w-20 h-20 bg-amber rounded-full flex items-center justify-center mx-auto mb-6 relative z-10 shadow-soft">
+                        <span class="font-serif text-2xl font-bold text-cream">4</span>
+                    </div>
+                    <h3 class="font-sans text-lg font-bold text-midnight mb-3">Transform Your Health</h3>
+                    <p class="font-body text-dusk text-sm leading-relaxed">Follow your plan and experience the natural power of personalised herbal wellness.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Products Section -->
-    <section id="products" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-4xl font-display font-bold text-midnight mb-6">Personalized Solutions for Your Health
-                    Goals</h2>
-                <p class="text-xl text-gray-600">Each journey begins with a comprehensive assessment. We analyze your
-                    unique needs and create a customized herbal protocol just for you.</p>
+    <!-- ===================== TESTIMONIALS ===================== -->
+    <section id="testimonials" class="py-24 bg-cream relative overflow-hidden">
+        <div class="blob bg-sage-100 w-80 h-80 rounded-full top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-60"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <p class="font-mono text-xs uppercase tracking-widest text-forest-500 mb-3">Success Stories</p>
+                <h2 class="font-serif text-4xl lg:text-5xl font-bold text-midnight mb-4">Lives Transformed</h2>
+                <div class="divider-leaf my-5"></div>
+                <p class="font-body text-dusk text-lg">Join thousands who have discovered the power of personalised herbal wellness.</p>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Acne Solution -->
-                <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div
-                        class="h-48 card-skin flex items-center justify-center">
-                        <i class="fas fa-spa text-6xl text-white opacity-90"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span
-                                class="px-3 py-1 tag-skin rounded-full text-xs font-semibold">SKIN
-                                HEALTH</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">GlowClear</h3>
-                        <p class="text-gray-600 mb-4 text-sm">Natural herbal solutions for acne-prone skin. Address root
-                            causes for lasting clarity.</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <span class="text-2xl font-bold price-skin" x-text="formatPrice(67)"></span>
-                                <span class="text-gray-400 line-through ml-2" x-text="formatPrice(147)"></span>
-                            </div>
-                            <span class="text-sm save-skin font-medium">Save 54%</span>
-                        </div>
-                        <a href="acne/"
-                            class="block w-full py-3 btn-skin text-white text-center font-semibold rounded-xl transition-colors">
-                            Start Assessment
-                        </a>
-                    </div>
-                </div>
+            <div class="grid md:grid-cols-3 gap-6">
 
-                <!-- PCOS Solution -->
-                <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div
-                        class="h-48 card-cycle flex items-center justify-center">
-                        <i class="fas fa-female text-6xl text-white opacity-90"></i>
+                <div class="glass-panel rounded-2xl p-8 border border-white/80">
+                    <div class="flex gap-1 mb-5">
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
                     </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span
-                                class="px-3 py-1 tag-cycle rounded-full text-xs font-semibold">HORMONE
-                                BALANCE</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">CycleSync</h3>
-                        <p class="text-gray-600 mb-4 text-sm">Comprehensive support for hormonal harmony, cycle
-                            regulation, and fertility wellness.</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <span class="text-2xl font-bold price-cycle" x-text="formatPrice(97)"></span>
-                                <span class="text-gray-400 line-through ml-2" x-text="formatPrice(197)"></span>
-                            </div>
-                            <span class="text-sm save-cycle font-medium">Save 51%</span>
-                        </div>
-                        <a href="pcos/"
-                            class="block w-full py-3 btn-cycle text-white text-center font-semibold rounded-xl transition-colors">
-                            Start Assessment
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Weight Loss Solution -->
-                <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div
-                        class="h-48 card-lean flex items-center justify-center">
-                        <i class="fas fa-fire text-6xl text-white opacity-90"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span
-                                class="px-3 py-1 tag-lean rounded-full text-xs font-semibold">METABOLISM</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">LeanFlow</h3>
-                        <p class="text-gray-600 mb-4 text-sm">Sustainable weight management through metabolic support
-                            and natural appetite balance.</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <span class="text-2xl font-bold price-lean" x-text="formatPrice(77)"></span>
-                                <span class="text-gray-400 line-through ml-2" x-text="formatPrice(167)"></span>
-                            </div>
-                            <span class="text-sm save-lean font-medium">Save 54%</span>
-                        </div>
-                        <a href="weight/"
-                            class="block w-full py-3 btn-lean text-white text-center font-semibold rounded-xl transition-colors">
-                            Start Assessment
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Men's Vitality Solution -->
-                <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div
-                        class="h-48 card-vitality flex items-center justify-center">
-                        <i class="fas fa-male text-6xl text-white opacity-90"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span
-                                class="px-3 py-1 tag-vitality rounded-full text-xs font-semibold">VITALITY</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">Men's Vitality</h3>
-                        <p class="text-gray-600 mb-4 text-sm">Natural support for energy, strength, and masculine
-                            wellness at any age.</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <span class="text-2xl font-bold price-vitality" x-text="formatPrice(87)"></span>
-                                <span class="text-gray-400 line-through ml-2" x-text="formatPrice(157)"></span>
-                            </div>
-                            <span class="text-sm save-vitality font-medium">Save 45%</span>
-                        </div>
-                        <a href="mens/"
-                            class="block w-full py-3 btn-vitality text-white text-center font-semibold rounded-xl transition-colors">
-                            Start Assessment
-                        </a>
-                    </div>
-                </div>
-
-                <!-- PCOS Solution -->
-                <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="h-48 bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
-                        <i class="fas fa-female text-6xl text-white opacity-90"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span
-                                class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">HORMONE
-                                BALANCE</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">CycleSync</h3>
-                        <p class="text-gray-600 mb-4 text-sm">Comprehensive support for hormonal harmony, cycle
-                            regulation, and fertility wellness.</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <span class="text-2xl font-bold text-purple-600" x-text="formatPrice(97)"></span>
-                                <span class="text-gray-400 line-through ml-2" x-text="formatPrice(197)"></span>
-                            </div>
-                            <span class="text-sm text-purple-600 font-medium">Save 51%</span>
-                        </div>
-                        <a href="pcos/"
-                            class="block w-full py-3 bg-purple-600 hover:bg-purple-700 text-white text-center font-semibold rounded-xl transition-colors">
-                            Start Assessment
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Weight Loss Solution -->
-                <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="h-48 bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                        <i class="fas fa-fire text-6xl text-white opacity-90"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span
-                                class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold">METABOLISM</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">LeanFlow</h3>
-                        <p class="text-gray-600 mb-4 text-sm">Sustainable weight management through metabolic support
-                            and natural appetite balance.</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <span class="text-2xl font-bold text-orange-600" x-text="formatPrice(77)"></span>
-                                <span class="text-gray-400 line-through ml-2" x-text="formatPrice(167)"></span>
-                            </div>
-                            <span class="text-sm text-orange-600 font-medium">Save 54%</span>
-                        </div>
-                        <a href="weight/"
-                            class="block w-full py-3 bg-orange-600 hover:bg-orange-700 text-white text-center font-semibold rounded-xl transition-colors">
-                            Start Assessment
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Men's Vitality Solution -->
-                <div class="card-hover bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                        <i class="fas fa-male text-6xl text-white opacity-90"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span
-                                class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">VITALITY</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">Men's Vitality</h3>
-                        <p class="text-gray-600 mb-4 text-sm">Natural support for energy, strength, and masculine
-                            wellness at any age.</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <span class="text-2xl font-bold text-blue-600" x-text="formatPrice(87)"></span>
-                                <span class="text-gray-400 line-through ml-2" x-text="formatPrice(157)"></span>
-                            </div>
-                            <span class="text-sm text-blue-600 font-medium">Save 45%</span>
-                        </div>
-                        <a href="mens/"
-                            class="block w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-center font-semibold rounded-xl transition-colors">
-                            Start Assessment
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- How It Works Section -->
-    <section id="how-it-works" class="py-24 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-4xl font-display font-bold text-midnight mb-6">Your Journey to Wellness</h2>
-                <p class="text-xl text-gray-600">A simple, personalized approach that puts your unique needs first.</p>
-            </div>
-
-            <div class="grid md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="text-3xl font-bold text-brand-600">1</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Take the Assessment</h3>
-                    <p class="text-gray-600">Answer a few questions about your health history, lifestyle, and goals.
-                        Takes just 3 minutes.</p>
-                </div>
-
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="text-3xl font-bold text-brand-600">2</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Get Your Analysis</h3>
-                    <p class="text-gray-600">Our system analyzes your responses and identifies the root causes of your
-                        health concerns.</p>
-                </div>
-
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="text-3xl font-bold text-brand-600">3</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Receive Your Plan</h3>
-                    <p class="text-gray-600">Get a customized herbal protocol with specific recommendations tailored to
-                        your body.</p>
-                </div>
-
-                <div class="text-center">
-                    <div class="w-20 h-20 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="text-3xl font-bold text-brand-600">4</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Transform Your Health</h3>
-                    <p class="text-gray-600">Follow your plan and experience the natural power of personalized herbal
-                        wellness.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-4xl font-display font-bold text-midnight mb-6">Lives Transformed</h2>
-                <p class="text-xl text-gray-600">Join thousands who have discovered the power of personalized herbal
-                    wellness.</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-gray-50 rounded-2xl p-8">
-                    <div class="flex items-center gap-1 mb-4">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                    </div>
-                    <p class="text-gray-700 mb-6">"After years of struggling with hormonal acne, the GlowClear
-                        gave me results in just 6 weeks. My confidence is back!"</p>
-                    <div class="flex items-center gap-4">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-12 h-12 rounded-full"
-                            alt="Sarah">
+                    <p class="font-body text-charcoal mb-6 leading-relaxed italic">"After years of struggling with hormonal acne, GlowClear gave me results in just 6 weeks. My confidence is completely restored."</p>
+                    <div class="flex items-center gap-4 pt-4 border-t border-stone">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-11 h-11 rounded-full" alt="Sarah M.">
                         <div>
-                            <p class="font-semibold text-gray-900">Sarah M.</p>
-                            <p class="text-sm text-gray-500">London, UK</p>
+                            <p class="font-sans font-semibold text-midnight text-sm">Sarah M.</p>
+                            <p class="font-body text-xs text-dusk">London, UK — GlowClear</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-gray-50 rounded-2xl p-8">
-                    <div class="flex items-center gap-1 mb-4">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
+                <div class="glass-panel rounded-2xl p-8 border border-white/80 md:translate-y-6">
+                    <div class="flex gap-1 mb-5">
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
                     </div>
-                    <p class="text-gray-700 mb-6">"The CycleSync plan helped regulate my cycles naturally. I'm
-                        finally feeling like myself again after 5 years of struggle."</p>
-                    <div class="flex items-center gap-4">
-                        <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-12 h-12 rounded-full"
-                            alt="Jennifer">
+                    <p class="font-body text-charcoal mb-6 leading-relaxed italic">"CycleSync helped regulate my cycles naturally. I'm finally feeling like myself again after 5 years of struggle."</p>
+                    <div class="flex items-center gap-4 pt-4 border-t border-stone">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-11 h-11 rounded-full" alt="Jennifer K.">
                         <div>
-                            <p class="font-semibold text-gray-900">Jennifer K.</p>
-                            <p class="text-sm text-gray-500">Toronto, Canada</p>
+                            <p class="font-sans font-semibold text-midnight text-sm">Jennifer K.</p>
+                            <p class="font-body text-xs text-dusk">Toronto, Canada — CycleSync</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-gray-50 rounded-2xl p-8">
-                    <div class="flex items-center gap-1 mb-4">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
+                <div class="glass-panel rounded-2xl p-8 border border-white/80">
+                    <div class="flex gap-1 mb-5">
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
+                        <i class="fas fa-star text-amber text-sm"></i>
                     </div>
-                    <p class="text-gray-700 mb-6">"At 52, I thought my energy levels were gone forever. The Men's
-                        Vitality plan proved me wrong. I feel 10 years younger!"</p>
-                    <div class="flex items-center gap-4">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-12 h-12 rounded-full"
-                            alt="Michael">
+                    <p class="font-body text-charcoal mb-6 leading-relaxed italic">"At 52, I thought my energy was gone for good. The Men's Vitality plan proved me completely wrong — I feel 10 years younger."</p>
+                    <div class="flex items-center gap-4 pt-4 border-t border-stone">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-11 h-11 rounded-full" alt="Michael R.">
                         <div>
-                            <p class="font-semibold text-gray-900">Michael R.</p>
-                            <p class="text-sm text-gray-500">Sydney, Australia</p>
+                            <p class="font-sans font-semibold text-midnight text-sm">Michael R.</p>
+                            <p class="font-body text-xs text-dusk">Sydney, Australia — Men's Vitality</p>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- Trust Badges Section -->
-    <section class="py-16 bg-stone">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- ===================== TRUST BADGES ===================== -->
+    <section class="py-16 bg-forest-500 relative overflow-hidden">
+        <div class="absolute inset-0 bg-grain opacity-30"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div>
-                    <i class="fas fa-leaf text-4xl text-forest mb-4"></i>
-                    <h4 class="font-bold text-midnight mb-2">100% Natural</h4>
-                    <p class="text-gray-600 text-sm">Pure herbal ingredients</p>
+
+                <div class="space-y-3">
+                    <div class="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-leaf text-2xl text-sage-500"></i>
+                    </div>
+                    <h4 class="font-sans font-bold text-cream">100% Natural</h4>
+                    <p class="font-body text-sage-200 text-sm">Pure herbal ingredients</p>
                 </div>
-                <div>
-                    <i class="fas fa-shield-check text-4xl text-forest mb-4"></i>
-                    <h4 class="font-bold text-midnight mb-2">90-Day Guarantee</h4>
-                    <p class="text-gray-600 text-sm">Full satisfaction or refund</p>
+
+                <div class="space-y-3">
+                    <div class="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-shield-check text-2xl text-sage-500"></i>
+                    </div>
+                    <h4 class="font-sans font-bold text-cream">90-Day Guarantee</h4>
+                    <p class="font-body text-sage-200 text-sm">Full satisfaction or refund</p>
                 </div>
-                <div>
-                    <i class="fas fa-truck text-4xl text-forest mb-4"></i>
-                    <h4 class="font-bold text-midnight mb-2">Global Shipping</h4>
-                    <p class="text-gray-600 text-sm">Delivered to your door</p>
+
+                <div class="space-y-3">
+                    <div class="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-truck text-2xl text-sage-500"></i>
+                    </div>
+                    <h4 class="font-sans font-bold text-cream">Global Shipping</h4>
+                    <p class="font-body text-sage-200 text-sm">Delivered to your door</p>
                 </div>
-                <div>
-                    <i class="fas fa-user-md text-4xl text-forest mb-4"></i>
-                    <h4 class="font-bold text-midnight mb-2">Expert Formulated</h4>
-                    <p class="text-gray-600 text-sm">Backed by herbalists</p>
+
+                <div class="space-y-3">
+                    <div class="w-14 h-14 bg-white/10 rounded-full flex items-center justify-center mx-auto">
+                        <i class="fas fa-user-md text-2xl text-sage-500"></i>
+                    </div>
+                    <h4 class="font-sans font-bold text-cream">Expert Formulated</h4>
+                    <p class="font-body text-sage-200 text-sm">Backed by herbalists</p>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section id="faq" class="py-24 bg-white">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-display font-bold text-midnight mb-6">Frequently Asked Questions</h2>
+    <!-- ===================== FAQ ===================== -->
+    <section id="faq" class="py-24 bg-sand" x-data="{ open: null }">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-14">
+                <p class="font-mono text-xs uppercase tracking-widest text-forest-500 mb-3">Common Questions</p>
+                <h2 class="font-serif text-4xl lg:text-5xl font-bold text-midnight mb-4">Frequently Asked</h2>
+                <div class="divider-leaf my-5"></div>
             </div>
 
-            <div class="space-y-4" x-data="{ open: null }">
-                <div class="border border-gray-200 rounded-xl">
+            <div class="space-y-3">
+
+                <div class="glass-panel rounded-xl border border-white/80 overflow-hidden">
                     <button @click="open === 1 ? open = null : open = 1"
-                        class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors">
-                        <span class="font-semibold text-gray-900">How does the assessment work?</span>
-                        <i class="fas fa-chevron-down text-gray-400 transform transition-transform"
+                        class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/50 transition-colors">
+                        <span class="font-sans font-semibold text-midnight">How does the assessment work?</span>
+                        <i class="fas fa-chevron-down text-dusk text-sm transition-transform duration-300"
                             :class="open === 1 ? 'rotate-180' : ''"></i>
                     </button>
-                    <div x-show="open === 1" x-collapse class="px-6 pb-6">
-                        <p class="text-gray-600">Our comprehensive assessment asks about your health history, current
-                            symptoms, lifestyle habits, and wellness goals. Using this information, we identify the root
-                            causes of your concerns and create a personalized herbal protocol specifically for your
-                            needs.</p>
+                    <div x-show="open === 1" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="px-6 pb-5">
+                        <p class="font-body text-dusk leading-relaxed">Our comprehensive assessment asks about your health history, current symptoms, lifestyle habits, and wellness goals. Using this information, we identify the root causes of your concerns and create a personalised herbal protocol specifically for your needs.</p>
                     </div>
                 </div>
 
-                <div class="border border-gray-200 rounded-xl">
+                <div class="glass-panel rounded-xl border border-white/80 overflow-hidden">
                     <button @click="open === 2 ? open = null : open = 2"
-                        class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors">
-                        <span class="font-semibold text-gray-900">Are the ingredients safe?</span>
-                        <i class="fas fa-chevron-down text-gray-400 transform transition-transform"
+                        class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/50 transition-colors">
+                        <span class="font-sans font-semibold text-midnight">Are the ingredients safe?</span>
+                        <i class="fas fa-chevron-down text-dusk text-sm transition-transform duration-300"
                             :class="open === 2 ? 'rotate-180' : ''"></i>
                     </button>
-                    <div x-show="open === 2" x-collapse class="px-6 pb-6">
-                        <p class="text-gray-600">All our herbal formulations use 100% natural ingredients sourced from
-                            trusted suppliers. Each ingredient is carefully selected for safety and efficacy. However,
-                            we recommend consulting with your healthcare provider before starting any new wellness
-                            program, especially if you're pregnant, nursing, or taking medications.</p>
+                    <div x-show="open === 2" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="px-6 pb-5">
+                        <p class="font-body text-dusk leading-relaxed">All our herbal formulations use 100% natural ingredients sourced from trusted suppliers. Each ingredient is carefully selected for safety and efficacy. We recommend consulting with your healthcare provider before starting any new wellness programme, especially if pregnant, nursing, or taking medications.</p>
                     </div>
                 </div>
 
-                <div class="border border-gray-200 rounded-xl">
+                <div class="glass-panel rounded-xl border border-white/80 overflow-hidden">
                     <button @click="open === 3 ? open = null : open = 3"
-                        class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors">
-                        <span class="font-semibold text-gray-900">How long until I see results?</span>
-                        <i class="fas fa-chevron-down text-gray-400 transform transition-transform"
+                        class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/50 transition-colors">
+                        <span class="font-sans font-semibold text-midnight">How long until I see results?</span>
+                        <i class="fas fa-chevron-down text-dusk text-sm transition-transform duration-300"
                             :class="open === 3 ? 'rotate-180' : ''"></i>
                     </button>
-                    <div x-show="open === 3" x-collapse class="px-6 pb-6">
-                        <p class="text-gray-600">Results vary by individual and condition. Many customers report
-                            noticeable improvements within 2-4 weeks, with significant transformation typically
-                            occurring within 60-90 days of consistent use. Your personalized plan includes a timeline
-                            specific to your goals.</p>
+                    <div x-show="open === 3" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="px-6 pb-5">
+                        <p class="font-body text-dusk leading-relaxed">Results vary by individual and condition. Many customers report noticeable improvements within 2–4 weeks, with significant transformation typically occurring within 60–90 days of consistent use. Your personalised plan includes a timeline specific to your goals.</p>
                     </div>
                 </div>
 
-                <div class="border border-gray-200 rounded-xl">
+                <div class="glass-panel rounded-xl border border-white/80 overflow-hidden">
                     <button @click="open === 4 ? open = null : open = 4"
-                        class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors">
-                        <span class="font-semibold text-gray-900">What currencies do you accept?</span>
-                        <i class="fas fa-chevron-down text-gray-400 transform transition-transform"
+                        class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/50 transition-colors">
+                        <span class="font-sans font-semibold text-midnight">What currencies do you accept?</span>
+                        <i class="fas fa-chevron-down text-dusk text-sm transition-transform duration-300"
                             :class="open === 4 ? 'rotate-180' : ''"></i>
                     </button>
-                    <div x-show="open === 4" x-collapse class="px-6 pb-6">
-                        <p class="text-gray-600">We accept USD, GBP, EUR, CAD, AUD, and NZD. Our system automatically
-                            detects your region and displays prices in your local currency. You can also manually select
-                            your preferred currency using the selector in the navigation bar.</p>
+                    <div x-show="open === 4" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="px-6 pb-5">
+                        <p class="font-body text-dusk leading-relaxed">We accept USD, GBP, EUR, CAD, AUD, and NZD. Our system automatically detects your region and displays prices in your local currency. You can also manually select your preferred currency using the selector in the navigation bar.</p>
                     </div>
                 </div>
 
-                <div class="border border-gray-200 rounded-xl">
+                <div class="glass-panel rounded-xl border border-white/80 overflow-hidden">
                     <button @click="open === 5 ? open = null : open = 5"
-                        class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors">
-                        <span class="font-semibold text-gray-900">Do you ship internationally?</span>
-                        <i class="fas fa-chevron-down text-gray-400 transform transition-transform"
+                        class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/50 transition-colors">
+                        <span class="font-sans font-semibold text-midnight">Do you ship internationally?</span>
+                        <i class="fas fa-chevron-down text-dusk text-sm transition-transform duration-300"
                             :class="open === 5 ? 'rotate-180' : ''"></i>
                     </button>
-                    <div x-show="open === 5" x-collapse class="px-6 pb-6">
-                        <p class="text-gray-600">Yes! We ship to the United States, United Kingdom, Canada, Australia,
-                            New Zealand, and throughout the European Union. Shipping times vary by location, typically
-                            5-10 business days for most destinations.</p>
+                    <div x-show="open === 5" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="px-6 pb-5">
+                        <p class="font-body text-dusk leading-relaxed">Yes! We ship to the United States, United Kingdom, Canada, Australia, New Zealand, and throughout the European Union. Shipping times vary by location, typically 5–10 business days for most destinations.</p>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="py-24 bg-forest">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl md:text-5xl font-display font-bold text-white mb-6">Ready to Transform Your Health?</h2>
-            <p class="text-xl text-brand-200 mb-10">Join over 50,000 people worldwide who have discovered the power of
-                personalized herbal wellness.</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#products"
-                    class="inline-flex items-center justify-center gap-2 px-10 py-5 bg-amber-400 text-white font-bold rounded-full hover:bg-[#B87208] transition-all transform hover:scale-105 shadow-xl">
-                    <span>Explore Products</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-            <p class="mt-8 text-brand-200 text-sm">
-                <i class="fas fa-shield-check mr-2"></i>
+    <!-- ===================== CTA BANNER ===================== -->
+    <section class="py-24 bg-midnight relative overflow-hidden">
+        <div class="absolute inset-0 bg-grain opacity-30"></div>
+        <div class="blob bg-forest-500 w-96 h-96 rounded-full -bottom-20 -right-20 opacity-30"></div>
+        <div class="blob bg-sage-500 w-64 h-64 rounded-full top-10 -left-10 opacity-20"></div>
+
+        <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="font-mono text-xs uppercase tracking-widest text-sage-500 mb-4">Start Today</p>
+            <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-cream mb-6 leading-tight">
+                Ready to Transform<br><em class="not-italic text-sage-500">Your Health?</em>
+            </h2>
+            <p class="font-body text-lg text-dusk mb-10 max-w-xl mx-auto leading-relaxed">
+                Join over 50,000 people worldwide who have discovered the power of personalised herbal wellness.
+            </p>
+            <a href="#products"
+                class="inline-flex items-center justify-center gap-3 px-10 py-5 bg-amber hover:bg-[#A06508] text-cream font-sans font-bold text-lg rounded-full transition-all hover:shadow-glow hover:-translate-y-0.5">
+                Explore Products
+                <i class="fas fa-arrow-right"></i>
+            </a>
+            <p class="mt-8 font-body text-sm text-dusk">
+                <i class="fas fa-shield-check text-forest-500 mr-2"></i>
                 90-Day Money-Back Guarantee on All Products
             </p>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-midnight text-gray-300 py-16">
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="bg-[#0E1A12] text-stone py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-4 gap-12 mb-12">
+
+            <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+
+                <!-- Brand -->
                 <div>
-                    <div class="flex items-center gap-2 mb-6">
-                        <div
-                            class="w-10 h-10 bg-forest rounded-full flex items-center justify-center">
-                            <i class="fas fa-leaf text-white text-lg"></i>
+                    <div class="flex items-center gap-2.5 mb-5">
+                        <div class="w-9 h-9 bg-forest-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-leaf text-sage-500 text-sm"></i>
                         </div>
-                        <span class="text-2xl font-display font-bold text-white">1wellness</span>
+                        <span class="font-serif text-2xl font-bold text-cream">1wellness</span>
                     </div>
-                    <p class="text-gray-400 mb-6">Natural health solutions backed by traditional wisdom and modern
-                        science. Personalized wellness for the modern world.</p>
-                    <div class="flex gap-4">
-                        <a href="#"
-                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-forest transition-colors">
-                            <i class="fab fa-facebook-f"></i>
+                    <p class="font-body text-dusk text-sm leading-relaxed mb-6">Natural health solutions backed by traditional wisdom and modern science. Personalised wellness for the modern world.</p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-9 h-9 bg-white/5 hover:bg-forest-500 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fab fa-facebook-f text-stone text-xs"></i>
                         </a>
-                        <a href="#"
-                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-forest transition-colors">
-                            <i class="fab fa-instagram"></i>
+                        <a href="#" class="w-9 h-9 bg-white/5 hover:bg-forest-500 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fab fa-instagram text-stone text-xs"></i>
                         </a>
-                        <a href="#"
-                            class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-forest transition-colors">
-                            <i class="fab fa-twitter"></i>
+                        <a href="#" class="w-9 h-9 bg-white/5 hover:bg-forest-500 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fab fa-twitter text-stone text-xs"></i>
                         </a>
                     </div>
                 </div>
 
+                <!-- Products -->
                 <div>
-                    <h4 class="text-white font-bold mb-6">Products</h4>
-                    <ul class="space-y-3">
-                        <li><a href="acne/" class="hover:text-brand-400 transition-colors">GlowClear</a></li>
-                        <li><a href="pcos/" class="hover:text-brand-400 transition-colors">CycleSync</a></li>
-                        <li><a href="weight/" class="hover:text-brand-400 transition-colors">LeanFlow</a></li>
-                        <li><a href="mens/" class="hover:text-brand-400 transition-colors">Men's Vitality</a></li>
+                    <h4 class="font-sans font-bold text-cream mb-5 text-sm uppercase tracking-widest">Products</h4>
+                    <ul class="space-y-3 font-body text-sm">
+                        <li><a href="acne/" class="text-dusk hover:text-sage-500 transition-colors">GlowClear — Acne</a></li>
+                        <li><a href="pcos/" class="text-dusk hover:text-sage-500 transition-colors">CycleSync — PCOS</a></li>
+                        <li><a href="weight/" class="text-dusk hover:text-sage-500 transition-colors">LeanFlow — Weight</a></li>
+                        <li><a href="mens/" class="text-dusk hover:text-sage-500 transition-colors">Men's Vitality</a></li>
                     </ul>
                 </div>
 
+                <!-- Support -->
                 <div>
-                    <h4 class="text-white font-bold mb-6">Support</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#" class="hover:text-brand-400 transition-colors">Help Center</a></li>
-                        <li><a href="#" class="hover:text-brand-400 transition-colors">Contact Us</a></li>
-                        <li><a href="#" class="hover:text-brand-400 transition-colors">Shipping Info</a></li>
-                        <li><a href="#" class="hover:text-brand-400 transition-colors">Returns</a></li>
+                    <h4 class="font-sans font-bold text-cream mb-5 text-sm uppercase tracking-widest">Support</h4>
+                    <ul class="space-y-3 font-body text-sm">
+                        <li><a href="#" class="text-dusk hover:text-sage-500 transition-colors">Help Centre</a></li>
+                        <li><a href="#" class="text-dusk hover:text-sage-500 transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="text-dusk hover:text-sage-500 transition-colors">Shipping Info</a></li>
+                        <li><a href="#" class="text-dusk hover:text-sage-500 transition-colors">Returns & Refunds</a></li>
                     </ul>
                 </div>
 
+                <!-- Contact -->
                 <div>
-                    <h4 class="text-white font-bold mb-6">Contact</h4>
-                    <ul class="space-y-3">
+                    <h4 class="font-sans font-bold text-cream mb-5 text-sm uppercase tracking-widest">Contact</h4>
+                    <ul class="space-y-4 font-body text-sm">
                         <li class="flex items-center gap-3">
-                            <i class="fas fa-envelope text-brand-500"></i>
-                            <span>support@1wellness.club</span>
+                            <i class="fas fa-envelope text-sage-500 w-4 text-center"></i>
+                            <span class="text-dusk">support@1wellness.club</span>
                         </li>
                         <li class="flex items-center gap-3">
-                            <i class="fas fa-globe text-brand-500"></i>
-                            <span>www.1wellness.club</span>
+                            <i class="fas fa-globe text-sage-500 w-4 text-center"></i>
+                            <span class="text-dusk">www.1wellness.club</span>
                         </li>
                     </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="font-mono text-xs text-dusk">&copy; 2025 1wellness. All rights reserved.</p>
+                <div class="flex flex-wrap gap-5 justify-center font-body text-xs">
+                    <a href="gdpr/privacy-policy.html" class="text-dusk hover:text-cream transition-colors">Privacy Policy</a>
+                    <a href="gdpr/terms-of-service.html" class="text-dusk hover:text-cream transition-colors">Terms of Service</a>
+                    <a href="gdpr/cookie-policy.html" class="text-dusk hover:text-cream transition-colors">Cookie Policy</a>
+                    <a href="gdpr/data-processing-agreement.html" class="text-dusk hover:text-cream transition-colors">DPA</a>
                 </div>
             </div>
 
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-gray-500">&copy; 2025 1wellness. All rights reserved.</p>
-                <div class="flex flex-wrap gap-4 text-sm justify-center">
-                    <a href="gdpr/privacy-policy.html" class="hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="gdpr/terms-of-service.html" class="hover:text-white transition-colors">Terms of Service</a>
-                    <a href="gdpr/cookie-policy.html" class="hover:text-white transition-colors">Cookie Policy</a>
-                    <a href="gdpr/data-processing-agreement.html" class="hover:text-white transition-colors">DPA</a>
-                </div>
-            </div>
         </div>
     </footer>
 
-</body>
+    <script>
+        // Add nav shadow on scroll
+        const nav = document.getElementById('mainNav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('nav-scrolled', window.scrollY > 10);
+        });
+    </script>
 
+</body>
 </html>

@@ -183,3 +183,268 @@
     };
 
 })();
+
+/**
+ * ============================================================
+ * 1wellness A/B Engine client module
+ * ============================================================
+ * 1. Variant override applier — applies window.__VARIANT_OVERRIDES
+ *    (injected by backend/router.php) and releases the anti-flicker
+ *    guard.
+ * 2. Funnel event emitter — posts the fixed event taxonomy to
+ *    /backend/api/track-event.php, gated on GDPR analytics consent.
+ *    Attribution to experiments/variants happens server-side via the
+ *    session's sticky assignments, so inner funnel pages need no
+ *    injected context.
+ *
+ * Public API:
+ *   window.AB.track(event, metadata)   // e.g. AB.track('checkout_init')
+ *   window.AB.sessionId
+ */
+(function () {
+    'use strict';
+
+    var FUNNELS = ['pcos', 'acne', 'weight', 'mens'];
+    // funnel -> CONFIG.pricing key (for config-based price tests)
+    var PRICING_KEYS = {
+        pcos: 'pcos-90-day-plan',
+        acne: 'acne-treatment-plan',
+        weight: 'weight-loss-plan',
+        mens: 'mens-vitality-plan'
+    };
+
+    function detectFunnel() {
+        var path = window.location.pathname.toLowerCase();
+        for (var i = 0; i < FUNNELS.length; i++) {
+            if (path.indexOf('/' + FUNNELS[i] + '/') !== -1 ||
+                path.indexOf('/' + FUNNELS[i] + '__') !== -1) {
+                return FUNNELS[i];
+            }
+        }
+        return null;
+    }
+
+    function getCookie(name) {
+        var value = '; ' + document.cookie;
+        var parts = value.split('; ' + name + '=');
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
+    /**
+     * Unified session id. Priority: router cookie (1w_sid) ->
+     * WebhookManager localStorage id (1w_session_id) -> generate.
+     * Both stores are synced so server + checkout share one id.
+     */
+    function resolveSessionId() {
+        var sid = getCookie('1w_sid');
+        var ls = null;
+        try { ls = localStorage.getItem('1w_session_id'); } catch (e) {}
+
+        if (!sid && ls) sid = ls;
+        if (!sid) {
+            sid = '1w_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
+        }
+        try { localStorage.setItem('1w_session_id', sid); } catch (e) {}
+        // Host-only fallback cookie so the server sees the same id even
+        // when the page wasn't served through the router.
+        if (!getCookie('1w_sid')) {
+            document.cookie = '1w_sid=' + sid + ';path=/;max-age=7776000;SameSite=Lax';
+        }
+        return sid;
+    }
+
+    /**
+     * GDPR gate for analytics event logging. The assignment cookie is
+     * functional and exempt; event logging is not.
+     *  - consent cookie present  -> honor analytics flag
+     *  - banner loaded, no decision yet -> queue (flushed on consent)
+     *  - no GDPR framework on page -> allow
+     */
+    function consentState() {
+        var raw = getCookie('gdpr_cookie_consent');
+        if (raw) {
+            try {
+                var state = JSON.parse(decodeURIComponent(raw));
+                return state.analytics ? 'granted' : 'denied';
+            } catch (e) { /* fallthrough */ }
+        }
+        return window.GDPRConsent ? 'pending' : 'granted';
+    }
+
+    var sessionId = resolveSessionId();
+    var funnel = detectFunnel();
+    var pendingQueue = [];
+    var sentOnce = {}; // client-side dedup per pageload
+
+    function apiBase() {
+        // Pages live one level deep (/pcos/...), root pages use ./backend
+        var path = window.location.pathname;
+        var inFunnel = /\/[a-z]+(__[a-z0-9-]+)?\//i.test(path);
+        return (inFunnel ? '../' : './') + 'backend/api';
+    }
+
+    function send(event, metadata) {
+        var payload = {
+            session_id: sessionId,
+            funnel: funnel,
+            event: event,
+            url: window.location.pathname,
+            metadata: metadata || {}
+        };
+        var body = JSON.stringify(payload);
+        var url = apiBase() + '/track-event.php';
+        // sendBeacon survives page unloads (plan_select / checkout_init)
+        if (navigator.sendBeacon) {
+            try {
+                var blob = new Blob([body], { type: 'application/json' });
+                if (navigator.sendBeacon(url, blob)) return;
+            } catch (e) { /* fall back to fetch */ }
+        }
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: body,
+            keepalive: true
+        }).catch(function () { /* tracking must never break the funnel */ });
+    }
+
+    function track(event, metadata) {
+        if (!funnel) return;
+        var dedupKey = event + ':' + window.location.pathname;
+        if (sentOnce[dedupKey]) return;
+        sentOnce[dedupKey] = true;
+
+        var consent = consentState();
+        if (consent === 'denied') return;
+        if (consent === 'pending') {
+            pendingQueue.push([event, metadata]);
+            return;
+        }
+        send(event, metadata);
+    }
+
+    // Flush queued events if the visitor accepts analytics cookies later
+    var flushTimer = setInterval(function () {
+        if (!pendingQueue.length) return;
+        var consent = consentState();
+        if (consent === 'granted') {
+            var q = pendingQueue.splice(0);
+            q.forEach(function (item) { send(item[0], item[1]); });
+        } else if (consent === 'denied') {
+            pendingQueue.length = 0;
+        }
+    }, 2000);
+    setTimeout(function () { clearInterval(flushTimer); }, 120000);
+
+    // ------------------------------------------------------------------
+    // Variant override applier (+ anti-flicker release)
+    // ------------------------------------------------------------------
+    function applyOverrides() {
+        var ov = window.__VARIANT_OVERRIDES || {};
+        try {
+            var sel;
+            if (ov.text) {
+                for (sel in ov.text) {
+                    document.querySelectorAll(sel).forEach(function (el) { el.textContent = ov.text[sel]; });
+                }
+            }
+            if (ov.html) {
+                for (sel in ov.html) {
+                    document.querySelectorAll(sel).forEach(function (el) { el.innerHTML = ov.html[sel]; });
+                }
+            }
+            if (ov.attr) {
+                for (sel in ov.attr) {
+                    document.querySelectorAll(sel).forEach(function (el) {
+                        for (var attr in ov.attr[sel]) el.setAttribute(attr, ov.attr[sel][attr]);
+                    });
+                }
+            }
+            if (ov.style) {
+                for (sel in ov.style) {
+                    document.querySelectorAll(sel).forEach(function (el) {
+                        for (var prop in ov.style[sel]) el.style[prop] = ov.style[sel][prop];
+                    });
+                }
+            }
+            if (ov.config && window.CONFIG && window.CONFIG.pricing) {
+                // Price tests: merge config overrides into the funnel's
+                // pricing entry before DataManager renders.
+                var key = PRICING_KEYS[funnel];
+                if (key && window.CONFIG.pricing[key]) {
+                    for (var k in ov.config) window.CONFIG.pricing[key][k] = ov.config[k];
+                }
+                window.__AB_CONFIG = ov.config;
+            }
+        } catch (e) {
+            console.warn('[AB] override apply error:', e);
+        } finally {
+            if (typeof window.__abReveal === 'function') window.__abReveal();
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Auto-wired funnel events (fixed taxonomy)
+    // ------------------------------------------------------------------
+    function autoWire() {
+        var path = window.location.pathname.toLowerCase();
+
+        // view — every funnel page load (server dedupes per session/page/day)
+        track('view');
+
+        if (path.indexOf('assessment') !== -1) {
+            var started = false;
+            var markStart = function () {
+                if (started) return;
+                started = true;
+                track('assessment_start');
+            };
+            document.addEventListener('change', markStart, { once: false, capture: true });
+            document.addEventListener('click', function (e) {
+                var t = e.target;
+                if (t && t.closest && t.closest('button, [type="radio"], [type="checkbox"], .option, [data-answer]')) {
+                    markStart();
+                }
+            }, true);
+            document.addEventListener('submit', function () {
+                track('assessment_complete');
+            }, true);
+        }
+
+        if (path.indexOf('results') !== -1) {
+            track('results_view');
+        }
+
+        if (path.indexOf('select-plan') !== -1 || path.indexOf('sales') !== -1 ||
+            path.indexOf('30-day-plan') !== -1 || path.indexOf('90-day-plan') !== -1 ||
+            path.indexOf('digital-plan') !== -1) {
+            document.addEventListener('click', function (e) {
+                var t = e.target;
+                if (!t || !t.closest) return;
+                var hit = t.closest('[data-plan], .plan-card, .plan-select, a[href*="plan"], button');
+                if (hit) {
+                    track('plan_select', { label: (hit.textContent || '').trim().substring(0, 80) });
+                }
+            }, true);
+        }
+    }
+
+    // Public API
+    window.AB = {
+        sessionId: sessionId,
+        funnel: funnel,
+        track: track,
+        applyOverrides: applyOverrides
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+            applyOverrides();
+            if (funnel) autoWire();
+        });
+    } else {
+        applyOverrides();
+        if (funnel) autoWire();
+    }
+})();

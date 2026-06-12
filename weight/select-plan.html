@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
     <title>90-Day Weight Loss Complete Transformation - Select Your Plan</title>
     <meta name="description"
         content="Transform your Weight Loss in 90 days. Choose your preferred format: Instant PDF Download or Interactive Member Portal.">
@@ -135,10 +136,10 @@
         }
     </style>
 
-    <script src="../js/config.js"></script>
-    <script src="../js/webhook-manager.js"></script>
-    <script src="../js/flutterwave-integration.js"></script>
-    <script src="../js/tracking.js"></script>
+    <script defer src="../js/config.js"></script>
+    <script defer src="../js/webhook-manager.js"></script>
+    <script defer src="../js/flutterwave-integration.js"></script>
+    <script defer src="../js/tracking.js"></script>
 </head>
 
 <body class="antialiased relative overflow-x-hidden">
@@ -313,7 +314,7 @@
 
                 <div class="p-8 md:p-12">
                     <form @submit.prevent="processPayment()" class="space-y-6">
-                        <div class="bg-sand/50 rounded-xl p-6 mb-6 border border-sand">
+                        <div class="bg-sand/50 rounded-xl p-6 mb-6 border border-sand" data-exp="price-block">
                             <div class="flex justify-between items-center mb-4">
                                 <div class="flex flex-col">
                                     <span class="font-bold text-gray-800">90-Day Transformation Protocol</span>
@@ -322,6 +323,10 @@
                                 </div>
                                 <span class="font-bold text-forest-800" x-show="pricingLoaded" x-cloak
                                     x-text="formatPrice(price)"></span>
+                            </div>
+                            <div class="flex justify-between items-center mb-4 -mt-2" x-show="orderBump" x-cloak>
+                                <span class="text-sm text-gray-600">+ WhatsApp Expert Access (30 days)</span>
+                                <span class="font-bold text-forest-800" x-text="formatPrice(bumpPrice)"></span>
                             </div>
                             <ul class="space-y-2 text-sm text-gray-600">
                                 <li class="flex items-center gap-2"><span class="text-green-500">✓</span>
@@ -406,10 +411,19 @@
                             </div>
                         </div>
 
-                        <button type="submit" :disabled="isProcessing || offerExpired"
+                        <label data-exp="order-bump"
+                            class="flex items-start gap-3 bg-cream border-2 border-dashed border-amber/50 rounded-xl p-4 cursor-pointer hover:border-amber transition-colors mt-2">
+                            <input type="checkbox" x-model="orderBump" class="mt-1 w-5 h-5 accent-forest-900 shrink-0">
+                            <span class="text-sm text-gray-700">
+                                <span class="font-bold text-forest-900 block mb-0.5">Add WhatsApp Expert Access — <span x-text="formatPrice(bumpPrice)">$17</span></span>
+                                Priority 1-on-1 chat with our wellness team for your first 30 days. Get answers in hours, not days.
+                            </span>
+                        </label>
+
+                        <button type="submit" :disabled="isProcessing || offerExpired" data-exp="cta-pay"
                             class="w-full bg-forest-900 hover:bg-forest-800 text-sand font-medium text-lg py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed mt-4">
                             <span x-show="!isProcessing && pricingLoaded && !offerExpired" x-cloak
-                                x-text="'Pay ' + formatPrice(price) + ' — ' + (selectedPlan === 'web' ? 'Join Portal' : 'Download Now')"></span>
+                                x-text="'Pay ' + formatPrice(totalPrice) + ' — ' + (selectedPlan === 'web' ? 'Join Portal' : 'Download Now')"></span>
                             <span x-show="!isProcessing && !pricingLoaded" class="animate-pulse">Loading...</span>
                             <span x-show="offerExpired && !isProcessing">Offer Expired — Contact Us</span>
                             <span x-show="isProcessing" class="flex items-center justify-center gap-2">
@@ -445,6 +459,26 @@
                                 </span>
                             </div>
                             <p class="text-center text-xs text-gray-400">Join 500+ women who transformed their Weight Loss</p>
+                        </div>
+
+                        <div data-exp="guarantee-box"
+                            class="bg-forest-50 border border-forest-100 rounded-2xl p-5 flex items-start gap-4">
+                            <span class="text-3xl">🛡️</span>
+                            <div>
+                                <p class="font-bold text-forest-900 text-sm mb-1">30-Day Money-Back Guarantee</p>
+                                <p class="text-xs text-gray-600 leading-relaxed">If you don't feel the difference, email
+                                    us within 30 days for a full refund — and keep the materials. No forms, no
+                                    questions.</p>
+                            </div>
+                        </div>
+
+                        <div data-exp="payment-trust"
+                            class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 pt-4 border-t border-gray-100 text-[11px] text-gray-400">
+                            <span class="flex items-center gap-1">🔒 Secure Checkout</span>
+                            <span class="font-semibold tracking-wide">VISA</span>
+                            <span class="font-semibold tracking-wide">Mastercard</span>
+                            <span>Powered by <span class="font-semibold text-gray-500">Flutterwave</span></span>
+                            <a href="mailto:support@1wellness.club" class="underline hover:text-gray-600">support@1wellness.club</a>
                         </div>
                     </form>
                 </div>
@@ -486,9 +520,15 @@
                 customerPrefilled: false,
                 selectedPlan: 'web', // 'web' or 'pdf'
                 showOrderForm: false,
+                orderBump: false,
+                bumpPrice: 17,
+
+                get totalPrice() {
+                    return Number(this.price) + (this.orderBump ? this.bumpPrice : 0);
+                },
 
                 init() {
-                    this.loadWeight LossType();
+                    this.loadWeightType();
                     this.loadPricing();
                     this.trackPageView();
                     this.prefillCustomerData();
@@ -531,7 +571,7 @@
                     }
                 },
 
-                loadWeight LossType() {
+                loadWeightType() {
                     const data = localStorage.getItem('weightAssessmentData');
                     if (data) {
                         try {
@@ -590,6 +630,14 @@
                 async processPayment() {
                     this.isProcessing = true;
 
+                    if (window.WebhookManager) {
+                        window.WebhookManager.trackConversion('checkout_init', {
+                            page: 'select-plan',
+                            amount: this.totalPrice,
+                            order_bump: this.orderBump
+                        });
+                    }
+
                     try {
                         if (!window.FlutterwaveIntegration) {
                             throw new Error('Payment system not loaded');
@@ -605,14 +653,15 @@
 
                         const paymentData = {
                             plan: '90-day', // Use same plan ID for backend pricing
-                            amount: this.price,
+                            amount: this.totalPrice,
                             title: '90-Day Weight Loss Transformation',
                             description: this.selectedPlan === 'web' ? 'Member Portal Access' : 'Digital PDF Protocol',
                             customer: this.customerData,
                             category: 'weight',
                             // IMPORTANT: Pass the delivery preference in metadata
                             meta: {
-                                delivery_preference: this.selectedPlan
+                                delivery_preference: this.selectedPlan,
+                                order_bump: this.orderBump ? 'whatsapp-expert-17' : 'none'
                             }
                         };
 

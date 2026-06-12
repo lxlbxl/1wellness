@@ -105,9 +105,9 @@
     </style>
 
     <!-- Webhook Manager -->
-    <script src="../js/config.js"></script>
-    <script src="../js/webhook-manager.js"></script>
-    <script src="../js/tracking.js"></script>
+    <script defer src="../js/config.js"></script>
+    <script defer src="../js/webhook-manager.js"></script>
+    <script defer src="../js/tracking.js"></script>
 </head>
 
 <body class="antialiased relative min-h-screen flex flex-col">
@@ -141,15 +141,15 @@
         <div class="max-w-3xl mx-auto">
 
             <!-- Progress Bar -->
-            <div class="mb-10" x-show="!showContactForm">
+            <div class="mb-10" x-show="!showContactForm" data-exp="progress-bar">
                 <div class="flex justify-between items-center mb-3">
                     <span class="text-xs font-bold tracking-widest text-forest-400 uppercase">Progress</span>
                     <span class="text-xs font-bold font-mono text-forest-900"
-                        x-text="`${currentQuestion + 1} / ${totalQuestions}`"></span>
+                        x-text="`Question ${currentQuestion + 1} of ${totalQuestions}`"></span>
                 </div>
                 <div class="w-full bg-sage-100 rounded-full h-2 overflow-hidden shadow-inner">
                     <div class="bg-gradient-to-r from-forest-800 to-forest-600 h-2 rounded-full transition-all duration-500 ease-out"
-                        :style="`width: ${((currentQuestion + 1) / totalQuestions) * 100}%`"></div>
+                        :style="`width: ${15 + ((currentQuestion + 1) / totalQuestions) * 85}%`"></div>
                 </div>
             </div>
 
@@ -239,13 +239,13 @@
                 </div>
 
                 <!-- Contact Information Form (shown after assessment) -->
-                <div x-show="showContactForm" id="contactFormSection" class="reveal-up">
+                <div x-show="showContactForm" id="contactFormSection" data-exp="email-capture" class="reveal-up">
                     <div class="text-center mb-10">
                         <div
                             class="w-16 h-16 bg-forest-100 text-forest-800 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
                             🎉</div>
-                        <h3 class="text-3xl font-serif font-bold text-forest-900 mb-2">Analysis Complete</h3>
-                        <p class="text-gray-500">Enter your details to reveal your Metabolic type and personalized plan.</p>
+                        <h3 class="text-3xl font-serif font-bold text-forest-900 mb-2">Your Results Are Ready</h3>
+                        <p class="text-gray-500">All 12 answers analyzed. Where should we send your Metabolic Type results? We'll reveal them instantly and email you a copy to keep.</p>
                     </div>
 
                     <form @submit.prevent="submitContactInfo()" class="space-y-6 max-w-lg mx-auto">
@@ -370,6 +370,38 @@
                     ageRange: ''
                 },
                 contactError: '',
+                progressKey: 'weightAssessmentProgress',
+
+                init() {
+                    this.restoreProgress();
+                },
+
+                // Persist every answer so an abandoned session can resume (also powers
+                // the recovery email deep-link: assessment.html?resume=1)
+                saveProgress() {
+                    try {
+                        localStorage.setItem(this.progressKey, JSON.stringify({
+                            answers: this.answers,
+                            currentQuestion: this.currentQuestion,
+                            updatedAt: new Date().toISOString()
+                        }));
+                    } catch (e) { /* storage unavailable — non-fatal */ }
+                },
+
+                restoreProgress() {
+                    try {
+                        const saved = JSON.parse(localStorage.getItem(this.progressKey) || 'null');
+                        if (!saved || !saved.answers) return;
+                        const answered = Object.keys(saved.answers).length;
+                        if (answered === 0 || answered >= this.totalQuestions) return;
+                        const ageMs = Date.now() - new Date(saved.updatedAt || 0).getTime();
+                        const isResumeLink = new URLSearchParams(window.location.search).get('resume') === '1';
+                        if (isResumeLink || ageMs < 24 * 60 * 60 * 1000) {
+                            this.answers = saved.answers;
+                            this.currentQuestion = Math.min(saved.currentQuestion, this.totalQuestions - 1);
+                        }
+                    } catch (e) { /* corrupt state — start fresh */ }
+                },
 
                 questions: [
                     {
@@ -509,6 +541,14 @@
                 selectAnswer(value) {
                     // Set the answer for the current question
                     this.answers[this.currentQuestion] = value;
+                    this.saveProgress();
+
+                    // First answer = assessment truly started (abandonment recovery anchor)
+                    if (Object.keys(this.answers).length === 1 && window.WebhookManager) {
+                        window.WebhookManager.trackConversion('assessment_start', {
+                            page: 'weight-assessment'
+                        });
+                    }
 
                     // Auto-advance to next question after a brief delay
                     if (this.currentQuestion < this.totalQuestions - 1) {
@@ -576,6 +616,7 @@
 
                         // Store data in localStorage for results page
                         localStorage.setItem('weightAssessmentData', JSON.stringify(fullData));
+                        localStorage.removeItem(this.progressKey); // completed — clear resume state
 
                         // Redirect to results
                         window.location.href = 'results.html';
@@ -765,7 +806,7 @@
                         scores: scores,
                         confidence: maxScore >= 3 ? 'high' : maxScore >= 2 ? 'medium' : 'low'
                     };
-                }         }
+                }
             }
         }
 

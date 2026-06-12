@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
     <title>Your Vitale Results — Personalised Male Vitality Protocol | 1wellness</title>
     <meta name="description"
         content="Discover your personalised male vitality type and receive a targeted protocol designed for your specific hormonal pattern.">
@@ -124,9 +125,9 @@
     </style>
 
     <!-- Webhook Manager -->
-    <script src="../js/config.js"></script>
-    <script src="../js/webhook-manager.js"></script>
-    <script src="../js/tracking.js"></script>
+    <script defer src="../js/config.js"></script>
+    <script defer src="../js/webhook-manager.js"></script>
+    <script defer src="../js/tracking.js"></script>
 </head>
 
 <body class="antialiased relative min-h-screen">
@@ -181,10 +182,10 @@
                         <div class="w-20 h-20 bg-midnight rounded-full flex items-center justify-center mx-auto mb-6 shadow-amber">
                             <span class="text-amber-400 font-display italic text-4xl font-bold">✓</span>
                         </div>
-                        <h1 class="text-4xl md:text-5xl font-display font-bold text-midnight mb-4">
-                            Analysis Complete,
-                            <span x-text="assessmentData?.contactInfo?.name?.split(' ')[0] || ''"
-                                class="italic text-amber-500"></span>!
+                        <h1 data-exp="results-headline" class="text-4xl md:text-5xl font-display font-bold text-midnight mb-4">
+                            <span x-text="assessmentData?.contactInfo?.name?.split(' ')[0] ? assessmentData.contactInfo.name.split(' ')[0] + ', based' : 'Based'"></span>
+                            on your answers, you're showing strong markers of
+                            <span class="italic text-amber-500" x-text="mensTypeInfo.name"></span>
                         </h1>
                         <p class="text-xl text-dusk font-body font-light max-w-2xl mx-auto leading-relaxed">
                             We've identified your primary vitality driver. Below is your personalised type assessment and targeted protocol.
@@ -348,7 +349,7 @@
                             </div>
                         </div>
 
-                        <button @click="viewSolution()" id="main-cta"
+                        <button @click="viewSolution()" data-exp="cta-plan" id="main-cta"
                             class="inline-flex items-center gap-3 bg-amber-500 hover:bg-amber-400 text-midnight font-head font-bold text-sm px-12 py-5 rounded-full transition-all duration-300 transform hover:scale-105 shadow-amber hover:shadow-lg tracking-widest uppercase">
                             Get My Full Protocol
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

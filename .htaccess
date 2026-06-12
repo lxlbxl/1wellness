@@ -1,0 +1,18 @@
+# 1wellness root rewrites
+# Funnel landing routes go through the A/B engine router; all other
+# paths (assets, inner funnel pages, member area, backend) serve as-is.
+
+RewriteEngine On
+
+# A/B engine: funnel landing pages -> router (sticky assignment + variant serving)
+RewriteRule ^(pcos|acne|weight|mens)/?$ backend/router.php?funnel=$1 [L,QSA]
+
+# Also catch explicit index.html requests on funnel roots
+RewriteRule ^(pcos|acne|weight|mens)/index\.html$ backend/router.php?funnel=$1 [L,QSA]
+
+# Block direct web access to structural variant directories' siblings metadata
+<FilesMatch "\.(sql|md)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>

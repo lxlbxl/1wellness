@@ -5,50 +5,27 @@
  */
 
 window.DataManager = {
-    // Pricing configurations for all products
-    pricing: {
-        'pcos-90-day-plan': {
-            originalPrice: 197,
-            salePrice: 97,
-            currency: 'USD',
-            features: [
-                'Complete 90-day PCOS treatment plan',
-                'Natural herbal supplements',
-                'Personalized diet guide',
-                'Exercise recommendations',
-                'WhatsApp support group',
-                'Free consultation with herbalist',
-                'Money-back guarantee'
-            ]
-        },
-        'weight-loss-plan': {
-            originalPrice: 147,
-            salePrice: 77,
-            currency: 'USD',
-            features: [
-                'Effective weight loss supplements',
-                'Customized meal plans',
-                'Workout routines',
-                'Progress tracking tools',
-                'Community support',
-                'Expert guidance',
-                '30-day money-back guarantee'
-            ]
-        },
-        'acne-treatment-plan': {
-            originalPrice: 137,
-            salePrice: 67,
-            currency: 'USD',
-            features: [
-                'Natural acne treatment products',
-                'Skincare routine guide',
-                'Dietary recommendations',
-                'Before/after tracking',
-                'Expert dermatologist consultation',
-                'WhatsApp support',
-                'Satisfaction guarantee'
-            ]
-        }
+    // SINGLE SOURCE OF TRUTH FOR PRICING: backend/api/get-pricing.php
+    // Never hardcode amounts here — stale NGN/USD copies of this table were the
+    // root cause of the price-inconsistency audit finding (§0.2). Use
+    // DataManager.fetchPricing() (async) instead.
+    pricing: {},
+
+    fetchPricing: async function () {
+        if (this._pricingPromise) return this._pricingPromise;
+        this._pricingPromise = fetch('../backend/api/get-pricing.php')
+            .then(r => r.json())
+            .then(result => {
+                if (result.success && result.data && result.data.plans) {
+                    this.pricing = result.data.plans;
+                }
+                return this.pricing;
+            })
+            .catch(err => {
+                console.warn('⚠️ Pricing fetch failed:', err);
+                return this.pricing;
+            });
+        return this._pricingPromise;
     },
 
     // Testimonials for all product categories
@@ -99,16 +76,13 @@ window.DataManager = {
     },
 
     // Utility methods to get data
-    getPricing: function(planId) {
-        console.log(`📊 Getting pricing for: ${planId}`);
-        const pricing = this.pricing[planId];
-        if (pricing) {
-            console.log(`✅ Found pricing:`, pricing);
-            return pricing;
-        } else {
-            console.warn(`⚠️ No pricing found for plan: ${planId}`);
+    getPricing: function(category, planId) {
+        const pricing = this.pricing[category] && this.pricing[category][planId];
+        if (!pricing) {
+            console.warn(`⚠️ No pricing loaded for ${category}/${planId} — call fetchPricing() first`);
             return null;
         }
+        return pricing;
     },
 
     getTestimonials: function(category) {

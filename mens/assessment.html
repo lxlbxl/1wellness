@@ -112,9 +112,9 @@
     </style>
 
     <!-- Webhook Manager -->
-    <script src="../js/config.js"></script>
-    <script src="../js/webhook-manager.js"></script>
-    <script src="../js/tracking.js"></script>
+    <script defer src="../js/config.js"></script>
+    <script defer src="../js/webhook-manager.js"></script>
+    <script defer src="../js/tracking.js"></script>
 </head>
 
 <body class="antialiased relative min-h-screen flex flex-col">
@@ -148,7 +148,7 @@
         <div class="max-w-3xl mx-auto">
 
             <!-- Progress Bar -->
-            <div class="mb-8" x-show="!showContactForm">
+            <div class="mb-8" x-show="!showContactForm" data-exp="progress-bar">
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-[10px] font-mono tracking-widest text-dusk uppercase">Progress</span>
                     <span class="text-[10px] font-mono tracking-widest text-midnight uppercase"
@@ -156,7 +156,7 @@
                 </div>
                 <div class="w-full bg-stone/60 rounded-full h-1.5 overflow-hidden">
                     <div class="bg-gradient-to-r from-amber-600 to-amber-400 h-1.5 rounded-full transition-all duration-500 ease-out"
-                        :style="`width: ${((currentQuestion + 1) / totalQuestions) * 100}%`"></div>
+                        :style="`width: ${15 + ((currentQuestion + 1) / totalQuestions) * 85}%`"></div>
                 </div>
             </div>
 
@@ -240,13 +240,13 @@
                 </div>
 
                 <!-- Contact Information Form (shown after assessment) -->
-                <div x-show="showContactForm" id="contactFormSection">
+                <div x-show="showContactForm" id="contactFormSection" data-exp="email-capture">
                     <div class="text-center mb-10">
                         <div class="w-16 h-16 bg-amber-500 text-midnight rounded-full flex items-center justify-center mx-auto mb-5 text-2xl font-bold shadow-amber">
                             ✓
                         </div>
-                        <h3 class="text-3xl font-display font-bold text-midnight mb-2">Analysis Complete</h3>
-                        <p class="text-dusk font-body font-light">Enter your details to reveal your Vitality type and personalised protocol.</p>
+                        <h3 class="text-3xl font-display font-bold text-midnight mb-2">Your Results Are Ready</h3>
+                        <p class="text-dusk font-body font-light">All 12 answers analyzed. Where should we send your Vitality Type results? We'll reveal them instantly and email you a copy to keep.</p>
                     </div>
 
                     <form @submit.prevent="submitContactInfo()" class="space-y-6 max-w-lg mx-auto">
@@ -360,6 +360,38 @@
                     ageRange: ''
                 },
                 contactError: '',
+                progressKey: 'mensAssessmentProgress',
+
+                init() {
+                    this.restoreProgress();
+                },
+
+                // Persist every answer so an abandoned session can resume (also powers
+                // the recovery email deep-link: assessment.html?resume=1)
+                saveProgress() {
+                    try {
+                        localStorage.setItem(this.progressKey, JSON.stringify({
+                            answers: this.answers,
+                            currentQuestion: this.currentQuestion,
+                            updatedAt: new Date().toISOString()
+                        }));
+                    } catch (e) { /* storage unavailable — non-fatal */ }
+                },
+
+                restoreProgress() {
+                    try {
+                        const saved = JSON.parse(localStorage.getItem(this.progressKey) || 'null');
+                        if (!saved || !saved.answers) return;
+                        const answered = Object.keys(saved.answers).length;
+                        if (answered === 0 || answered >= this.totalQuestions) return;
+                        const ageMs = Date.now() - new Date(saved.updatedAt || 0).getTime();
+                        const isResumeLink = new URLSearchParams(window.location.search).get('resume') === '1';
+                        if (isResumeLink || ageMs < 24 * 60 * 60 * 1000) {
+                            this.answers = saved.answers;
+                            this.currentQuestion = Math.min(saved.currentQuestion, this.totalQuestions - 1);
+                        }
+                    } catch (e) { /* corrupt state — start fresh */ }
+                },
 
                 // ── 12 Male Vitality Questions ──────────────────────────────
                 questions: [
@@ -500,6 +532,14 @@
 
                 selectAnswer(value) {
                     this.answers[this.currentQuestion] = value;
+                    this.saveProgress();
+
+                    // First answer = assessment truly started (abandonment recovery anchor)
+                    if (Object.keys(this.answers).length === 1 && window.WebhookManager) {
+                        window.WebhookManager.trackConversion('assessment_start', {
+                            page: 'mens-assessment'
+                        });
+                    }
                     if (this.currentQuestion < this.totalQuestions - 1) {
                         setTimeout(() => { this.nextQuestion(); }, 750);
                     } else {
@@ -547,6 +587,7 @@
                         }
 
                         localStorage.setItem('mensAssessmentData', JSON.stringify(fullData));
+                        localStorage.removeItem(this.progressKey); // completed — clear resume state
                         window.location.href = 'results.html';
 
                     } catch (error) {
