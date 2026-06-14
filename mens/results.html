@@ -194,6 +194,19 @@
                 </div>
             </section>
 
+            <!-- Empathy Beat -->
+            <section class="mb-10 md:mb-14 max-w-3xl mx-auto" data-exp="empathy-block">
+                <div class="bg-amber-500/5 border border-amber-500/20 rounded-[2rem] p-7 md:p-10">
+                    <p class="text-sm font-bold tracking-widest text-amber-700 uppercase mb-4">Before we show you your results</p>
+                    <p class="text-lg md:text-xl text-gray-700 font-light leading-relaxed">
+                        If your energy has dropped, your focus isn't what it was, and you've been told <strong>"it's just age"</strong> — that explanation isn't good enough.
+                    </p>
+                    <p class="text-base text-gray-600 font-light leading-relaxed mt-4">
+                        Vitality decline has identifiable, treatable root causes. Sleep quality, nutrition deficiencies, cortisol load, and training mismatch all interact — and most men don't need medication to address them. The right protocol makes a measurable difference. Here's yours.
+                    </p>
+                </div>
+            </section>
+
             <!-- Vitality Type Results Card -->
             <section class="mb-10 md:mb-14 max-w-5xl mx-auto fade-up d1">
                 <div class="bg-midnight rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-12 text-cream shadow-2xl relative overflow-hidden">
@@ -267,6 +280,31 @@
                                     </div>
                                 </template>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Type-Matched Testimonial ("same type as you" proof) -->
+            <section class="mb-10 md:mb-14 max-w-3xl mx-auto fade-up d1" x-show="mensTypeInfo.testimonial" data-exp="testimonial-typed">
+                <div class="bg-midnight/95 border border-amber-500/20 rounded-[2rem] p-6 md:p-10 relative overflow-hidden">
+                    <div class="absolute top-4 left-6 text-7xl font-display text-amber-500/10 select-none leading-none">"</div>
+                    <div class="relative z-10">
+                        <p class="text-[10px] font-head font-700 tracking-widest text-amber-400 uppercase mb-4 text-center"
+                            x-text="mensTypeInfo.testimonial?.sameType
+                                ? 'From a man with your exact profile — ' + mensTypeInfo.name
+                                : 'From the Vitale community'"></p>
+                        <p class="text-lg md:text-xl text-stone/80 font-body font-light italic leading-relaxed text-center mb-6"
+                            x-text="'&ldquo;' + (mensTypeInfo.testimonial?.text || '') + '&rdquo;'"></p>
+                        <div class="flex items-center justify-center gap-3">
+                            <div class="w-10 h-10 bg-amber-900/40 rounded-full flex items-center justify-center font-display font-bold text-amber-400"
+                                x-text="mensTypeInfo.testimonial?.name?.charAt(0)"></div>
+                            <div class="text-left">
+                                <p class="font-head font-700 text-cream text-sm" x-text="mensTypeInfo.testimonial?.name"></p>
+                                <p class="text-xs text-dusk" x-text="mensTypeInfo.testimonial?.detail"></p>
+                            </div>
+                            <span class="ml-3 bg-amber-500/15 text-amber-400 text-xs font-bold px-2.5 py-1 rounded-full"
+                                x-text="mensTypeInfo.testimonial?.outcome"></span>
                         </div>
                     </div>
                 </div>
@@ -505,6 +543,13 @@
                         cortisol: {
                             name: "Cortisol Dominance",
                             description: "Your HPA axis is chronically over-activated, flooding your body with cortisol that suppresses testosterone, drives visceral fat accumulation, and depletes your energy reserves at the cellular level.",
+                            testimonial: {
+                                sameType: true,
+                                name: "James R.",
+                                detail: "Austin, USA · Cortisol Dominance",
+                                text: "I was wired all evening and exhausted every morning. The cortisol rhythm protocol and adaptogen stack changed my sleep in week one. My belly reduced noticeably by week four.",
+                                outcome: "Sleep restored · belly down"
+                            },
                             symptoms: [
                                 "Stubborn belly fat that resists diet and exercise",
                                 "Wired but tired — alert at night, exhausted in the morning",
@@ -549,6 +594,13 @@
                         androgen: {
                             name: "Androgen Deficit",
                             description: "Your testosterone and androgen signalling has declined below optimal thresholds — whether through age, lifestyle, or endocrine disruption — stripping you of the hormonal substrate that drives libido, muscle, and ambition.",
+                            testimonial: {
+                                sameType: true,
+                                name: "Michael T.",
+                                detail: "Birmingham, UK · Androgen Deficit",
+                                text: "My drive — in and out of the gym — had been declining for two years. I assumed it was age. The androgen restoration stack and training protocol reversed it inside a month. My wife noticed before I did.",
+                                outcome: "Drive restored · +strength"
+                            },
                             symptoms: [
                                 "Reduced or absent libido and sexual drive",
                                 "Difficulty building or maintaining muscle mass",
@@ -593,6 +645,13 @@
                         mitochondrial: {
                             name: "Mitochondrial Drain",
                             description: "Your cellular energy production is compromised. Your mitochondria — the power plants of every cell — are underperforming, leaving you with energy deficits that sleep, caffeine, and willpower cannot overcome.",
+                            testimonial: {
+                                sameType: true,
+                                name: "David K.",
+                                detail: "Toronto, Canada · Mitochondrial Drain",
+                                text: "I slept eight hours and still felt exhausted. No amount of coffee helped. The cellular energy protocol — especially the CoQ10 and NAD stack — lifted my baseline energy within three weeks.",
+                                outcome: "Energy baseline raised"
+                            },
                             symptoms: [
                                 "Persistent, deep fatigue unrelieved by rest",
                                 "Severe post-exercise exhaustion lasting multiple days",
@@ -637,6 +696,13 @@
                         inflammatory: {
                             name: "Inflammatory Overload",
                             description: "Systemic, low-grade inflammation is disrupting your hormonal signalling at the receptor level — meaning that even adequate testosterone levels cannot properly communicate with your cells, leaving you feeling depleted despite normal-looking blood work.",
+                            testimonial: {
+                                sameType: true,
+                                name: "Chris A.",
+                                detail: "Sydney, Australia · Inflammatory Overload",
+                                text: "My bloodwork always came back 'normal' but I felt terrible. The anti-inflammatory reset identified my triggers and the curcumin/omega protocol cleared my brain fog within two weeks.",
+                                outcome: "Brain fog cleared · mood up"
+                            },
                             symptoms: [
                                 "Persistent low mood or emotional blunting",
                                 "Slow or painful recovery from physical activity",

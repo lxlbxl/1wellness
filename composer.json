@@ -1,0 +1,35 @@
+{
+    "name": "1wellness/platform",
+    "description": "1wellness funnel + member platform",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "phpmailer/phpmailer": "^6.9",
+        "firebase/php-jwt": "^6.10"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "classmap": ["backend/classes/"],
+        "exclude-from-classmap": [
+            "backend/classes/1MealPlanner.php",
+            "backend/classes/EmailChannel.php",
+            "backend/classes/NotificationService.php",
+            "backend/classes/TemplateRenderer.php",
+            "backend/classes/ChannelAdapterInterface.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Wellness\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --testdox"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

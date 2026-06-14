@@ -186,8 +186,23 @@ try {
                 ]));
             }
 
-            // Sync age to users table
-            $db->update('users', ['age' => $age], "id = :id", [':id' => $userId]);
+            // Sync age and mark onboarded if not already set
+            $userSync = ['updated_at' => date('Y-m-d H:i:s')];
+            if ($age > 0) $userSync['age'] = $age;
+            $onboardedRow = $db->fetch("SELECT onboarded_at FROM users WHERE id = :id", [':id' => $userId]);
+            if (empty($onboardedRow['onboarded_at'])) {
+                $userSync['onboarded_at'] = date('Y-m-d H:i:s');
+            }
+            $db->update('users', $userSync, "id = :id", [':id' => $userId]);
+
+            // Award onboarding milestone
+            try {
+                $db->insert('member_milestones', [
+                    'user_id'   => $userId,
+                    'milestone' => 'onboarding_complete',
+                    'earned_at' => date('Y-m-d H:i:s'),
+                ]);
+            } catch (Exception $e) { /* UNIQUE: already awarded */ }
 
             $response = ['success' => true];
             break;

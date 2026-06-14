@@ -14,10 +14,10 @@ if (php_sapi_name() !== 'cli') {
     require_once dirname(__DIR__, 2) . '/admin/auth.php';
 }
 
-define('APP_ROOT', dirname(__DIR__, 2));
-require_once APP_ROOT . '/config/config.php';
-require_once APP_ROOT . '/classes/Database.php';
-require_once APP_ROOT . '/classes/ABSchema.php';
+// APP_ROOT intentionally not pre-defined (matches web endpoint resolution)
+require_once dirname(__DIR__, 2) . '/config/config.php';
+require_once dirname(__DIR__, 2) . '/classes/Database.php';
+require_once dirname(__DIR__, 2) . '/classes/ABSchema.php';
 
 $db = Database::getInstance();
 

@@ -1,0 +1,119 @@
+{
+    "country": "Philippines",
+    "country_code": "PH",
+    "climate_zone": "tropical",
+    "measurement_system": "metric",
+    "staple_foods": [
+        "rice (kanin)",
+        "glutinous rice (malagkit)",
+        "noodles (pansit)",
+        "sweet potatoes (kamote)",
+        "cassava",
+        "taro (gabi)",
+        "corn (mais)",
+        "bread (pandesal)"
+    ],
+    "common_proteins": [
+        "chicken (manok)",
+        "pork (baboy)",
+        "fish (isda)",
+        "shrimp (hipon)",
+        "eggs (itlog)",
+        "tofu (tokwa)",
+        "monggo (mung beans)",
+        "beef (baka)",
+        "squid (pusit)"
+    ],
+    "vegetables": [
+        "kangkong (water spinach)",
+        "pechay (bok choy)",
+        "talong (eggplant)",
+        "kalabasa (squash)",
+        "sitaw (string beans)",
+        "ampalaya (bitter gourd)",
+        "malunggay (moringa leaves)",
+        "labanos (radish)",
+        "repolyo (cabbage)",
+        "kamatis (tomatoes)"
+    ],
+    "fruits": [
+        "mango (mangga)",
+        "banana (saging)",
+        "papaya (papaya)",
+        "pineapple (pinya)",
+        "coconut (niyog)",
+        "guava (bayabas)",
+        "watermelon (pakwan)",
+        "calamansi"
+    ],
+    "fats_and_oils": [
+        "coconut oil",
+        "palm oil",
+        "peanut oil"
+    ],
+    "locally_available_herbs": [
+        {
+            "name": "Moringa",
+            "local_name": "Malunggay",
+            "use": "Nutrient-dense, anti-inflammatory, energy support",
+            "preparation": "Leaves in soups (tinola), or powder"
+        },
+        {
+            "name": "Turmeric",
+            "local_name": "Kunyit",
+            "use": "Anti-inflammatory, antioxidant",
+            "preparation": "Fresh root in cooking, or powder as tea"
+        },
+        {
+            "name": "Ginger",
+            "local_name": "Luya",
+            "use": "Digestive, anti-inflammatory, warming",
+            "preparation": "Salabat (ginger tea), grated in dishes"
+        },
+        {
+            "name": "Garlic",
+            "local_name": "Bawang",
+            "use": "Immune support, cardiovascular",
+            "preparation": "Fresh crushed, or in cooking"
+        },
+        {
+            "name": "Bitter Gourd",
+            "local_name": "Ampalaya",
+            "use": "Blood sugar regulation, digestive",
+            "preparation": "Cooked as vegetable, or tea from leaves"
+        },
+        {
+            "name": "Lemongrass",
+            "local_name": "Tanglad",
+            "use": "Digestive, calming, anti-microbial",
+            "preparation": "Stalks in soups and tea"
+        },
+        {
+            "name": "Coconut Vinegar",
+            "local_name": "Sukang tuba",
+            "use": "Blood sugar support, digestive",
+            "preparation": "Diluted in water before meals"
+        }
+    ],
+    "where_to_source": "Local palengke (wet markets), supermarkets (SM, Robinsons), herbal shops, online (Lazada, Shopee)",
+    "typical_cost_band": "PHP - Philippine Peso. Very affordable at local markets.",
+    "dietary_norms": "Rice-centric diet. Adobo, sinigang, tinola are staples. High sodium from fish sauce (patis) and soy sauce (toyo). Increasing health consciousness in urban areas.",
+    "language_for_local_names": "Filipino (Tagalog), English",
+    "sample_meals": {
+        "breakfast": [
+            "Tapsilog (cured beef, garlic rice, egg)",
+            "Arroz caldo (chicken rice porridge) with ginger",
+            "Pandesal with eggs and banana"
+        ],
+        "lunch": [
+            "Tinola (chicken ginger soup) with malunggay and green papaya",
+            "Sinigang na isda (fish sour soup) with vegetables",
+            "Chicken adobo with brown rice and pinakbet (mixed vegetables)"
+        ],
+        "dinner": [
+            "Grilled fish (inihaw na isda) with ensaladang talong",
+            "Ginisang monggo (mung bean stew) with malunggay",
+            "Chicken tinola with kalabasa and sitaw"
+        ]
+    }
+}

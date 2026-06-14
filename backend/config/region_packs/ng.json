@@ -1,0 +1,122 @@
+{
+    "country": "Nigeria",
+    "country_code": "NG",
+    "climate_zone": "tropical",
+    "measurement_system": "metric",
+    "staple_foods": [
+        "rice",
+        "beans",
+        "yam",
+        "cassava",
+        "plantain",
+        "maize",
+        "garri",
+        "pounded yam",
+        "amala",
+        "semovita",
+        "ofada rice"
+    ],
+    "common_proteins": [
+        "chicken",
+        "goat meat",
+        "beef",
+        "fish (fresh and dried)",
+        "eggs",
+        "cow skin (ponmo)",
+        "snail",
+        "stockfish"
+    ],
+    "vegetables": [
+        "ugwu (fluted pumpkin leaves)",
+        "efo tete (spinach)",
+        "bitter leaf",
+        "waterleaf",
+        "scent leaf (efirin)",
+        "okro",
+        "ewedu (jute leaves)",
+        "tomatoes",
+        "peppers (ata rodo, tatashe)",
+        "onions"
+    ],
+    "fruits": [
+        "mango",
+        "pawpaw (papaya)",
+        "banana",
+        "pineapple",
+        "orange",
+        "garden egg",
+        "coconut",
+        "watermelon"
+    ],
+    "fats_and_oils": [
+        "palm oil",
+        "groundnut oil",
+        "coconut oil",
+        "shea butter"
+    ],
+    "locally_available_herbs": [
+        {
+            "name": "Bitter Leaf",
+            "local_name": "Ewuro (Yoruba) / Onugbu (Igbo)",
+            "use": "Blood sugar regulation, anti-inflammatory, digestive",
+            "preparation": "Juice fresh leaves, or boil as vegetable"
+        },
+        {
+            "name": "Moringa",
+            "local_name": "Zogale (Hausa) / Ewe Igbale (Yoruba)",
+            "use": "Nutrient-dense, anti-inflammatory, energy support",
+            "preparation": "Leaf powder in smoothies, or cooked as vegetable"
+        },
+        {
+            "name": "Turmeric",
+            "local_name": "Ata-ile Pupa (Yoruba)",
+            "use": "Anti-inflammatory, antioxidant",
+            "preparation": "Fresh root in stews, or powder as tea"
+        },
+        {
+            "name": "Ginger",
+            "local_name": "Ata-ile (Yoruba) / Citta (Hausa)",
+            "use": "Digestive, anti-inflammatory, circulation",
+            "preparation": "Fresh in teas, grated in meals"
+        },
+        {
+            "name": "Garlic",
+            "local_name": "Ayu (Yoruba) / Tafarnuwa (Hausa)",
+            "use": "Immune support, cardiovascular, antimicrobial",
+            "preparation": "Fresh crushed, or in stews"
+        },
+        {
+            "name": "African Basil",
+            "local_name": "Efirin / Nchanwu (Igbo)",
+            "use": "Digestive, calming, anti-inflammatory",
+            "preparation": "Fresh leaves in soups and stews"
+        },
+        {
+            "name": "Fenugreek",
+            "local_name": "Ipa (Yoruba)",
+            "use": "Blood sugar support, digestive",
+            "preparation": "Seeds soaked overnight, or powder"
+        }
+    ],
+    "where_to_source": "Local markets (Balogun market, Mile 12), herbal pharmacies (agbo sellers), health shops in major cities",
+    "typical_cost_band": "NGN - Nigerian Naira. Most herbs and foods are very affordable at local markets.",
+    "dietary_norms": "Starch-heavy traditional diet. Increasing awareness of protein and vegetable balance. Religious considerations (halal in North, Christian in South).",
+    "language_for_local_names": "Yoruba, Igbo, Hausa (include multiple where possible)",
+    "sample_meals": {
+        "breakfast": [
+            "Moi-moi (steamed bean pudding) with pap (akamu)",
+            "Egg and plantain scramble with vegetables",
+            "Oats with banana and groundnut"
+        ],
+        "lunch": [
+            "Brown rice with vegetable stew (efo riro) and grilled fish",
+            "Amala with ewedu and gbegiri (bean soup)",
+            "Jollof rice (brown rice version) with chicken and salad"
+        ],
+        "dinner": [
+            "Pepper soup (fish or goat) with yam",
+            "Grilled fish with roasted plantain and vegetables",
+            "Bean porridge (ewa agoyin) with fried plantain"
+        ]
+    }
+}

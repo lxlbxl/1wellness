@@ -13,7 +13,7 @@
             </div>
             <div>
                 <h1 class="font-serif text-xl text-sage-600 leading-tight">1wellness</h1>
-                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-sage-300">PCOS Protocol</p>
+                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-sage-300"><?php echo htmlspecialchars($subBrand ?? '1wellness'); ?></p>
             </div>
         </div>
     </div>
@@ -60,6 +60,15 @@
                 <span class="font-medium">Vitals Sync</span>
             </button>
 
+            <button onclick="switchView('ai_chat')" data-view="ai_chat"
+                class="nav-link w-full flex items-center gap-4 p-4 rounded-2xl text-sage-400 hover:bg-sage-50 transition-all group">
+                <div
+                    class="w-10 h-10 rounded-xl bg-sage-50 group-hover:bg-white flex items-center justify-center transition-colors">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                </div>
+                <span class="font-medium">AI Specialist</span>
+            </button>
+
             <button onclick="switchView('profile')" data-view="profile"
                 class="nav-link w-full flex items-center gap-4 p-4 rounded-2xl text-sage-400 hover:bg-sage-50 transition-all group">
                 <div
@@ -68,8 +77,6 @@
                 </div>
                 <span class="font-medium">Profile</span>
             </button>
-
-            <!-- Transactions link removed - Admin only feature -->
         </div>
     </nav>
 
@@ -119,6 +126,11 @@
     <button onclick="switchView('tracker')" data-view="tracker"
         class="mobile-nav-link flex flex-col items-center gap-1.5 text-white/50 transition-all">
         <i data-lucide="line-chart" class="w-6 h-6"></i>
+        <div class="active-dot hidden w-1 h-1 rounded-full bg-white"></div>
+    </button>
+    <button onclick="switchView('ai_chat')" data-view="ai_chat"
+        class="mobile-nav-link flex flex-col items-center gap-1.5 text-white/50 transition-all">
+        <i data-lucide="message-circle" class="w-6 h-6"></i>
         <div class="active-dot hidden w-1 h-1 rounded-full bg-white"></div>
     </button>
     <button onclick="switchView('profile')" data-view="profile"

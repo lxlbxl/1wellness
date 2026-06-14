@@ -1,0 +1,131 @@
+{
+    "country": "United States",
+    "country_code": "US",
+    "climate_zone": "temperate",
+    "measurement_system": "imperial",
+    "staple_foods": [
+        "brown rice",
+        "quinoa",
+        "oats",
+        "sweet potatoes",
+        "whole wheat bread",
+        "whole grain pasta",
+        "tortillas",
+        "cornbread"
+    ],
+    "common_proteins": [
+        "chicken breast",
+        "turkey",
+        "salmon",
+        "tuna",
+        "lean beef",
+        "eggs",
+        "tofu",
+        "tempeh",
+        "lentils",
+        "black beans",
+        "chickpeas"
+    ],
+    "vegetables": [
+        "kale",
+        "spinach",
+        "broccoli",
+        "cauliflower",
+        "brussels sprouts",
+        "bell peppers",
+        "zucchini",
+        "carrots",
+        "celery",
+        "tomatoes",
+        "onions",
+        "garlic",
+        "mushrooms",
+        "asparagus",
+        "green beans"
+    ],
+    "fruits": [
+        "blueberries",
+        "strawberries",
+        "apples",
+        "bananas",
+        "oranges",
+        "avocados",
+        "grapefruit",
+        "cherries",
+        "pineapple",
+        "mango"
+    ],
+    "fats_and_oils": [
+        "olive oil",
+        "avocado oil",
+        "coconut oil",
+        "butter",
+        "ghee"
+    ],
+    "locally_available_herbs": [
+        {
+            "name": "Ashwagandha",
+            "local_name": "Ashwagandha (Indian Ginseng)",
+            "use": "Adaptogen, stress/cortisol management, energy",
+            "preparation": "Capsules or powder in smoothies",
+            "max_dose_mg": 600
+        },
+        {
+            "name": "Turmeric",
+            "local_name": "Turmeric",
+            "use": "Anti-inflammatory, antioxidant",
+            "preparation": "Golden milk, capsules, fresh in cooking"
+        },
+        {
+            "name": "Ginger",
+            "local_name": "Ginger",
+            "use": "Digestive, anti-inflammatory",
+            "preparation": "Fresh tea, grated in meals, capsules"
+        },
+        {
+            "name": "Peppermint",
+            "local_name": "Peppermint",
+            "use": "Digestive, calming",
+            "preparation": "Tea, capsules"
+        },
+        {
+            "name": "Chamomile",
+            "local_name": "Chamomile",
+            "use": "Calming, sleep support",
+            "preparation": "Tea before bed"
+        },
+        {
+            "name": "Milk Thistle",
+            "local_name": "Milk Thistle",
+            "use": "Liver support, detoxification",
+            "preparation": "Capsules (standardized extract)"
+        },
+        {
+            "name": "Nettle",
+            "local_name": "Stinging Nettle",
+            "use": "Mineral-rich, anti-inflammatory, allergy support",
+            "preparation": "Tea, capsules, cooked as vegetable"
+        }
+    ],
+    "where_to_source": "Whole Foods, Trader Joe's, local health food stores, Amazon, iHerb, local farmers markets",
+    "typical_cost_band": "USD - US Dollar. Supplements moderate to expensive. Fresh produce varies by region.",
+    "dietary_norms": "Highly varied. Standard American Diet (SAD) common. Growing interest in Mediterranean, keto, plant-based. Food sensitivities widespread.",
+    "language_for_local_names": "English",
+    "sample_meals": {
+        "breakfast": [
+            "Greek yogurt with berries and granola",
+            "Oatmeal with banana, walnuts, and cinnamon",
+            "Scrambled eggs with spinach and avocado on toast"
+        ],
+        "lunch": [
+            "Grilled chicken salad with mixed greens and olive oil dressing",
+            "Quinoa bowl with roasted vegetables and chickpeas",
+            "Turkey and avocado wrap with side salad"
+        ],
+        "dinner": [
+            "Baked salmon with roasted sweet potatoes and broccoli",
+            "Stir-fry with tofu, vegetables, and brown rice",
+            "Grilled chicken with quinoa and steamed vegetables"
+        ]
+    }
+}

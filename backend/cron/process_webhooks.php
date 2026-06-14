@@ -5,12 +5,11 @@
  * * * * * php /path/to/backend/cron/process_webhooks.php
  */
 
-// Define app root
-define('APP_ROOT', dirname(__DIR__));
-
-// Load configuration
-require_once APP_ROOT . '/config/config.php';
-require_once APP_ROOT . '/classes/Database.php';
+// APP_ROOT intentionally not pre-defined: config/env_loader resolves it
+// identically to the web endpoints so this worker reads the SAME database
+// (and file-storage paths) as the APIs that enqueue deliveries.
+require_once dirname(__DIR__) . '/config/config.php';
+require_once dirname(__DIR__) . '/classes/Database.php';
 
 // Set time limit to avoid timeouts
 set_time_limit(55); // Slightly less than 60s to avoid overlap if running every minute

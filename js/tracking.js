@@ -427,6 +427,11 @@
                     track('plan_select', { label: (hit.textContent || '').trim().substring(0, 80) });
                 }
             }, true);
+            // checkout_init fallback: WebhookManager fires the primary event; this catches
+            // it if WebhookManager isn't loaded (e.g. stripped in a structural A/B variant).
+            document.addEventListener('submit', function () {
+                track('checkout_init');
+            }, { once: true, capture: true });
         }
     }
 

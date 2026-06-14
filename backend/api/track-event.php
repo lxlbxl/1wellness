@@ -52,7 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../classes/ExperimentManager.php';
 
-const CLIENT_EVENTS = ['view', 'assessment_start', 'assessment_complete', 'results_view', 'plan_select', 'checkout_init'];
+// assessment_progress is included here for Fix B (depth tracking only — answer values stay client-side)
+const CLIENT_EVENTS = ['view', 'assessment_start', 'assessment_progress', 'assessment_complete', 'results_view', 'plan_select', 'checkout_init'];
 
 function fail($msg, $code = 400)
 {
@@ -120,9 +121,21 @@ try {
         }
     }
 
-    // ---- Dedup: view + step events once per session per page per day ----
+    // ---- Dedup ----
     $dedupEvents = ['view', 'results_view'];
-    if (in_array($event, $dedupEvents)) {
+    if ($event === 'assessment_progress') {
+        // Allow one record per question depth per session (each answer advances depth)
+        $depth = (int) ($input['metadata']['depth'] ?? 0);
+        $dupe = $db->fetch(
+            "SELECT id FROM funnel_tracking
+             WHERE session_id = :s AND event_type = 'assessment_progress' AND funnel_name = :f
+             AND JSON_EXTRACT(metadata, '$.depth') = :d LIMIT 1",
+            [':s' => $sessionId, ':f' => $funnel, ':d' => $depth]
+        );
+        if ($dupe) {
+            ok(['recorded' => 0, 'deduped' => true]);
+        }
+    } elseif (in_array($event, $dedupEvents)) {
         $dupe = $db->fetch(
             "SELECT id FROM funnel_tracking
              WHERE session_id = :s AND event_type = :e AND url = :u AND created_at >= :d LIMIT 1",
@@ -140,6 +153,21 @@ try {
         );
         if ($dupe) {
             ok(['recorded' => 0, 'deduped' => true]);
+        }
+    }
+
+    // ---- Fix B: email back-link — when a progress session submits email, attach to nurture_queue ----
+    if ($email && $event === 'assessment_complete') {
+        try {
+            $existing = $db->fetch(
+                "SELECT id FROM nurture_queue WHERE session_id = :s LIMIT 1",
+                [':s' => $sessionId]
+            );
+            if ($existing) {
+                $db->update('nurture_queue', ['email' => $email], 'id = :id', [':id' => $existing['id']]);
+            }
+        } catch (\Exception $e) {
+            // nurture_queue may not exist yet; non-fatal
         }
     }
 

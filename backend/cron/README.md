@@ -1,3 +1,27 @@
+# Cron Jobs
+
+| Script | Schedule | Purpose |
+|---|---|---|
+| `process_webhooks.php` | every minute | Deliver queued outbound webhooks with retries (docs/WEBHOOKS.md) |
+| `send_notifications.php` | every minute | Drain notification_queue: render templates, send via channel adapters, retries |
+| `worker.php` | every minute | Async job queue: send_email, generate_plan, send_notification |
+| `journeys.php` | every 5 minutes | Evaluate journey triggers (abandons, retention) → enqueue notification_queue rows |
+| `recompute_posteriors.php` | hourly | A/B engine: refresh posteriors, burn-in transitions, auto-conclusion (docs/AB-ENGINE.md) |
+| `ai_diagnostics.php [--challengers]` | weekly (e.g. Mon 06:00) | AI funnel diagnostics + optional challenger generation |
+| `daily_nudge.php` | *replaced by journeys.php* | (legacy — now superseded by R1 daily_nudge journey) |
+| `generate_weekly_plans.php` | weekly | Member meal plan generation |
+| `reconcile_payments.php` | daily | Diff Flutterwave transactions vs sales table; alert on missed webhooks |
+
+```bash
+* * * * *  php /path/to/backend/cron/process_webhooks.php >> /dev/null 2>&1
+* * * * *  php /path/to/backend/cron/send_notifications.php >> /dev/null 2>&1
+* * * * *  php /path/to/backend/cron/worker.php >> /dev/null 2>&1
+*/5 * * * *  php /path/to/backend/cron/journeys.php >> /dev/null 2>&1
+0 * * * *  php /path/to/backend/cron/recompute_posteriors.php >> /dev/null 2>&1
+0 6 * * 1  php /path/to/backend/cron/ai_diagnostics.php --challengers >> /dev/null 2>&1
+0 2 * * *  php /path/to/backend/cron/reconcile_payments.php >> /dev/null 2>&1
+```
+
 # Webhook Processor Setup
 
 To ensure webhooks are sent reliably, you must configure a Cron Job (Linux) or Scheduled Task (Windows) to run the processor script every minute.

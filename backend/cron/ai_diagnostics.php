@@ -14,13 +14,12 @@
  * variant the diagnostic flags as a clear loser that is already killed.
  */
 
-define('APP_ROOT', dirname(__DIR__));
-
-require_once APP_ROOT . '/config/config.php';
-require_once APP_ROOT . '/classes/Database.php';
-require_once APP_ROOT . '/classes/ExperimentManager.php';
-require_once APP_ROOT . '/classes/WebhookDispatcher.php';
-require_once APP_ROOT . '/classes/AIOrchestrator.php';
+// APP_ROOT intentionally not pre-defined (matches web endpoint resolution)
+require_once dirname(__DIR__) . '/config/config.php';
+require_once dirname(__DIR__) . '/classes/Database.php';
+require_once dirname(__DIR__) . '/classes/ExperimentManager.php';
+require_once dirname(__DIR__) . '/classes/WebhookDispatcher.php';
+require_once dirname(__DIR__) . '/classes/AIOrchestrator.php';
 
 set_time_limit(600);
 
@@ -171,7 +170,7 @@ foreach (ExperimentManager::FUNNELS as $funnel) {
 
 // Optional: generate challengers for killed variants that have none yet
 if (in_array('--challengers', $argv ?? [])) {
-    require_once APP_ROOT . '/classes/ChallengerGenerator.php';
+    require_once dirname(__DIR__) . '/classes/ChallengerGenerator.php';
     $gen = new ChallengerGenerator();
     $killed = $db->fetchAll(
         "SELECT v.id, v.name FROM variants v

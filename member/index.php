@@ -8,6 +8,7 @@
 require_once __DIR__ . '/../backend/config/config.php';
 require_once __DIR__ . '/../backend/classes/Database.php';
 require_once __DIR__ . '/../backend/classes/MemberAuth.php';
+require_once __DIR__ . '/config/conditions.php';
 
 $auth = new MemberAuth();
 if (!$auth->isLoggedIn()) {
@@ -16,6 +17,19 @@ if (!$auth->isLoggedIn()) {
 }
 
 $currentUser = $auth->getCurrentUser();
+
+// Load full user row for condition/sub_brand (session only has minimal fields)
+$_dbUser = Database::getInstance()->fetch(
+    "SELECT condition, sub_brand, streak_count, onboarded_at, last_active_date
+     FROM users WHERE id = ?",
+    [$currentUser['user_id']]
+);
+$userCondition = $_dbUser['condition'] ?? $currentUser['condition'] ?? 'pcos';
+$conditionCfg  = ConditionsRegistry::get($userCondition);
+// Expose to all included components
+$subBrand      = $conditionCfg['sub_brand'];
+$streakCount   = (int)($_dbUser['streak_count'] ?? 0);
+$isOnboarded   = !empty($_dbUser['onboarded_at']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,6 +108,9 @@ $currentUser = $auth->getCurrentUser();
                 <!-- Tracker View -->
                 <?php include 'components/tracker_view.php'; ?>
 
+                <!-- AI Specialist Chat View -->
+                <?php include 'components/ai_chat_view.php'; ?>
+
                 <!-- Profile View -->
                 <?php include 'components/profile_view.php'; ?>
 
@@ -105,9 +122,37 @@ $currentUser = $auth->getCurrentUser();
     <!-- Modals (Recipe, Onboarding) -->
     <?php include 'components/modals.php'; ?>
 
+    <!-- Auto-show onboarding for new members -->
+    <?php if (!$isOnboarded): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('onboardingModal');
+            if (modal) modal.classList.remove('hidden');
+        });
+    </script>
+    <?php endif; ?>
+
+    <!-- Condition config available to all JS -->
+    <script>
+        window.CONDITION_CFG = <?php echo json_encode([
+            'condition'       => $userCondition,
+            'sub_brand'       => $conditionCfg['sub_brand'],
+            'tagline'         => $conditionCfg['tagline'],
+            'theme_hex'       => $conditionCfg['theme_hex'],
+            'accent_hex'      => $conditionCfg['accent_hex'],
+            'icon'            => $conditionCfg['icon'],
+            'dashboard_label' => $conditionCfg['dashboard_label'],
+            'terminology'     => $conditionCfg['terminology'],
+            'tracker_metrics' => $conditionCfg['tracker_metrics'],
+            'modules'         => $conditionCfg['modules'],
+            'streak_count'    => $streakCount,
+            'is_onboarded'    => $isOnboarded,
+        ]); ?>;
+    </script>
+
     <!-- Dashboard Logic -->
     <script src="js/dashboard.js"></script>
-    
+
     <script>
         // Initialize dashboard on page load
         document.addEventListener('DOMContentLoaded', () => {

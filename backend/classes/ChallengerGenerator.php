@@ -179,7 +179,7 @@ class ChallengerGenerator
     /** Current control copy: all data-exp tagged elements from the live funnel page. */
     public function extractControlCopy($funnel)
     {
-        $file = dirname(APP_ROOT) . '/' . $funnel . '/index.html';
+        $file = dirname(__DIR__, 2) . '/' . $funnel . '/index.html';
         if (!file_exists($file)) {
             return [];
         }
@@ -197,11 +197,11 @@ class ChallengerGenerator
     /** Brand bible as plain text, cached after first strip. */
     public function brandBibleText($maxChars = 8000)
     {
-        $cache = APP_ROOT . '/database/data/brand_bible.txt';
+        $cache = dirname(__DIR__) . '/database/data/brand_bible.txt';
         if (file_exists($cache)) {
             return mb_substr(file_get_contents($cache), 0, $maxChars);
         }
-        $source = dirname(APP_ROOT) . '/1wellness-brand-bible.html';
+        $source = dirname(__DIR__, 2) . '/1wellness-brand-bible.html';
         if (!file_exists($source)) {
             return '';
         }

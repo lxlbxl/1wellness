@@ -1,0 +1,119 @@
+{
+    "country": "Kenya",
+    "country_code": "KE",
+    "climate_zone": "tropical",
+    "measurement_system": "metric",
+    "staple_foods": [
+        "ugali (maize meal)",
+        "rice (wali)",
+        "chapati",
+        "mandazi",
+        "sweet potatoes",
+        "cassava",
+        "arrowroot (nduma)",
+        "matoke"
+    ],
+    "common_proteins": [
+        "chicken (kuku)",
+        "beef (nyama)",
+        "goat",
+        "fish (samaki)",
+        "eggs (mayai)",
+        "beans (maharagwe)",
+        "green grams (ndengu)",
+        "cowpeas (kunde)"
+    ],
+    "vegetables": [
+        "sukuma wiki (collard greens)",
+        "managu (nightshade)",
+        "terere (amaranth)",
+        "spinach (mchicha)",
+        "cabbage",
+        "tomatoes (nyanya)",
+        "onions (vitunguu)",
+        "carrots",
+        "green beans",
+        "okra (bendi)"
+    ],
+    "fruits": [
+        "mango (embe)",
+        "banana (ndizi)",
+        "papaya (papai)",
+        "pineapple (nanasi)",
+        "avocado (parachichi)",
+        "passion fruit",
+        "guava (mapera)",
+        "watermelon (tikiti)"
+    ],
+    "fats_and_oils": [
+        "coconut oil",
+        "sunflower oil",
+        "ghee",
+        "palm oil"
+    ],
+    "locally_available_herbs": [
+        {
+            "name": "Moringa",
+            "local_name": "Mlonge",
+            "use": "Nutrient-dense, anti-inflammatory, energy support",
+            "preparation": "Leaf powder, or cooked as vegetable"
+        },
+        {
+            "name": "Neem",
+            "local_name": "Muarobaini",
+            "use": "Blood purification, anti-parasitic, skin health",
+            "preparation": "Leaf tea, or powder"
+        },
+        {
+            "name": "Turmeric",
+            "local_name": "Manjano",
+            "use": "Anti-inflammatory, antioxidant",
+            "preparation": "Fresh root or powder in tea/meals"
+        },
+        {
+            "name": "Ginger",
+            "local_name": "Tangawizi",
+            "use": "Digestive, anti-inflammatory, circulation",
+            "preparation": "Fresh in teas (dawa), grated in meals"
+        },
+        {
+            "name": "Garlic",
+            "local_name": "Kitunguu saumu",
+            "use": "Immune support, cardiovascular",
+            "preparation": "Fresh crushed, or in cooking"
+        },
+        {
+            "name": "Lemongrass",
+            "local_name": "Mchaichai",
+            "use": "Digestive, calming, anti-microbial",
+            "preparation": "Fresh stalks in tea"
+        },
+        {
+            "name": "Aloe Vera",
+            "local_name": "Kumepua",
+            "use": "Digestive, skin healing",
+            "preparation": "Fresh gel from leaf"
+        }
+    ],
+    "where_to_source": "Local markets (Marikiti, Gikomba), herbalists (mganga wa mitishamba), health shops in Nairobi",
+    "typical_cost_band": "KES - Kenyan Shilling. Very affordable at local markets.",
+    "dietary_norms": "Ugali is staple. Tea (chai) is central to culture. Increasing urban health consciousness. Mix of traditional and modern diets.",
+    "language_for_local_names": "Swahili, English",
+    "sample_meals": {
+        "breakfast": [
+            "Uji (millet porridge) with milk and banana",
+            "Mandazi with chai (tea) and avocado",
+            "Sweet potato with eggs and sukuma wiki"
+        ],
+        "lunch": [
+            "Ugali with sukuma wiki and nyama choma (grilled meat)",
+            "Rice with beans (wali na maharagwe) and vegetables",
+            "Chapati with chicken stew and managu"
+        ],
+        "dinner": [
+            "Fish (samaki) with ugali and terere",
+            "Githeri (maize and beans) with vegetables",
+            "Chicken soup with chapati and spinach"
+        ]
+    }
+}

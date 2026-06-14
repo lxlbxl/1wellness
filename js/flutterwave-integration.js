@@ -462,6 +462,17 @@ class FlutterwaveIntegration {
                 currency: this.config.currency,
                 country: this.config.country,
                 payment_options: "card,banktransfer,applepay,googlepay",
+                // Server-side attribution: Flutterwave echoes meta back in its
+                // charge.completed webhook (backend/api/flutterwave-webhook.php),
+                // which is the source of truth for purchase events (audit §5.3).
+                meta: {
+                    ...(paymentData.meta || {}),
+                    session_id: (window.AB && window.AB.sessionId) ||
+                        (window.WebhookManager && window.WebhookManager.sessionId) || '',
+                    funnel: paymentData.category || '',
+                    plan: paymentData.plan || '',
+                    order_bump: (paymentData.meta && paymentData.meta.order_bump) || 'none'
+                },
                 customer: {
                     email: paymentData.customer.email,
                     phone_number: paymentData.customer.phone,
@@ -475,6 +486,11 @@ class FlutterwaveIntegration {
                 callback: (response) => this.handlePaymentCallback(response, paymentData),
                 onclose: () => this.handlePaymentClose(paymentData)
             };
+
+            // A/B engine funnel event: checkout modal opened
+            if (window.AB) {
+                window.AB.track('checkout_init', { plan: paymentData.plan, amount: paymentData.amount });
+            }
 
             // Launch Flutterwave payment modal
             window.FlutterwaveCheckout(flutterwaveConfig);

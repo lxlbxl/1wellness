@@ -1,9 +1,5 @@
-</div>
-<!-- End Main Content -->
+        </div>
+    </div><!-- /#mw main content -->
 
-<script>
-    // Any global scripts if needed
-</script>
 </body>
-
 </html>

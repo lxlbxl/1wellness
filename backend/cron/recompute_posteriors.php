@@ -12,11 +12,12 @@
  *    decision rule holds (winner promoted to 100% traffic, webhook fired)
  */
 
-define('APP_ROOT', dirname(__DIR__));
-
-require_once APP_ROOT . '/config/config.php';
-require_once APP_ROOT . '/classes/Database.php';
-require_once APP_ROOT . '/classes/ExperimentManager.php';
+// APP_ROOT intentionally not pre-defined: config/env_loader resolves it the
+// same way as the web endpoints, so cron and web share one database in
+// SQLite development mode.
+require_once dirname(__DIR__) . '/config/config.php';
+require_once dirname(__DIR__) . '/classes/Database.php';
+require_once dirname(__DIR__) . '/classes/ExperimentManager.php';
 
 set_time_limit(300);
 

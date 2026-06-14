@@ -113,7 +113,8 @@ async function fetchData() {
 // 2. View Management
 function switchView(viewId) {
     document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-    const targetSection = document.getElementById(viewId);
+    // Support both 'dashboard' and 'dashboardView' ID patterns
+    const targetSection = document.getElementById(viewId) || document.getElementById(viewId + 'View');
     if (targetSection) targetSection.classList.add('active');
 
     document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
@@ -852,11 +853,7 @@ async function handleLogout() {
 }
 
 function chatWithSpecialist() {
-    const userName = document.getElementById('userName')?.textContent || 'Member';
-    const supportNumber = '+2348133149989';
-    const message = encodeURIComponent(`Hi! I'm ${userName} from the 1wellness CycleSync program. I need help with my healing journey.`);
-    const whatsappUrl = `https://wa.me/${supportNumber}?text=${message}`;
-    window.open(whatsappUrl, '_blank');
+    switchView('ai_chat');
 }
 
 async function goToday() {

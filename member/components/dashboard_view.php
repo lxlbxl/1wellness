@@ -6,25 +6,30 @@
 <div id="dashboardView" class="view-section space-y-12">
     <!-- Top Stats Row -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Cycle Card -->
+        <!-- Primary metric card (condition-specific) -->
+        <?php
+        $dashIcon  = htmlspecialchars($conditionCfg['icon'] ?? 'activity');
+        $dashLabel = htmlspecialchars($conditionCfg['dashboard_label'] ?? 'Today');
+        $dashTerm  = $conditionCfg['terminology'] ?? [];
+        ?>
         <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-sage-50 relative overflow-hidden group hover:shadow-xl transition-all duration-500">
             <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform duration-500">
-                <i data-lucide="moon" class="w-16 h-16"></i>
+                <i data-lucide="<?php echo $dashIcon; ?>" class="w-16 h-16"></i>
             </div>
             <div class="relative z-10 flex flex-col h-full">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="w-10 h-10 rounded-2xl bg-sage-50 text-sage-500 flex items-center justify-center">
                         <i data-lucide="calendar" class="w-5 h-5"></i>
                     </div>
-                    <p class="text-[10px] font-bold text-sage-300 uppercase tracking-widest">Cycle Phase</p>
+                    <p class="text-[10px] font-bold text-sage-300 uppercase tracking-widest"><?php echo $dashLabel; ?></p>
                 </div>
-                <h3 id="statCyclePhase" class="text-3xl font-serif text-sage-600 mb-2">Follicular</h3>
-                <p id="statCycleDay" class="text-sage-400 text-xs font-medium">Day 5 of 28</p>
+                <h3 id="statPrimaryValue" class="text-3xl font-serif text-sage-600 mb-2">—</h3>
+                <p id="statPrimarySubtext" class="text-sage-400 text-xs font-medium">&nbsp;</p>
                 <div class="mt-8 flex items-end gap-2">
                     <div class="flex-1 h-1.5 bg-sage-50 rounded-full overflow-hidden">
-                        <div id="cycleProgress" class="h-full bg-sage-500 rounded-full transition-all duration-1000" style="width: 18%"></div>
+                        <div id="primaryProgress" class="h-full bg-sage-500 rounded-full transition-all duration-1000" style="width: 0%"></div>
                     </div>
-                    <span id="cyclePercent" class="text-[10px] font-bold text-sage-300">18%</span>
+                    <span id="primaryPercent" class="text-[10px] font-bold text-sage-300">0%</span>
                 </div>
             </div>
         </div>

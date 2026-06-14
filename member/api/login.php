@@ -13,12 +13,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
 
 require_once '../../backend/config/config.php';
 require_once '../../backend/classes/Database.php';
+require_once '../../backend/classes/RateLimiter.php';
 require_once '../../backend/classes/MemberAuth.php';
 require_once '../../backend/classes/ActivityLogger.php';
 
 $auth = new MemberAuth();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    $rl = new RateLimiter();
+    if ($rl->isIpThrottled($ip)) {
+        http_response_code(429);
+        echo json_encode(['success' => false, 'error' => 'Too many requests. Please slow down.']);
+        exit;
+    }
+    $rl->recordIpHit($ip);
+
     $input = json_decode(file_get_contents('php://input'), true);
     $email = $input['email'] ?? '';
     $password = $input['password'] ?? '';

@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../classes/Database.php';
+require_once __DIR__ . '/../classes/RateLimiter.php';
 
 // Session is already started in config.php if not started
 if (session_status() === PHP_SESSION_NONE) {
@@ -52,16 +54,21 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
 
 $error = '';
 $success = '';
+$rateLimiter = new RateLimiter();
 
 if ($_POST) {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
+    $ip       = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 
     log_debug("Login attempt for username: $username");
 
     if (empty($username) || empty($password)) {
         $error = 'Please enter both username and password';
         log_debug("Failed: Empty username or password");
+    } elseif ($rateLimiter->isLockedOut($username, $ip)) {
+        $error = 'Too many failed attempts. Please try again in 15 minutes.';
+        log_debug("Failed: Rate-limited for $username / $ip");
     } else {
         try {
             $pdo = getDBConnection();
@@ -70,6 +77,7 @@ if ($_POST) {
             if ($user) {
                 $hash = $user['password_hash'] ?? ($user['password'] ?? null);
                 if ($hash && password_verify($password, $hash)) {
+                    $rateLimiter->clearAttempts($username);
                     $_SESSION['admin_logged_in'] = true;
                     $_SESSION['admin_id'] = $user['id'];
                     $_SESSION['admin_username'] = $user['username'];
@@ -80,10 +88,12 @@ if ($_POST) {
                     header('Location: dashboard.php');
                     exit;
                 } else {
+                    $rateLimiter->recordFailure($username, $ip);
                     $error = 'Invalid username or password';
                     log_debug("Failed: Invalid password for user $username");
                 }
             } else {
+                $rateLimiter->recordFailure($username, $ip);
                 $error = 'Invalid username or password';
                 log_debug("Failed: User not found for username $username");
             }

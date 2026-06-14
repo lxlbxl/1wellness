@@ -253,6 +253,9 @@ class WebhookManager {
                 email: purchaseData.customer?.email || '',
                 name: purchaseData.customer?.name || '',
                 order_id: purchaseData.transactionId,
+                // A/B engine: attribute the purchase to this session's variant assignments
+                session_id: (window.AB && window.AB.sessionId) || this.sessionId,
+                funnel: funnel,
             };
 
             // Add funnel-specific assessment data from localStorage

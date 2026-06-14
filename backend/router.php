@@ -19,17 +19,19 @@
  * in js/tracking.js).
  */
 
-define('APP_ROOT', __DIR__);
-require_once APP_ROOT . '/config/config.php';
-require_once APP_ROOT . '/classes/Database.php';
-require_once APP_ROOT . '/classes/ExperimentManager.php';
+// NOTE: APP_ROOT is intentionally not defined here — config/env_loader
+// resolves it the same way as every other API entry point, keeping the
+// SQLite path identical across endpoints in local development.
+require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/classes/Database.php';
+require_once __DIR__ . '/classes/ExperimentManager.php';
 
 const AB_COOKIE = '1w_exp';
 const AB_SESSION_COOKIE = '1w_sid';
 const AB_COOKIE_TTL = 7776000; // 90 days
 
 $funnel = preg_replace('/[^a-z]/', '', strtolower($_GET['funnel'] ?? ''));
-$rootPath = dirname(APP_ROOT);
+$rootPath = dirname(__DIR__); // repo root (backend/..)
 
 if (!in_array($funnel, ExperimentManager::FUNNELS) || !is_dir($rootPath . '/' . $funnel)) {
     http_response_code(404);

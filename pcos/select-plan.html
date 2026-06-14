@@ -485,6 +485,70 @@
             </div>
         </section>
 
+        <!-- FAQ / Objection Handling -->
+        <section class="max-w-3xl mx-auto py-16 px-4" data-exp="faq-block">
+            <div class="text-center mb-10">
+                <span class="text-terracotta-600 font-medium tracking-widest text-xs uppercase mb-2 block">Common Questions</span>
+                <h2 class="text-3xl font-serif font-bold text-forest-900">Before you decide</h2>
+            </div>
+            <div class="space-y-3" x-data="{ open: null }">
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 0 ? null : 0">
+                        <span>How is CycleSync different from other PCOS advice I've already tried?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 0 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 0" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Generic PCOS advice treats all PCOS the same. But Insulin-Resistant PCOS requires the opposite nutritional approach to Adrenal PCOS. CycleSync routes your protocol to your specific type — so you're not following advice designed for someone else's biology. That's why things that "should work" haven't.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 1 ? null : 1">
+                        <span>Is this medical advice?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 1 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 1" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        No — CycleSync is a wellness protocol, not a medical treatment. It's designed to work alongside your doctor, not replace them. Every recommendation is clearly framed as nutritional and lifestyle guidance. We always flag anything that warrants a conversation with your GP.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 2 ? null : 2">
+                        <span>I'm on metformin / the pill / other medication — can I still do this?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 2 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 2" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Most women on PCOS medication use CycleSync alongside it. Your plan explicitly notes any interactions with common PCOS medications. That said, always check with your prescriber before making changes to your supplement or herbal protocol.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 3 ? null : 3">
+                        <span>How quickly will I notice a difference?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 3 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 3" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Most members notice energy and craving shifts in 2–3 weeks. Cycle changes typically appear at the 8–12 week mark — that's how long a follicular cycle takes to respond to nutritional intervention. We'll be honest: PCOS took time to develop, and lasting improvement takes a full 90 days. Shortcuts don't fix root causes.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 4 ? null : 4">
+                        <span>What if it doesn't work for me?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 4 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 4" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Email us within 30 days for a full refund — and keep everything you downloaded. No forms, no hoops. We offer this because we're confident in the protocol, and we don't want anyone feeling stuck with something that isn't working for them.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 5 ? null : 5">
+                        <span>Is my payment secure?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 5 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 5" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Yes. Checkout is handled by Flutterwave — a PCI-DSS compliant payment processor trusted by thousands of African and international businesses. Your card details never touch our servers. We accept Visa, Mastercard, and bank transfer. Questions? Email <a href="mailto:support@1wellness.club" class="text-forest-700 underline">support@1wellness.club</a>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="text-center py-12">
             <div
                 class="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-sm border border-gray-100">
@@ -555,20 +619,33 @@
                 async loadPricing() {
                     try {
                         const response = await fetch('../backend/api/get-pricing.php');
+                        if (!response.ok) throw new Error('HTTP ' + response.status);
                         const result = await response.json();
-                        if (result.success && result.data.plans.pcos) {
-                            const plans = result.data.plans.pcos;
-                            if (plans['90-day']) {
+                        const plans = result.success && result.data && result.data.plans && result.data.plans.pcos
+                            ? result.data.plans.pcos : null;
+                        if (plans) {
+                            if (plans['90-day'] && plans['90-day'].price) {
                                 this.price = Number(plans['90-day'].price);
                             }
-                            this.calculateValues();
+                            if (plans['30-day'] && Number(plans['30-day'].price) > this.price) {
+                                this.originalPrice = Number(plans['30-day'].price);
+                            } else {
+                                this.calculateValues();
+                            }
+                        } else {
+                            this.useFallbackPricing();
                         }
                     } catch (e) {
-                        this.price = 45;
-                        this.calculateValues();
+                        this.useFallbackPricing();
                     } finally {
                         this.pricingLoaded = true;
                     }
+                },
+
+                useFallbackPricing() {
+                    const cfg = window.CONFIG && window.CONFIG.pricing && window.CONFIG.pricing['pcos-90-day-plan'];
+                    this.price = cfg ? cfg.salePrice : 97;
+                    this.originalPrice = cfg ? cfg.originalPrice : 197;
                 },
 
                 loadPCOSType() {

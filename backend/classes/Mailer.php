@@ -51,10 +51,74 @@ class Mailer
 
     public function send($to, $subject, $body, $isHtml = true, $attachmentPath = null, $attachmentName = null)
     {
+        if ($this->useSmtp && $this->dkimConfigured()) {
+            return $this->sendViaPhpMailer($to, $subject, $body, $isHtml, $attachmentPath, $attachmentName);
+        }
         if ($this->useSmtp) {
             return $this->sendSmtp($to, $subject, $body, $isHtml, $attachmentPath, $attachmentName);
-        } else {
-            return $this->sendNative($to, $subject, $body, $isHtml, $attachmentPath, $attachmentName);
+        }
+        return $this->sendNative($to, $subject, $body, $isHtml, $attachmentPath, $attachmentName);
+    }
+
+    private function dkimConfigured(): bool
+    {
+        $keyPath = defined('DKIM_PRIVATE_KEY_PATH') ? DKIM_PRIVATE_KEY_PATH : '';
+        return $keyPath !== '' && file_exists($keyPath) && defined('DKIM_DOMAIN') && DKIM_DOMAIN !== '';
+    }
+
+    private function sendViaPhpMailer($to, $subject, $body, $isHtml, $attachmentPath, $attachmentName): bool
+    {
+        $autoload = dirname(__DIR__, 2) . '/vendor/autoload.php';
+        if (!file_exists($autoload)) {
+            return $this->sendSmtp($to, $subject, $body, $isHtml, $attachmentPath, $attachmentName);
+        }
+        require_once $autoload;
+
+        try {
+            $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host       = $this->host;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $this->username;
+            $mail->Password   = $this->password;
+            $mail->SMTPSecure = ($this->port == 465)
+                ? PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS
+                : PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = (int) $this->port;
+
+            $mail->setFrom($this->fromEmail, $this->fromName);
+            $mail->addAddress($to);
+            $mail->Subject = $subject;
+
+            if ($isHtml) {
+                $mail->isHTML(true);
+                $mail->Body    = $body;
+                $mail->AltBody = strip_tags($body);
+            } else {
+                $mail->Body = $body;
+            }
+
+            if ($attachmentPath && file_exists($attachmentPath)) {
+                $mail->addAttachment($attachmentPath, $attachmentName ?: basename($attachmentPath));
+            }
+
+            // DKIM signing
+            $mail->DKIM_domain     = DKIM_DOMAIN;
+            $mail->DKIM_private    = DKIM_PRIVATE_KEY_PATH;
+            $mail->DKIM_selector   = defined('DKIM_SELECTOR') ? DKIM_SELECTOR : 'mail';
+            $mail->DKIM_passphrase = '';
+            $mail->DKIM_identity   = $this->fromEmail;
+
+            foreach ($this->extraHeaders as $header) {
+                [$name, $value] = explode(':', $header, 2);
+                $mail->addCustomHeader(trim($name), trim($value));
+            }
+
+            return $mail->send();
+        } catch (\Exception $e) {
+            $this->lastError = $e->getMessage();
+            error_log('Mailer DKIM send error: ' . $e->getMessage());
+            return false;
         }
     }
 
@@ -97,10 +161,17 @@ class Mailer
     }
 
     private $lastError = '';
+    private $extraHeaders = [];
 
     public function getLastError()
     {
         return $this->lastError;
+    }
+
+    /** Add an RFC 2822 header (name: value) included in every send call. */
+    public function addHeader(string $name, string $value): void
+    {
+        $this->extraHeaders[] = rtrim($name, ':') . ': ' . $value;
     }
 
     private function sendSmtp($to, $subject, $body, $isHtml, $attachmentPath, $attachmentName)

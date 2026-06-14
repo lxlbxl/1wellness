@@ -274,7 +274,7 @@ class WebhookDispatcher
         $payload = $this->buildPayload($webhook['id'], $event, $data);
 
         if ($this->db->isFileStorage()) {
-            $file = APP_ROOT . '/database/data/webhook_queue.json';
+            $file = $this->db->getDataPath() . 'webhook_queue.json';
             $queue = file_exists($file) ? (json_decode(file_get_contents($file), true) ?: []) : [];
             $queue[] = [
                 'id' => uniqid('whq_'),
@@ -430,7 +430,7 @@ class WebhookDispatcher
     public function recentDeliveries($id, $limit = 20)
     {
         if ($this->db->isFileStorage()) {
-            $file = APP_ROOT . '/database/data/webhook_queue.json';
+            $file = $this->db->getDataPath() . 'webhook_queue.json';
             $queue = file_exists($file) ? (json_decode(file_get_contents($file), true) ?: []) : [];
             $rows = array_values(array_filter($queue, function ($q) use ($id) {
                 return ($q['webhook_id'] ?? '') === $id;
@@ -451,7 +451,7 @@ class WebhookDispatcher
 
     private function filePath()
     {
-        return APP_ROOT . '/database/data/webhooks.json';
+        return $this->db->getDataPath() . 'webhooks.json';
     }
 
     private function fileLoad()

@@ -207,9 +207,9 @@ class MealPlanner
             1. MEALS: Nigerian/West African dishes with skin-healthy ingredients (leafy greens, fatty fish, citrus, turmeric). Avoid high-glycemic dishes.
             2. FRUIT PROTOCOL: Recommend ONE Nigerian fruit for skin health (e.g., Pawpaw, Orange, Ugiri, Pineapple) with why_it_works.
             3. HERBAL TEA: Morning detox + evening calming. Include product_key: 'acne_morning_blend' / 'acne_evening_blend'.
-            4. MOVEMENT: Walking routine + facial exercises. Min 5000 steps.
-            5. TIME RANGES on all meals/activities.
-            Same JSON structure as PCOS plan.",
+            4. TIME RANGES on all meals.
+            DO NOT include a workout or movement block. Acne is not managed by exercise protocols. Omit the 'workout' key entirely from your JSON response.
+            Same JSON structure as PCOS plan but without the workout field.",
 
                 'weight' => "
             Generate a personalized daily weight management meal plan for this user:

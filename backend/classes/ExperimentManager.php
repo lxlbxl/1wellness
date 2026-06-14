@@ -143,7 +143,8 @@ class ExperimentManager
             if (empty($v['directory']) || strpos($v['directory'], $funnel . '__') !== 0) {
                 return "Structural variant directory must be named {$funnel}__<slug>";
             }
-            $path = dirname(APP_ROOT) . '/' . $v['directory'];
+            // Repo root resolved from this file's location (APP_ROOT varies by entry point)
+            $path = dirname(__DIR__, 2) . '/' . $v['directory'];
             if (!is_dir($path) || !file_exists($path . '/index.html')) {
                 return "Structural directory {$v['directory']}/index.html not found";
             }
@@ -637,6 +638,10 @@ class ExperimentManager
                 'user_agent' => mb_substr($ua, 0, 500),
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
+            // Live counter so the bandit's exposure-floor logic works
+            // between hourly recomputes (which overwrite with exact
+            // distinct-session counts).
+            $this->db->query("UPDATE variants SET exposures = exposures + 1 WHERE id = :id", [':id' => $variantId]);
             return true;
         } catch (Exception $e) {
             error_log('logExposure: ' . $e->getMessage());

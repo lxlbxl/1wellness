@@ -132,14 +132,18 @@ class Database
 
     private function initializeSchema()
     {
+        // Schema files live next to this class (backend/database/), NOT under
+        // APP_ROOT — APP_ROOT resolves differently per entry point (web vs cron).
+        $schemaDir = dirname(__DIR__) . '/database';
+
         // Use PostgreSQL-compatible schema when using pgsql
         if ($this->connection->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
-            $schemaFile = APP_ROOT . '/database/schema.pgsql.sql';
+            $schemaFile = $schemaDir . '/schema.pgsql.sql';
             if (!file_exists($schemaFile)) {
-                $schemaFile = APP_ROOT . '/database/schema.sql';
+                $schemaFile = $schemaDir . '/schema.sql';
             }
         } else {
-            $schemaFile = APP_ROOT . '/database/schema.sql';
+            $schemaFile = $schemaDir . '/schema.sql';
         }
 
         if (file_exists($schemaFile)) {
@@ -151,15 +155,13 @@ class Database
                 $schema = str_replace('datetime(\'now\')', 'NOW()', $schema);
             }
 
-            // Split schema into individual statements
-            $statements = array_filter(
-                array_map('trim', explode(';', $schema)),
-                function ($stmt) {
-                    return !empty($stmt) && !preg_match('/^\s*--/', $stmt);
-                }
-            );
+            // Split schema into individual statements. Leading SQL comments
+            // are stripped from each chunk (NOT used to discard the chunk —
+            // a "-- comment\nCREATE TABLE ..." statement must still run).
+            $statements = array_map('trim', explode(';', $schema));
 
             foreach ($statements as $statement) {
+                $statement = preg_replace('/^\s*(--[^\n]*\n?)+/', '', $statement);
                 if (!empty(trim($statement))) {
                     try {
                         $this->connection->exec($statement);
@@ -181,7 +183,7 @@ class Database
 
     private function initializeMemberSchema()
     {
-        $schemaFile = APP_ROOT . '/database/member_schema.sql';
+        $schemaFile = dirname(__DIR__) . '/database/member_schema.sql';
 
         if (file_exists($schemaFile)) {
             $schema = file_get_contents($schemaFile);
@@ -193,15 +195,12 @@ class Database
                 $schema = str_replace("INSERT OR IGNORE", "INSERT IGNORE", $schema);
             }
 
-            // Split schema into individual statements
-            $statements = array_filter(
-                array_map('trim', explode(';', $schema)),
-                function ($stmt) {
-                    return !empty($stmt) && !preg_match('/^\s*--/', $stmt);
-                }
-            );
+            // Split schema into individual statements (leading comments
+            // stripped per-chunk, see initializeSchema)
+            $statements = array_map('trim', explode(';', $schema));
 
             foreach ($statements as $statement) {
+                $statement = preg_replace('/^\s*(--[^\n]*\n?)+/', '', $statement);
                 if (!empty(trim($statement))) {
                     try {
                         $this->connection->exec($statement);

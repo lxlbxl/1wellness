@@ -31,7 +31,9 @@ class ABSchema
         $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
 
         try {
-            if (self::tableExists($pdo, $driver, 'experiments') && self::tableExists($pdo, $driver, 'webhooks')) {
+            if (self::tableExists($pdo, $driver, 'experiments')
+                && self::tableExists($pdo, $driver, 'webhooks')
+                && self::tableExists($pdo, $driver, 'webhook_queue')) {
                 self::$ensured = true;
                 return true;
             }
@@ -160,6 +162,22 @@ class ABSchema
             insight_type $insightType,
             content $json NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )$suffix";
+
+        // Delivery queue (normally created by the base schema; ensured here
+        // because the webhook feature depends on it)
+        $whqStatus = $mysql ? "ENUM('pending','processing','completed','failed') DEFAULT 'pending'" : "TEXT DEFAULT 'pending'";
+        $statements[] = "CREATE TABLE IF NOT EXISTS webhook_queue (
+            id $pk,
+            webhook_id VARCHAR(50) NOT NULL,
+            event VARCHAR(50) NOT NULL,
+            payload TEXT NOT NULL,
+            status $whqStatus,
+            attempts INT DEFAULT 0,
+            last_attempt DATETIME,
+            next_attempt DATETIME,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )$suffix";
 
         $whStatus = $mysql ? "ENUM('active','paused') DEFAULT 'active'" : "TEXT DEFAULT 'active'";

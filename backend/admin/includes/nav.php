@@ -1,140 +1,308 @@
-<!-- Navigation Content (Alpine x-data handled here) -->
-<nav class="bg-transparent" x-data="{ mobileMenuOpen: false, userMenuOpen: false }">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <!-- Logo & Desktop Nav -->
-            <div class="flex">
-                <div class="flex-shrink-0 flex items-center">
-                    <a href="dashboard.php" class="text-xl font-bold text-[#2C3E35] flex items-center">
-                        <i class="fas fa-leaf text-[#D97757] mr-2"></i>
-                        <span class="hidden sm:inline font-serif">1wellness Admin</span>
-                        <span class="sm:hidden font-serif">1W</span>
-                    </a>
-                </div>
-                <div class="hidden md:ml-6 md:flex md:space-x-4 items-center">
-                    <?php
-                    $currentPage = basename($_SERVER['PHP_SELF']);
-                    $navItems = [
-                        'dashboard.php' => 'Dashboard',
-                        'assessments.php' => 'Assessments',
-                        'sales.php' => 'Sales',
-                        'funnel-tracking.php' => 'Funnels',
-                        'pricing.php' => 'Pricing',
-                        'pcos-plan.php' => '🌿 PCOS Plan',
-                        'ai-oversight.php' => 'AI Oversight',
-                        'audit-logs.php' => 'Logs'
-                    ];
-                    foreach ($navItems as $file => $label):
-                        $isActive = ($currentPage === $file);
-                        $class = $isActive
-                            ? 'bg-[#E3E8E1] text-[#2C3E35]'
-                            : 'text-[#6B7C70] hover:bg-[#F2F4F1] hover:text-[#2C3E35]';
-                        ?>
-                        <a href="<?php echo $file; ?>"
-                            class="<?php echo $class; ?> px-3 py-2 rounded-full text-sm font-medium transition-colors">
-                            <?php echo $label; ?>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            </div>
+<?php
+$currentPage = basename($_SERVER['PHP_SELF']);
 
-            <!-- Right Side (User Menu) -->
-            <div class="hidden md:ml-6 md:flex md:items-center">
-                <div class="ml-3 relative">
-                    <div>
-                        <button @click="userMenuOpen = !userMenuOpen" @click.away="userMenuOpen = false" type="button"
-                            class="max-w-xs flex items-center text-sm rounded-full focus:outline-none transition-transform hover:scale-105"
-                            id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                            <span class="sr-only">Open user menu</span>
-                            <div
-                                class="h-8 w-8 rounded-full bg-[#E3E8E1] flex items-center justify-center text-[#2C3E35]">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <span
-                                class="ml-2 text-[#2C3E35] font-medium font-serif"><?php echo htmlspecialchars($_SESSION['admin_username'] ?? 'Admin'); ?></span>
-                            <i class="fas fa-chevron-down ml-2 text-[#6B7C70] text-xs"></i>
-                        </button>
-                    </div>
+$navGroups = [
+    'Analytics' => [
+        'dashboard.php'         => ['Dashboard',     'fa-home'],
+        'assessments.php'       => ['Assessments',   'fa-clipboard-list'],
+        'sales.php'             => ['Sales',         'fa-chart-line'],
+        'funnel-tracking.php'   => ['Funnels',       'fa-filter'],
+    ],
+    'Marketing' => [
+        'experiments.php'       => ['Experiments',   'fa-flask'],
+        'notifications.php'     => ['Notifications', 'fa-bell'],
+    ],
+    'Business' => [
+        'payment-integrity.php' => ['Payments',      'fa-credit-card'],
+        'pricing.php'           => ['Pricing',       'fa-tag'],
+        'webhooks.php'          => ['Webhooks',      'fa-plug'],
+    ],
+    'Content' => [
+        'pcos-plan.php'         => ['PCOS Plan',     'fa-seedling'],
+    ],
+    'System' => [
+        'ai-oversight.php'      => ['AI Oversight',  'fa-brain'],
+        'audit-logs.php'        => ['Audit Logs',    'fa-scroll'],
+        'setup-guide.php'       => ['Setup Guide',   'fa-map-signs'],
+    ],
+];
 
-                    <div x-show="userMenuOpen" x-transition:enter="transition ease-out duration-100"
-                        x-transition:enter-start="transform opacity-0 scale-95"
-                        x-transition:enter-end="transform opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-75"
-                        x-transition:leave-start="transform opacity-100 scale-100"
-                        x-transition:leave-end="transform opacity-0 scale-95"
-                        class="origin-top-right absolute right-0 mt-2 w-48 rounded-xl shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 border border-[#EAEAE5]"
-                        role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1"
-                        style="display: none;">
-                        <a href="profile.php" class="block px-4 py-2 text-sm text-[#6B7C70] hover:bg-[#F2F4F1]"
-                            role="menuitem">
-                            <i class="fas fa-id-card mr-2 w-4 text-center"></i> Profile
-                        </a>
-                        <a href="settings.php" class="block px-4 py-2 text-sm text-[#6B7C70] hover:bg-[#F2F4F1]"
-                            role="menuitem">
-                            <i class="fas fa-cog mr-2 w-4 text-center"></i> Settings
-                        </a>
-                        <div class="border-t border-[#EAEAE5] my-1"></div>
-                        <a href="logout.php" class="block px-4 py-2 text-sm text-[#D97757] hover:bg-[#FDF1E8]"
-                            role="menuitem">
-                            <i class="fas fa-sign-out-alt mr-2 w-4 text-center"></i> Logout
-                        </a>
-                    </div>
-                </div>
-            </div>
+// Bottom bar (mobile) — 4 primary + "More"
+$bottomItems = [
+    'dashboard.php'       => ['Home',    'fa-home'],
+    'sales.php'           => ['Sales',   'fa-chart-line'],
+    'notifications.php'   => ['Alerts',  'fa-bell'],
+    'experiments.php'     => ['Tests',   'fa-flask'],
+];
 
-            <!-- Mobile menu button -->
-            <div class="-mr-2 flex items-center md:hidden">
-                <button @click="mobileMenuOpen = !mobileMenuOpen" type="button"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-[#6B7C70] hover:text-[#2C3E35] hover:bg-[#F2F4F1] focus:outline-none"
-                    aria-controls="mobile-menu" aria-expanded="false">
-                    <span class="sr-only">Open main menu</span>
-                    <i class="fas" :class="mobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
-                </button>
+// Flat map for current page title
+$flatAll = [];
+foreach ($navGroups as $_ => $items) {
+    foreach ($items as $file => [$lbl]) { $flatAll[$file] = $lbl; }
+}
+$flatAll['settings.php'] = 'Settings';
+$pageLabel = $flatAll[$currentPage]
+    ?? ucwords(str_replace(['.php', '-'], ['', ' '], $currentPage));
+?>
+
+<!-- ══════════════════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════════════════ -->
+<aside id="sb"
+       :style="sidebarStyle()"
+       :class="sidebarClass()"
+       class="flex flex-col bg-[#2C3E35]"
+       style="overflow: hidden;">
+
+    <!-- ── Logo + collapse toggle ── -->
+    <div class="flex items-center h-14 px-3 flex-shrink-0" style="border-bottom: 1px solid rgba(255,255,255,.08);">
+        <a href="dashboard.php" class="flex items-center gap-2.5 flex-1 min-w-0 overflow-hidden group">
+            <div class="w-8 h-8 rounded-xl bg-[#D97757] flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                <i class="fas fa-leaf text-white" style="font-size: 13px;"></i>
             </div>
-        </div>
+            <span class="sb-label font-serif font-semibold text-white truncate" style="font-size: 15px; line-height: 1;">
+                1wellness
+            </span>
+        </a>
+
+        <!-- Desktop: collapse arrow -->
+        <button @click="toggleDesktop()"
+                class="hidden md:flex w-7 h-7 rounded-lg items-center justify-center transition-colors flex-shrink-0"
+                style="color: rgba(255,255,255,.35);"
+                @mouseenter="$el.style.background='rgba(255,255,255,.08)'; $el.style.color='rgba(255,255,255,.9)'"
+                @mouseleave="$el.style.background=''; $el.style.color='rgba(255,255,255,.35)'"
+                title="Toggle sidebar">
+            <i class="fas fa-chevron-left transition-transform duration-200"
+               :class="sidebarCollapsed ? 'rotate-180' : ''"
+               style="font-size: 10px;"></i>
+        </button>
+
+        <!-- Mobile: close ✕ -->
+        <button @click="closeMobile()"
+                class="md:hidden w-7 h-7 flex items-center justify-center rounded-lg transition-colors flex-shrink-0"
+                style="color: rgba(255,255,255,.4);"
+                @mouseenter="$el.style.background='rgba(255,255,255,.08)'; $el.style.color='rgba(255,255,255,.9)'"
+                @mouseleave="$el.style.background=''; $el.style.color='rgba(255,255,255,.4)'">
+            <i class="fas fa-times" style="font-size: 12px;"></i>
+        </button>
     </div>
 
-    <!-- Mobile menu -->
-    <div class="md:hidden border-t border-[#EAEAE5] bg-white" id="mobile-menu" x-show="mobileMenuOpen"
-        style="display: none;">
-        <div class="pt-2 pb-3 space-y-1 px-2">
-            <?php
-            foreach ($navItems as $file => $label):
-                $isActive = ($currentPage === $file);
-                $class = $isActive
-                    ? 'bg-[#E3E8E1] text-[#2C3E35]'
-                    : 'text-[#6B7C70] hover:bg-[#F2F4F1] hover:text-[#2C3E35]';
-                ?>
-                <a href="<?php echo $file; ?>"
-                    class="<?php echo $class; ?> block px-3 py-2 rounded-md text-base font-medium">
-                    <?php echo $label; ?>
-                </a>
+    <!-- ── Scrollable nav ── -->
+    <nav class="sb-scroll flex-1 overflow-y-auto overflow-x-hidden py-2 px-2" style="padding-bottom: 4px;">
+
+        <?php foreach ($navGroups as $groupLabel => $items): ?>
+        <div class="mb-1">
+            <!-- Group label (hidden when collapsed via CSS) -->
+            <p class="sb-grp px-3 pt-3 pb-1"
+               style="font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.3);">
+                <?php echo $groupLabel; ?>
+            </p>
+
+            <?php foreach ($items as $file => [$label, $icon]):
+                $active = ($currentPage === $file); ?>
+            <a href="<?php echo $file; ?>"
+               class="sb-item relative flex items-center gap-3 rounded-xl my-0.5 transition-colors duration-150"
+               style="padding: 9px 12px; color: <?php echo $active ? '#fff' : 'rgba(255,255,255,.58)'; ?>; background: <?php echo $active ? 'rgba(255,255,255,.12)' : 'transparent'; ?>;"
+               <?php if ($active): ?>aria-current="page"<?php endif; ?>
+               @mouseenter="if (!<?php echo $active ? 'true' : 'false'; ?>) { $el.style.background='rgba(255,255,255,.07)'; $el.style.color='rgba(255,255,255,.9)'; }"
+               @mouseleave="if (!<?php echo $active ? 'true' : 'false'; ?>) { $el.style.background='transparent'; $el.style.color='rgba(255,255,255,.58)'; }">
+
+                <!-- Active left bar -->
+                <?php if ($active): ?>
+                <span class="absolute left-0 top-1/2 -translate-y-1/2 rounded-r-full bg-[#D97757]"
+                      style="width: 3px; height: 20px;"></span>
+                <?php endif; ?>
+
+                <i class="fas <?php echo $icon; ?> flex-shrink-0 text-center"
+                   style="width: 18px; font-size: 14px; <?php echo $active ? 'color: #D97757;' : ''; ?>"></i>
+                <span class="sb-label text-sm font-medium leading-none truncate"><?php echo $label; ?></span>
+
+                <!-- Tooltip (visible only when sidebar collapsed on desktop) -->
+                <span class="sb-tip"><?php echo $label; ?></span>
+            </a>
             <?php endforeach; ?>
         </div>
-        <div class="pt-4 pb-4 border-t border-[#EAEAE5]">
-            <div class="flex items-center px-4">
-                <div class="flex-shrink-0">
-                    <div class="h-10 w-10 rounded-full bg-[#E3E8E1] flex items-center justify-center text-[#2C3E35]">
-                        <i class="fas fa-user"></i>
-                    </div>
-                </div>
-                <div class="ml-3">
-                    <div class="text-base font-medium text-[#2C3E35] font-serif">
-                        <?php echo htmlspecialchars($_SESSION['admin_username'] ?? 'Admin'); ?>
-                    </div>
-                    <div class="text-sm font-medium text-[#6B7C70]">Administrator</div>
-                </div>
+        <?php endforeach; ?>
+    </nav>
+
+    <!-- ── Bottom: Settings + user/logout ── -->
+    <div class="flex-shrink-0 px-2 py-2 space-y-0.5" style="border-top: 1px solid rgba(255,255,255,.08);">
+
+        <!-- Settings link -->
+        <?php $isSett = ($currentPage === 'settings.php'); ?>
+        <a href="settings.php"
+           class="sb-usr relative flex items-center gap-3 rounded-xl transition-colors duration-150"
+           style="padding: 9px 12px; color: <?php echo $isSett ? '#fff' : 'rgba(255,255,255,.55)'; ?>; background: <?php echo $isSett ? 'rgba(255,255,255,.12)' : 'transparent'; ?>;"
+           @mouseenter="if (!<?php echo $isSett ? 'true' : 'false'; ?>) { $el.style.background='rgba(255,255,255,.07)'; $el.style.color='rgba(255,255,255,.9)'; }"
+           @mouseleave="if (!<?php echo $isSett ? 'true' : 'false'; ?>) { $el.style.background='transparent'; $el.style.color='rgba(255,255,255,.55)'; }">
+            <?php if ($isSett): ?>
+            <span class="absolute left-0 top-1/2 -translate-y-1/2 rounded-r-full bg-[#D97757]" style="width: 3px; height: 20px;"></span>
+            <?php endif; ?>
+            <i class="fas fa-cog flex-shrink-0 text-center" style="width: 18px; font-size: 14px; <?php echo $isSett ? 'color: #D97757;' : ''; ?>"></i>
+            <span class="sb-label text-sm font-medium leading-none">Settings</span>
+            <span class="sb-tip">Settings</span>
+        </a>
+
+        <!-- Divider -->
+        <div class="sb-sep mx-3 my-1" style="height: 1px; background: rgba(255,255,255,.07);"></div>
+
+        <!-- User row -->
+        <div class="sb-usr relative flex items-center gap-2.5 rounded-xl" style="padding: 8px 12px;">
+            <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
+                 style="background: rgba(217,119,87,.2);">
+                <i class="fas fa-user text-[#D97757]" style="font-size: 11px;"></i>
             </div>
-            <div class="mt-3 space-y-1 px-2">
+            <div class="sb-user-info flex-1 min-w-0">
+                <p class="font-semibold text-white truncate" style="font-size: 13px; line-height: 1.2;">
+                    <?php echo htmlspecialchars($_SESSION['admin_username'] ?? 'Admin'); ?>
+                </p>
+                <p style="font-size: 11px; color: rgba(255,255,255,.3); line-height: 1.2;">Administrator</p>
+            </div>
+            <a href="logout.php"
+               class="sb-label flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-lg transition-colors"
+               style="color: rgba(255,255,255,.3);"
+               title="Sign out"
+               @mouseenter="$el.style.color='#D97757'; $el.style.background='rgba(255,255,255,.07)';"
+               @mouseleave="$el.style.color='rgba(255,255,255,.3)'; $el.style.background='';">
+                <i class="fas fa-sign-out-alt" style="font-size: 13px;"></i>
+            </a>
+            <!-- Logout tooltip when only icon is visible -->
+            <span class="sb-tip">Sign out</span>
+        </div>
+    </div>
+</aside>
+
+
+<!-- ══════════════════════════════════════════════════════
+     MOBILE OVERLAY (tap to close)
+══════════════════════════════════════════════════════ -->
+<div x-show="sidebarOpen && isMobile"
+     x-cloak
+     @click="closeMobile()"
+     x-transition:enter="transition-opacity duration-200"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition-opacity duration-150"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     class="fixed inset-0 z-30 md:hidden"
+     style="background: rgba(0,0,0,.48); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);"></div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     TOP BAR
+══════════════════════════════════════════════════════ -->
+<header id="tb"
+        :style="topbarStyle()"
+        class="flex items-center gap-3 px-4"
+        style="background: rgba(253,252,248,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid #EAEAE5;">
+
+    <!-- Hamburger (mobile) / collapse toggle (desktop via toggleSidebar) -->
+    <button @click="toggleSidebar()"
+            class="flex items-center justify-center w-9 h-9 rounded-xl transition-colors flex-shrink-0"
+            style="color: #6B7C70;"
+            @mouseenter="$el.style.background='#F2F4F1'; $el.style.color='#2C3E35';"
+            @mouseleave="$el.style.background=''; $el.style.color='#6B7C70';">
+        <i class="fas fa-bars" style="font-size: 14px;"></i>
+    </button>
+
+    <!-- Current page label -->
+    <div class="flex-1 min-w-0">
+        <p class="font-serif font-semibold text-[#2C3E35] truncate" style="font-size: 15px; line-height: 1.3;">
+            <?php echo htmlspecialchars($pageLabel); ?>
+        </p>
+    </div>
+
+    <!-- Right: notifications + user menu -->
+    <div class="flex items-center gap-1 flex-shrink-0">
+
+        <!-- Notifications shortcut -->
+        <a href="notifications.php"
+           class="w-9 h-9 flex items-center justify-center rounded-xl transition-colors"
+           style="color: #6B7C70;"
+           @mouseenter="$el.style.background='#F2F4F1'; $el.style.color='#2C3E35';"
+           @mouseleave="$el.style.background=''; $el.style.color='#6B7C70';"
+           title="Notifications">
+            <i class="fas fa-bell" style="font-size: 14px;"></i>
+        </a>
+
+        <!-- User dropdown -->
+        <div class="relative" @click.away="userMenuOpen = false">
+            <button @click="userMenuOpen = !userMenuOpen"
+                    class="flex items-center gap-2 rounded-xl transition-colors"
+                    style="padding: 6px 10px 6px 6px;"
+                    @mouseenter="$el.style.background='#F2F4F1';"
+                    @mouseleave="$el.style.background='';">
+                <div class="w-7 h-7 rounded-full bg-[#E3E8E1] flex items-center justify-center text-[#2C3E35] flex-shrink-0">
+                    <i class="fas fa-user" style="font-size: 11px;"></i>
+                </div>
+                <span class="hidden sm:block text-sm font-medium text-[#2C3E35]">
+                    <?php echo htmlspecialchars($_SESSION['admin_username'] ?? 'Admin'); ?>
+                </span>
+                <i class="fas fa-chevron-down hidden sm:block text-[#6B7C70] transition-transform duration-150"
+                   :class="userMenuOpen ? 'rotate-180' : ''"
+                   style="font-size: 9px;"></i>
+            </button>
+
+            <!-- Dropdown panel -->
+            <div x-show="userMenuOpen"
+                 x-cloak
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="opacity-0 translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 translate-y-1"
+                 class="absolute right-0 top-full mt-2 rounded-2xl shadow-xl border border-[#EAEAE5] bg-white py-1.5 z-50"
+                 style="width: 176px;">
                 <a href="settings.php"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-[#6B7C70] hover:text-[#2C3E35] hover:bg-[#F2F4F1]">
-                    <i class="fas fa-cog mr-2"></i> Settings
+                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#6B7C70] transition-colors"
+                   @mouseenter="$el.style.background='#F2F4F1'; $el.style.color='#2C3E35';"
+                   @mouseleave="$el.style.background=''; $el.style.color='#6B7C70';">
+                    <i class="fas fa-cog w-4 text-center" style="font-size: 12px;"></i> Settings
                 </a>
+                <div class="my-1" style="height: 1px; background: #EAEAE5; margin: 4px 12px;"></div>
                 <a href="logout.php"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-[#D97757] hover:bg-[#FDF1E8]">
-                    <i class="fas fa-sign-out-alt mr-2"></i> Sign out
+                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#D97757] transition-colors"
+                   @mouseenter="$el.style.background='#FDF1E8';"
+                   @mouseleave="$el.style.background='';">
+                    <i class="fas fa-sign-out-alt w-4 text-center" style="font-size: 12px;"></i> Sign out
                 </a>
             </div>
         </div>
     </div>
+</header>
+
+
+<!-- ══════════════════════════════════════════════════════
+     MOBILE BOTTOM NAV BAR
+══════════════════════════════════════════════════════ -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-30 flex items-stretch bg-white"
+     style="height: 64px; border-top: 1px solid #EAEAE5; padding-bottom: env(safe-area-inset-bottom, 0px);">
+
+    <?php foreach ($bottomItems as $file => [$label, $icon]):
+        $active = ($currentPage === $file); ?>
+    <a href="<?php echo $file; ?>"
+       class="relative flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors"
+       style="color: <?php echo $active ? '#2C3E35' : '#9AABA0'; ?>;">
+
+        <!-- Active indicator dot -->
+        <?php if ($active): ?>
+        <span class="absolute top-0 left-1/2 -translate-x-1/2 w-6 rounded-b-full bg-[#D97757]" style="height: 3px;"></span>
+        <?php endif; ?>
+
+        <i class="fas <?php echo $icon; ?>" style="font-size: 19px; <?php echo $active ? 'color: #D97757;' : ''; ?>"></i>
+        <span style="font-size: 10px; font-weight: 600; letter-spacing: .01em;"><?php echo $label; ?></span>
+    </a>
+    <?php endforeach; ?>
+
+    <!-- More → opens sidebar drawer -->
+    <button @click="openMobile()"
+            class="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors"
+            style="color: #9AABA0; background: none; border: none; cursor: pointer;"
+            @mouseenter="$el.style.color='#2C3E35';"
+            @mouseleave="$el.style.color='#9AABA0';">
+        <i class="fas fa-th" style="font-size: 19px;"></i>
+        <span style="font-size: 10px; font-weight: 600; letter-spacing: .01em;">More</span>
+    </button>
 </nav>

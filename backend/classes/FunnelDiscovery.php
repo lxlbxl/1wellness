@@ -54,6 +54,12 @@ class FunnelDiscovery
 
             $fullPath = $this->rootPath . '/' . $item;
 
+            // A/B engine structural variant dirs ({funnel}__{slug}) are
+            // variant candidates, not standalone funnels
+            if (strpos($item, '__') !== false) {
+                continue;
+            }
+
             // Check if it's a directory and not excluded
             if (is_dir($fullPath) && !in_array($item, $this->excludedDirs)) {
                 if ($this->isFunnel($fullPath)) {
@@ -476,6 +482,30 @@ class FunnelDiscovery
         }
 
         return $baseFeatures;
+    }
+
+    /**
+     * A/B engine: list structural variant directories for a funnel.
+     * These are sibling dirs named {funnel}__{slug} containing an index.html.
+     */
+    public function getVariantDirectories($funnel = null)
+    {
+        $dirs = [];
+        foreach (scandir($this->rootPath) as $item) {
+            if ($item[0] === '.' || strpos($item, '__') === false) {
+                continue;
+            }
+            $fullPath = $this->rootPath . '/' . $item;
+            if (!is_dir($fullPath) || !file_exists($fullPath . '/index.html')) {
+                continue;
+            }
+            list($base) = explode('__', $item, 2);
+            if ($funnel !== null && $base !== $funnel) {
+                continue;
+            }
+            $dirs[] = ['directory' => $item, 'funnel' => $base];
+        }
+        return $dirs;
     }
 
     /**

@@ -57,7 +57,21 @@ define('JWT_SECRET', env('JWT_SECRET', bin2hex(random_bytes(32))));
 
 // Admin Settings
 define('ADMIN_USERNAME', env('ADMIN_USERNAME', 'admin'));
-define('ADMIN_PASSWORD_HASH', env('ADMIN_PASSWORD_HASH', password_hash('admin123', PASSWORD_DEFAULT)));
+// Derive hash: prefer ADMIN_PASSWORD_HASH (pre-hashed); fall back to hashing ADMIN_PASSWORD;
+// last resort default is admin123 — blocked in production by the guard below.
+(function () {
+    $hash = env('ADMIN_PASSWORD_HASH');
+    if (!$hash) {
+        $plain = env('ADMIN_PASSWORD');
+        $hash = $plain ? password_hash($plain, PASSWORD_DEFAULT) : password_hash('admin123', PASSWORD_DEFAULT);
+    }
+    define('ADMIN_PASSWORD_HASH', $hash);
+})();
+if (defined('APP_ENV') && APP_ENV === 'production') {
+    if (!env('ADMIN_PASSWORD_HASH') && !env('ADMIN_PASSWORD')) {
+        error_log('SECURITY: ADMIN_PASSWORD or ADMIN_PASSWORD_HASH must be set in production .env');
+    }
+}
 define('ADMIN_EMAIL', env('ADMIN_EMAIL', 'admin@1wellness.club'));
 
 // API Settings
@@ -66,6 +80,26 @@ define('API_RATE_LIMIT', (int) env('API_RATE_LIMIT', 100));
 
 // N8N API Access Key
 define('N8N_API_KEY', env('N8N_API_KEY', ''));
+
+// DKIM signing
+define('DKIM_DOMAIN',           env('DKIM_DOMAIN', ''));
+define('DKIM_SELECTOR',         env('DKIM_SELECTOR', 'mail'));
+define('DKIM_PRIVATE_KEY_PATH', env('DKIM_PRIVATE_KEY_PATH', ''));
+
+// Notification channel toggles (read by Settings bootstrap and channel adapters)
+define('NOTIFY_EMAIL_ENABLED',          (bool) env('NOTIFY_EMAIL_ENABLED', '1'));
+define('NOTIFY_WHATSAPP_ENABLED',       (bool) env('NOTIFY_WHATSAPP_ENABLED', '0'));
+define('NOTIFY_SMS_ENABLED',            (bool) env('NOTIFY_SMS_ENABLED', '0'));
+define('NOTIFY_TIMEZONE',               env('NOTIFY_TIMEZONE', 'Africa/Lagos'));
+define('NOTIFY_QUIET_START',            env('NOTIFY_QUIET_START', '22:00'));
+define('NOTIFY_QUIET_END',              env('NOTIFY_QUIET_END', '08:00'));
+define('NOTIFY_DAILY_CAP_MARKETING',    (int) env('NOTIFY_DAILY_CAP_MARKETING', 2));
+define('NOTIFY_WEEKLY_CAP_MARKETING',   (int) env('NOTIFY_WEEKLY_CAP_MARKETING', 5));
+define('NOTIFY_DRY_RUN',                (bool) env('NOTIFY_DRY_RUN', '0'));
+
+// Anthropic API Key (for AI Specialist chat)
+if (!defined('ANTHROPIC_API_KEY'))
+    define('ANTHROPIC_API_KEY', env('ANTHROPIC_API_KEY', ''));
 
 // File Upload Settings
 define('UPLOAD_MAX_SIZE', (int) env('UPLOAD_MAX_SIZE', 5 * 1024 * 1024));

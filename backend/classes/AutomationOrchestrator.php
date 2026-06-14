@@ -61,6 +61,12 @@ class AutomationOrchestrator
             if ($userId) {
                 error_log("Automation: Created user ID $userId");
                 $logger->log($userId, 'registration', ['method' => 'automation_webhook', 'funnel' => $type]);
+                $this->dispatchWebhooks('user.registered', [
+                    'user_id' => $userId,
+                    'email' => $email,
+                    'name' => $name,
+                    'funnel' => $type,
+                ]);
             } else {
                 error_log("Automation: Failed to create user for $email");
                 return ['success' => false, 'error' => 'Failed to create user'];
@@ -101,8 +107,9 @@ class AutomationOrchestrator
         );
 
         if (!$existingSale) {
+            $saleId = 'ORD_' . uniqid();
             $this->db->insert('sales', [
-                'id' => 'ORD_' . uniqid(),
+                'id' => $saleId,
                 'user_id' => $userId,
                 'transaction_id' => $txId,
                 'tx_ref' => $txRef,
@@ -121,6 +128,25 @@ class AutomationOrchestrator
             ]);
             error_log("Automation: Recorded sale for user $userId (Plan: {$planDuration} days, Expires: $planEndDate)");
             $logger->log($userId, 'purchase', ['amount' => $orderData['amount'], 'product' => $orderData['product'], 'tx_id' => $txId]);
+
+            // A/B engine: server-side purchase event (never logged from the
+            // browser) + outbound webhook notifications.
+            $this->recordPurchaseEvent($orderData, $type, $userId);
+            // Notification journeys: cancel recovery series, enqueue F1 + F4.
+            $this->triggerPurchaseNotifications($orderData, $type, $userId);
+            $this->dispatchWebhooks('sale.completed', [
+                'sale_id' => $saleId,
+                'user_id' => $userId,
+                'email' => $email,
+                'name' => $name,
+                'amount' => (float) ($orderData['amount'] ?? 0),
+                'currency' => $orderData['currency'] ?? 'USD',
+                'product_type' => $type,
+                'product_name' => $productName,
+                'plan_duration' => $planDuration,
+                'transaction_id' => $txId,
+                'tx_ref' => $txRef,
+            ]);
         } else {
             error_log("Automation: Sale already exists for tx_ref $txRef — skipping duplicate insert");
         }
@@ -257,5 +283,158 @@ class AutomationOrchestrator
         }
 
         error_log("Automation: Updated subscription for User $userId expiry: " . $subscriptionData['subscription_expiry']);
+    }
+
+    /**
+     * A/B engine: log the server-confirmed `purchase` funnel event with
+     * revenue, attributed to the session's live variant assignments.
+     * Purchases are logged server-side ONLY (never from the browser).
+     */
+    private function recordPurchaseEvent($orderData, $type, $userId)
+    {
+        try {
+            $sessionId = $orderData['session_id'] ?? null;
+            $amount = (float) ($orderData['amount'] ?? 0);
+            $now = date('Y-m-d H:i:s');
+
+            require_once __DIR__ . '/ExperimentManager.php';
+            $manager = new ExperimentManager();
+
+            $assignments = [];
+            if ($sessionId) {
+                // Idempotency: one purchase event per session per tx
+                $dupe = $this->db->fetch(
+                    "SELECT id FROM funnel_tracking WHERE session_id = :s AND event_type = 'purchase'
+                     AND metadata LIKE :tx LIMIT 1",
+                    [':s' => $sessionId, ':tx' => '%' . ($orderData['tx_ref'] ?? 'none') . '%']
+                );
+                if ($dupe) {
+                    return;
+                }
+                $assignments = $manager->getSessionAssignments($sessionId);
+            }
+
+            $base = [
+                'session_id' => $sessionId ?: ('srv_' . uniqid()),
+                'user_id' => $userId,
+                'email' => $orderData['email'] ?? null,
+                'funnel_name' => $type,
+                'step_name' => 'purchase',
+                'event_type' => 'purchase',
+                'revenue' => $amount,
+                'metadata' => json_encode([
+                    'tx_ref' => $orderData['tx_ref'] ?? null,
+                    'transaction_id' => $orderData['transaction_id'] ?? null,
+                    'product' => $orderData['product'] ?? null,
+                    'currency' => $orderData['currency'] ?? 'USD',
+                ]),
+                'created_at' => $now,
+            ];
+
+            $stamped = false;
+            foreach ($assignments as $a) {
+                if ($a['funnel_name'] !== $type) {
+                    continue;
+                }
+                $this->db->insert('funnel_tracking', array_merge($base, [
+                    'experiment_id' => (int) $a['experiment_id'],
+                    'variant_id' => (int) $a['variant_id'],
+                ]));
+                $stamped = true;
+
+                $this->dispatchWebhooks('funnel.purchase', [
+                    'session_id' => $sessionId,
+                    'funnel' => $type,
+                    'amount' => $amount,
+                    'currency' => $orderData['currency'] ?? 'USD',
+                    'experiment_id' => (int) $a['experiment_id'],
+                    'variant_id' => (int) $a['variant_id'],
+                ]);
+            }
+            if (!$stamped) {
+                $this->db->insert('funnel_tracking', $base);
+                $this->dispatchWebhooks('funnel.purchase', [
+                    'session_id' => $sessionId,
+                    'funnel' => $type,
+                    'amount' => $amount,
+                    'currency' => $orderData['currency'] ?? 'USD',
+                    'experiment_id' => null,
+                    'variant_id' => null,
+                ]);
+            }
+        } catch (Exception $e) {
+            // Tracking must never break a paid purchase flow
+            error_log('Automation recordPurchaseEvent: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Cancel C-series recovery journeys on purchase and enqueue F1/F4.
+     * Never throws — notifications must not break the purchase flow.
+     */
+    private function triggerPurchaseNotifications(array $orderData, string $type, int $userId): void
+    {
+        try {
+            require_once __DIR__ . '/ChannelAdapterInterface.php';
+            require_once __DIR__ . '/EmailChannel.php';
+            require_once __DIR__ . '/TemplateRenderer.php';
+            require_once __DIR__ . '/NotificationService.php';
+
+            $ns     = NotificationService::getInstance();
+            $email  = (string) ($orderData['email'] ?? '');
+            $phone  = (string) ($orderData['phone'] ?? '');
+            $name   = explode(' ', trim($orderData['name'] ?? ''))[0] ?: 'there';
+            $funnel = $type;
+
+            // Cancel all pending conversion-recovery journeys for this buyer
+            $ns->cancelJourney($email, [
+                'assessment_abandon', 'results_no_plan_view', 'checkout_abandon', 'nurture_long',
+            ], 'purchased');
+
+            $settings = Settings::getInstance();
+            $siteUrl  = rtrim($settings->get('site_url', 'https://1wellness.club'), '/');
+            $payload  = [
+                'name'        => $name,
+                'email'       => $email,
+                'funnel'      => $funnel,
+                'plan'        => $orderData['product'] ?? ucfirst($funnel) . ' Plan',
+                'portal_link' => $siteUrl . '/member/login.php',
+            ];
+
+            // F1 — purchase_confirm (immediate, email only for Phase 1)
+            $ns->enqueue(
+                'purchase_confirm', 1, 'user', $userId,
+                $email, $phone, $funnel,
+                'purchase_confirm_email', $payload,
+                'email',
+                date('Y-m-d H:i:s'),
+                'purchase_confirm_1_' . md5($email . ($orderData['tx_ref'] ?? ''))
+            );
+
+            // F4 — order_bump_fulfil (Expert Access email fallback for Phase 1)
+            if (!empty($orderData['order_bump']) && $orderData['order_bump'] !== 'none') {
+                $ns->enqueue(
+                    'order_bump_fulfil', 1, 'user', $userId,
+                    $email, $phone, $funnel,
+                    'order_bump_fulfil_email', $payload,
+                    'email',
+                    date('Y-m-d H:i:s'),
+                    'order_bump_fulfil_1_' . md5($email . ($orderData['tx_ref'] ?? ''))
+                );
+            }
+        } catch (Exception $e) {
+            error_log('Automation triggerPurchaseNotifications: ' . $e->getMessage());
+        }
+    }
+
+    /** Fan an event out to subscribed webhooks; never throws. */
+    private function dispatchWebhooks($event, array $data)
+    {
+        try {
+            require_once __DIR__ . '/WebhookDispatcher.php';
+            (new WebhookDispatcher())->dispatch($event, $data);
+        } catch (Exception $e) {
+            error_log("Automation webhook dispatch ($event): " . $e->getMessage());
+        }
     }
 }

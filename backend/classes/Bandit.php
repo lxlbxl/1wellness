@@ -33,13 +33,19 @@ class Bandit
             return $variants[array_rand($variants)];
         }
 
-        // 2. Exposure floor: if any variant is below its floor share, force-serve it
+        // 2. Exposure floor: variants below their floor share get force-served.
+        //    Picked at random among the starved set so a fresh experiment
+        //    (all zeros) splits evenly instead of pinning the first variant.
         $totalExposures = max(1, array_sum(array_column($variants, 'exposures')));
         $floor = (float) ($experiment['min_exposure_floor'] ?? 0.1);
+        $starved = [];
         foreach ($variants as $v) {
             if (((int) $v['exposures']) / $totalExposures < $floor) {
-                return $v;
+                $starved[] = $v;
             }
+        }
+        if (!empty($starved)) {
+            return $starved[array_rand($starved)];
         }
 
         // 3. Thompson Sampling: sample each posterior, serve the max

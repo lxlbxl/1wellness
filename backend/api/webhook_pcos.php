@@ -1,36 +1,73 @@
 <?php
 header('Content-Type: application/json');
-require_once '../admin/auth.php'; // Ensure database connection
-require_once '../classes/Database.php';
-require_once '../classes/User.php';
-require_once '../classes/Settings.php';
-require_once '../classes/Mailer.php';
-require_once '../classes/AIOrchestrator.php';
-require_once '../classes/MealPlanner.php';
-require_once '../classes/AutomationOrchestrator.php';
-
-// Allow CORS if needed
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Allow-Headers: Content-Type");
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../classes/Database.php';
+require_once __DIR__ . '/../classes/BaseModel.php';
+require_once __DIR__ . '/../classes/Settings.php';
+require_once __DIR__ . '/../classes/PaymentIntegrity.php';
+require_once __DIR__ . '/../classes/User.php';
+require_once __DIR__ . '/../classes/Mailer.php';
+require_once __DIR__ . '/../classes/AIOrchestrator.php';
+require_once __DIR__ . '/../classes/MealPlanner.php';
+require_once __DIR__ . '/../classes/AutomationOrchestrator.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
     echo json_encode(['success' => false, 'error' => 'Method not allowed']);
     exit;
 }
 
-// Get JSON Input
-$input = json_decode(file_get_contents('php://input'), true);
+$integrity = new PaymentIntegrity();
 
-if (!$input) {
-    // Fallback to POST vars
-    $input = $_POST;
+// 1. Verify sender signature (constant-time)
+$signature = $_SERVER['HTTP_VERIF_HASH'] ?? '';
+[$hashOk, $hashReason] = $integrity->checkWebhookHash($signature);
+if (!$hashOk) {
+    $integrity->log('webhook', 'rejected', ['detail' => ['source' => 'webhook_pcos', 'reason' => $hashReason]]);
+    http_response_code($hashReason === 'hash_not_configured' ? 503 : 401);
+    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+    exit;
 }
 
-// Validate Input
+$input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+
 if (!isset($input['email']) || !isset($input['name'])) {
+    http_response_code(400);
     echo json_encode(['success' => false, 'error' => 'Missing required fields (email, name)']);
     exit;
+}
+
+$txRef = $input['tx_ref'] ?? $input['reference'] ?? null;
+$txId  = $input['transaction_id'] ?? $input['order_id'] ?? null;
+
+// 2. Idempotency — don't process the same transaction twice
+if ($txRef && $integrity->saleExists($txRef, $txId)) {
+    echo json_encode(['success' => true, 'duplicate' => true]);
+    exit;
+}
+
+// 3. Re-verify against Flutterwave API; never trust POST body amount alone
+if ($txId) {
+    $verified = $integrity->verifyTransaction($txId);
+    if (!$verified) {
+        $integrity->log('webhook', 'verify_failed', ['tx_ref' => $txRef, 'transaction_id' => $txId,
+            'detail' => ['source' => 'webhook_pcos']]);
+        http_response_code(422);
+        echo json_encode(['success' => false, 'error' => 'Transaction verification failed']);
+        exit;
+    }
+    // Confirm amount matches to guard against tampered-amount attacks
+    if (abs((float)($verified['amount'] ?? 0) - (float)($input['amount'] ?? 0)) > 0.01) {
+        $integrity->log('webhook', 'rejected', ['tx_ref' => $txRef, 'transaction_id' => $txId,
+            'detail' => ['source' => 'webhook_pcos', 'reason' => 'amount_mismatch',
+                         'posted' => $input['amount'], 'verified' => $verified['amount']]]);
+        http_response_code(422);
+        echo json_encode(['success' => false, 'error' => 'Amount mismatch']);
+        exit;
+    }
+    // Use verified canonical values
+    $input['amount']   = $verified['amount'];
+    $input['currency'] = $verified['currency'] ?? ($input['currency'] ?? 'USD');
 }
 
 try {
@@ -60,7 +97,8 @@ try {
         'amount' => $input['amount'] ?? 0,
         'currency' => $input['currency'] ?? 'USD',
         'product' => $product,
-        'plan_duration' => $planDuration
+        'plan_duration' => $planDuration,
+        'session_id' => $input['session_id'] ?? null // A/B variant attribution
     ];
 
     // Prepare Assessment Data

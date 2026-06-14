@@ -749,26 +749,33 @@
                 async loadPricing() {
                     try {
                         const response = await fetch('../backend/api/get-pricing.php');
+                        if (!response.ok) throw new Error('HTTP ' + response.status);
                         const result = await response.json();
-                        if (result.success && result.data.plans.mens) {
-                            const plans = result.data.plans.mens;
-                            if (plans['30-day']) {
+                        const plans = result.success && result.data && result.data.plans && result.data.plans.mens
+                            ? result.data.plans.mens : null;
+                        if (plans) {
+                            if (plans['30-day'] && plans['30-day'].price) {
                                 this.price = Number(plans['30-day'].price);
                             }
-                            if (plans['90-day']) {
+                            if (plans['90-day'] && plans['90-day'].price) {
                                 this.price90 = Number(plans['90-day'].price);
                             }
                             this.calculateValues();
+                        } else {
+                            this.useFallbackPricing();
                         }
                     } catch (e) {
-                        console.error('Failed to load pricing', e);
-                        // Fallback to sensible defaults if API fails
-                        this.price = 18000;
-                        this.price90 = 45;
-                        this.calculateValues();
+                        this.useFallbackPricing();
                     } finally {
                         this.pricingLoaded = true;
                     }
+                },
+
+                useFallbackPricing() {
+                    const cfg = window.CONFIG && window.CONFIG.pricing && window.CONFIG.pricing['mens-vitality-plan'];
+                    this.price = cfg ? cfg.salePrice : 87;
+                    this.price90 = cfg ? cfg.originalPrice : 157;
+                    this.calculateValues();
                 },
 
                 loadVitalityType() {

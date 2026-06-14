@@ -1,8 +1,11 @@
 <?php
+require_once __DIR__ . '/RateLimiter.php';
+
 class MemberAuth
 {
     private $db;
     private $sessionName = '1w_member_session';
+    private $rateLimiter;
 
     public function __construct()
     {
@@ -10,18 +13,25 @@ class MemberAuth
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+        $this->rateLimiter = new RateLimiter();
     }
 
     public function login($identifier, $password)
     {
         $identifier = filter_var($identifier, FILTER_SANITIZE_EMAIL) ?: $identifier;
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+
+        if ($this->rateLimiter->isLockedOut($identifier, $ip)) {
+            return ['success' => false, 'message' => 'Too many failed attempts. Please try again in 15 minutes.'];
+        }
 
         // Try email first, then username
         $sql = "SELECT * FROM users WHERE email = :id OR username = :id2 LIMIT 1";
         $user = $this->db->fetch($sql, [':id' => $identifier, ':id2' => $identifier]);
 
         if (!$user) {
-            return ['success' => false, 'message' => 'User not found.'];
+            $this->rateLimiter->recordFailure($identifier, $ip);
+            return ['success' => false, 'message' => 'Invalid email or password.'];
         }
 
         if (!isset($user['password_hash']) || empty($user['password_hash'])) {
@@ -33,6 +43,8 @@ class MemberAuth
         }
 
         if (password_verify($password, $user['password_hash'])) {
+            $this->rateLimiter->clearAttempts($identifier);
+
             $displayName = !empty($user['first_name']) ? $user['first_name'] : ($user['name'] ?? $user['username'] ?? $user['email']);
 
             $_SESSION[$this->sessionName] = [
@@ -52,7 +64,8 @@ class MemberAuth
             return ['success' => true, 'redirect' => 'index.php'];
         }
 
-        return ['success' => false, 'message' => 'Invalid credentials.'];
+        $this->rateLimiter->recordFailure($identifier, $ip);
+        return ['success' => false, 'message' => 'Invalid email or password.'];
     }
 
     public function logout()

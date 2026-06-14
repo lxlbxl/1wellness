@@ -485,6 +485,70 @@
             </div>
         </section>
 
+        <!-- FAQ / Objection Handling -->
+        <section class="max-w-3xl mx-auto py-16 px-4" data-exp="faq-block">
+            <div class="text-center mb-10">
+                <span class="text-terracotta-600 font-medium tracking-widest text-xs uppercase mb-2 block">Common Questions</span>
+                <h2 class="text-3xl font-serif font-bold text-forest-900">Before you decide</h2>
+            </div>
+            <div class="space-y-3" x-data="{ open: null }">
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 0 ? null : 0">
+                        <span>How is GlowClear different from skincare and diets I've already tried?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 0 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 0" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Most skincare treats the surface — cleansers, actives, spot treatments. GlowClear identifies the root cause of your specific acne type (hormonal, inflammatory, comedonal, fungal, or stress-driven) and treats it from the inside. A hormonal acne protocol is the opposite of a comedonal one. The wrong approach doesn't just fail — it can make things worse.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 1 ? null : 1">
+                        <span>Is this medical advice?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 1 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 1" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        No — GlowClear is a wellness protocol, not a medical treatment. It's designed to work alongside your dermatologist or GP, not replace them. We always recommend professional assessment for cystic or scarring acne. Our guidance is nutritional, topical-routine, and lifestyle-based.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 2 ? null : 2">
+                        <span>I'm on antibiotics or prescription skincare — is GlowClear safe to combine?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 2 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 2" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        In most cases yes — our protocol focuses on nutrition and gut support, which complements most acne treatments. However, always check with your prescriber before adding new supplements, especially while on antibiotics. Your plan will flag any known interactions.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 3 ? null : 3">
+                        <span>How long until I see clearer skin?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 3 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 3" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Inflammatory acne often begins calming within 2–4 weeks of dietary changes. Hormonal acne follows a full cycle (4–8 weeks) before visible improvement. Significant clearance typically takes 8–12 weeks of consistent protocol. We'll be honest: skin cell turnover takes time. The photo-tracking in your portal will show progress even before your mirror does.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 4 ? null : 4">
+                        <span>What if it doesn't work for me?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 4 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 4" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Email us within 30 days for a full refund — and keep everything you downloaded. No forms, no hoops. We offer this because we're confident in the protocol, and we don't want anyone feeling stuck with something that isn't working.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 5 ? null : 5">
+                        <span>Is my payment secure?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 5 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 5" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Yes. Checkout is handled by Flutterwave — a PCI-DSS compliant payment processor. Your card details never touch our servers. We accept Visa, Mastercard, and bank transfer. Questions? Email <a href="mailto:support@1wellness.club" class="text-forest-700 underline">support@1wellness.club</a>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="text-center py-12">
             <div
                 class="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-sm border border-gray-100">
@@ -555,20 +619,35 @@
                 async loadPricing() {
                     try {
                         const response = await fetch('../backend/api/get-pricing.php');
+                        if (!response.ok) throw new Error('HTTP ' + response.status);
                         const result = await response.json();
-                        if (result.success && result.data.plans.acne) {
-                            const plans = result.data.plans.acne;
-                            if (plans['90-day']) {
+                        const plans = result.success && result.data && result.data.plans && result.data.plans.acne
+                            ? result.data.plans.acne : null;
+                        if (plans) {
+                            if (plans['90-day'] && plans['90-day'].price) {
                                 this.price = Number(plans['90-day'].price);
                             }
-                            this.calculateValues();
+                            // Use 30-day as the compare-at (original) price if it's higher
+                            if (plans['30-day'] && Number(plans['30-day'].price) > this.price) {
+                                this.originalPrice = Number(plans['30-day'].price);
+                            } else {
+                                this.calculateValues();
+                            }
+                        } else {
+                            this.useFallbackPricing();
                         }
                     } catch (e) {
-                        this.price = 45;
-                        this.calculateValues();
+                        this.useFallbackPricing();
                     } finally {
                         this.pricingLoaded = true;
                     }
+                },
+
+                useFallbackPricing() {
+                    // Use CONFIG.pricing if available, else hardcoded defaults
+                    const cfg = window.CONFIG && window.CONFIG.pricing && window.CONFIG.pricing['acne-treatment-plan'];
+                    this.price = cfg ? cfg.salePrice : 67;
+                    this.originalPrice = cfg ? cfg.originalPrice : 147;
                 },
 
                 loadAcneType() {

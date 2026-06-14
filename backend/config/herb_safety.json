@@ -1,0 +1,312 @@
+{
+    "version": "1.0",
+    "last_updated": "2026-06-13",
+    "note": "Global herb safety rules. These NEVER vary by region. Safety > local availability.",
+    "herbs": {
+        "berberine": {
+            "max_daily_dose_mg": 1500,
+            "pregnancy_unsafe": true,
+            "breastfeeding_unsafe": true,
+            "drug_interactions": [
+                "metformin",
+                "blood_sugar_medications",
+                "cyclosporine"
+            ],
+            "conditions_caution": [
+                "hypoglycemia",
+                "liver_disease"
+            ],
+            "side_effects": [
+                "GI upset",
+                "constipation",
+                "diarrhea"
+            ],
+            "notes": "Start with 500mg, titrate up. Take with meals."
+        },
+        "ashwagandha": {
+            "max_daily_dose_mg": 600,
+            "pregnancy_unsafe": true,
+            "breastfeeding_unsafe": true,
+            "drug_interactions": [
+                "thyroid_medications",
+                "immunosuppressants",
+                "sedatives"
+            ],
+            "conditions_caution": [
+                "hyperthyroidism",
+                "autoimmune_conditions"
+            ],
+            "side_effects": [
+                "drowsiness",
+                "GI upset"
+            ],
+            "notes": "Standardize to 5% withanolides. Avoid long-term use without breaks."
+        },
+        "st_johns_wort": {
+            "max_daily_dose_mg": 600,
+            "pregnancy_unsafe": true,
+            "breastfeeding_unsafe": true,
+            "drug_interactions": [
+                "antidepressants",
+                "birth_control",
+                "blood_thinners",
+                "cyclosporine",
+                "HIV_medications",
+                "anti_seizure"
+            ],
+            "conditions_caution": [
+                "bipolar_disorder",
+                "schizophrenia",
+                "ADHD"
+            ],
+            "side_effects": [
+                "photosensitivity",
+                "dry_mouth",
+                "dizziness"
+            ],
+            "notes": "EXTREMELY HIGH INTERACTION RISK. Must check all medications. Standardize to 0.3% hypericin."
+        },
+        "fenugreek": {
+            "max_daily_dose_g": 6,
+            "pregnancy_unsafe": true,
+            "breastfeeding_unsafe": false,
+            "drug_interactions": [
+                "blood_sugar_medications",
+                "blood_thinners"
+            ],
+            "conditions_caution": [
+                "hypoglycemia",
+                "peanut_allergy"
+            ],
+            "side_effects": [
+                "GI upset",
+                "maple_syrup_urine_odor"
+            ],
+            "notes": "May lower blood sugar significantly. Monitor if diabetic."
+        },
+        "DIM": {
+            "max_daily_dose_mg": 300,
+            "pregnancy_unsafe": true,
+            "breastfeeding_unsafe": true,
+            "drug_interactions": [
+                "estrogen_therapy",
+                "birth_control"
+            ],
+            "conditions_caution": [
+                "hormone_sensitive_conditions"
+            ],
+            "side_effects": [
+                "headache",
+                "nausea"
+            ],
+            "notes": "Derived from cruciferous vegetables. Monitor estrogen levels."
+        },
+        "zinc": {
+            "max_daily_dose_mg": 40,
+            "pregnancy_unsafe": false,
+            "breastfeeding_unsafe": false,
+            "drug_interactions": [
+                "antibiotics",
+                "penicillamine"
+            ],
+            "conditions_caution": [
+                "copper_deficiency"
+            ],
+            "side_effects": [
+                "nausea",
+                "metallic_taste"
+            ],
+            "notes": "Long-term high dose depletes copper. Take with food."
+        },
+        "vitamin_D": {
+            "max_daily_dose_IU": 4000,
+            "pregnancy_unsafe": false,
+            "breastfeeding_unsafe": false,
+            "drug_interactions": [
+                "steroids",
+                "weight_loss_drugs"
+            ],
+            "conditions_caution": [
+                "hypercalcemia",
+                "kidney_disease"
+            ],
+            "side_effects": [
+                "rare at normal doses"
+            ],
+            "notes": "Test levels before high-dose supplementation."
+        },
+        "magnesium": {
+            "max_daily_dose_mg": 350,
+            "pregnancy_unsafe": false,
+            "breastfeeding_unsafe": false,
+            "drug_interactions": [
+                "antibiotics",
+                "bisphosphonates"
+            ],
+            "conditions_caution": [
+                "kidney_disease",
+                "heart_block"
+            ],
+            "side_effects": [
+                "diarrhea",
+                "GI upset"
+            ],
+            "notes": "Glycinate or citrate forms best absorbed."
+        },
+        "omega_3": {
+            "max_daily_dose_g": 3,
+            "pregnancy_unsafe": false,
+            "breastfeeding_unsafe": false,
+            "drug_interactions": [
+                "blood_thinners"
+            ],
+            "conditions_caution": [
+                "bleeding_disorders",
+                "fish_allergy"
+            ],
+            "side_effects": [
+                "fish_burps",
+                "GI upset"
+            ],
+            "notes": "EPA+DHA combined. Check for purity/contaminants."
+        },
+        "probiotics": {
+            "max_daily_dose_billion_CFU": 50,
+            "pregnancy_unsafe": false,
+            "breastfeeding_unsafe": false,
+            "drug_interactions": [
+                "immunosuppressants"
+            ],
+            "conditions_caution": [
+                "severely_compromised_immune",
+                "SIBO"
+            ],
+            "side_effects": [
+                "bloating",
+                "gas initially"
+            ],
+            "notes": "Strain-specific benefits. Start low, increase gradually."
+        },
+        "inositol": {
+            "max_daily_dose_g": 4,
+            "pregnancy_unsafe": false,
+            "breastfeeding_unsafe": false,
+            "drug_interactions": [
+                "lithium"
+            ],
+            "conditions_caution": [
+                "bipolar_disorder"
+            ],
+            "side_effects": [
+                "GI upset",
+                "nausea"
+            ],
+            "notes": "Myo-inositol:D-chiro ratio 40:1 for PCOS."
+        },
+        "chromium": {
+            "max_daily_dose_mcg": 1000,
+            "pregnancy_unsafe": false,
+            "breastfeeding_unsafe": false,
+            "drug_interactions": [
+                "insulin",
+                "diabetes_medications",
+                "levothyroxine"
+            ],
+            "conditions_caution": [
+                "diabetes",
+                "kidney_disease",
+                "liver_disease"
+            ],
+            "side_effects": [
+                "headache",
+                "insomnia"
+            ],
+            "notes": "Chromium picolinate form. Monitor blood sugar if diabetic."
+        },
+        "turmeric_curcumin": {
+            "max_daily_dose_mg": 3000,
+            "pregnancy_unsafe": false,
+            "breastfeeding_unsafe": false,
+            "drug_interactions": [
+                "blood_thinners",
+                "diabetes_medications",
+                "antacids"
+            ],
+            "conditions_caution": [
+                "gallstones",
+                "bleeding_disorders"
+            ],
+            "side_effects": [
+                "GI upset",
+                "diarrhea"
+            ],
+            "notes": "Combine with black pepper for absorption. Avoid before surgery."
+        },
+        "neem": {
+            "max_daily_dose_mg": 1000,
+            "pregnancy_unsafe": true,
+            "breastfeeding_unsafe": true,
+            "drug_interactions": [
+                "immunosuppressants",
+                "diabetes_medications"
+            ],
+            "conditions_caution": [
+                "autoimmune_conditions",
+                "infertility_concerns"
+            ],
+            "side_effects": [
+                "nausea",
+                "vomiting"
+            ],
+            "notes": "Not for long-term use. Avoid if trying to conceive."
+        },
+        "moringa": {
+            "max_daily_dose_g": 6,
+            "pregnancy_unsafe": false,
+            "breastfeeding_unsafe": false,
+            "drug_interactions": [
+                "diabetes_medications",
+                "blood_pressure_medications"
+            ],
+            "conditions_caution": [
+                "hypoglycemia",
+                "hypotension"
+            ],
+            "side_effects": [
+                "GI upset",
+                "diarrhea"
+            ],
+            "notes": "Generally well-tolerated. Start with small doses."
+        },
+        "spearmint": {
+            "max_daily_dose_cups": 2,
+            "pregnancy_unsafe": false,
+            "breastfeeding_unsafe": false,
+            "drug_interactions": [],
+            "conditions_caution": [
+                "kidney_disease"
+            ],
+            "side_effects": [
+                "rare"
+            ],
+            "notes": "Anti-androgenic. 2 cups daily for hormonal acne/hirsutism."
+        },
+        "retinoids_topical": {
+            "pregnancy_unsafe": true,
+            "breastfeeding_unsafe": true,
+            "notes": "Prescription-level. Must flag pregnancy risk. Refer to dermatologist."
+        },
+        "salicylic_acid_high_dose": {
+            "max_percentage": 2,
+            "pregnancy_unsafe": true,
+            "notes": "High-dose (>2%) contraindicated in pregnancy. Low-dose wash-off OK."
+        }
+    },
+    "universal_rules": {
+        "always_disclaimer": "This plan is educational and not medical advice. Consult a healthcare provider before starting any supplement regimen.",
+        "pregnancy_warning": "If pregnant, trying to conceive, or breastfeeding, consult healthcare provider before using any herbs or supplements.",
+        "medication_interaction_warning": "If taking prescription medications, check with pharmacist or doctor before adding supplements.",
+        "surgery_warning": "Stop all herbal supplements 2 weeks before any scheduled surgery.",
+        "quality_note": "Choose third-party tested supplements (USP, NSF, ConsumerLab) when available."
+    }
+}

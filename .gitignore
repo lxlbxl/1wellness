@@ -112,6 +112,13 @@ desktop.ini
 *.p12
 *.pfx
 
+# DKIM private key — MUST NOT be committed
+backend/config/dkim/private.key
+backend/config/dkim/*.key
+
+# Cron logs
+backend/logs/
+
 # Database dumps
 *.sql
 !backend/database/schema.sql

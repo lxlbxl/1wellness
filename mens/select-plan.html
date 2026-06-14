@@ -485,6 +485,70 @@
             </div>
         </section>
 
+        <!-- FAQ / Objection Handling -->
+        <section class="max-w-3xl mx-auto py-16 px-4" data-exp="faq-block">
+            <div class="text-center mb-10">
+                <span class="text-terracotta-600 font-medium tracking-widest text-xs uppercase mb-2 block">Common Questions</span>
+                <h2 class="text-3xl font-serif font-bold text-forest-900">Before you decide</h2>
+            </div>
+            <div class="space-y-3" x-data="{ open: null }">
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 0 ? null : 0">
+                        <span>How is Vitale different from testosterone boosters and supplements I've tried?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 0 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 0" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Single-ingredient supplements address one variable. Vitality decline is usually multi-causal — sleep quality, nutrition, stress load, and training all interact. Vitale builds a complete protocol around your specific profile (low energy, low-T markers, burnout, or performance) rather than throwing one ingredient at a complex system.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 1 ? null : 1">
+                        <span>Is this medical advice?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 1 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 1" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        No — Vitale is a wellness protocol, not a medical treatment. If your assessment suggests a hormonal driver, we'll recommend you get labs done before starting a supplement-heavy protocol. We never prescribe or advise on TRT, anabolic compounds, or medications.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 2 ? null : 2">
+                        <span>Is this safe to combine with my current supplements or medication?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 2 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 2" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Your plan flags known interactions for all recommended supplements. As a general rule, always check with your doctor before adding supplements if you're on prescription medication. The Vitale protocol avoids anything with significant interaction risk at standard doses.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 3 ? null : 3">
+                        <span>How quickly will I feel a difference?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 3 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 3" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Most members notice improved sleep and energy within 1–2 weeks of implementing the sleep and nutrition protocol. Libido and mood improvements typically follow at 3–4 weeks. Body composition and strength changes appear at 6–8 weeks. Your vitality score in the portal tracks week-over-week so you can see the trend clearly.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 4 ? null : 4">
+                        <span>What if it doesn't work for me?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 4 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 4" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Email us within 30 days for a full refund — and keep everything you downloaded. No forms, no hoops. We offer this because we're confident in the protocol, and we don't want anyone feeling trapped with something that isn't delivering.
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden border border-sage-100">
+                    <button class="w-full text-left px-6 py-5 flex items-start justify-between gap-4 font-sans font-semibold text-forest-900" @click="open = open === 5 ? null : 5">
+                        <span>Is my payment secure?</span>
+                        <span class="shrink-0 text-terracotta-500 mt-0.5 transition-transform duration-200" :class="open === 5 ? 'rotate-180' : ''">▼</span>
+                    </button>
+                    <div x-show="open === 5" class="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-sage-100 pt-4">
+                        Yes. Checkout is handled by Flutterwave — a PCI-DSS compliant payment processor. Your card details never touch our servers. We accept Visa, Mastercard, and bank transfer. Questions? Email <a href="mailto:support@1wellness.club" class="text-forest-700 underline">support@1wellness.club</a>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="text-center py-12">
             <div
                 class="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-sm border border-gray-100">
@@ -555,20 +619,33 @@
                 async loadPricing() {
                     try {
                         const response = await fetch('../backend/api/get-pricing.php');
+                        if (!response.ok) throw new Error('HTTP ' + response.status);
                         const result = await response.json();
-                        if (result.success && result.data.plans.mens) {
-                            const plans = result.data.plans.mens;
-                            if (plans['90-day']) {
+                        const plans = result.success && result.data && result.data.plans && result.data.plans.mens
+                            ? result.data.plans.mens : null;
+                        if (plans) {
+                            if (plans['90-day'] && plans['90-day'].price) {
                                 this.price = Number(plans['90-day'].price);
                             }
-                            this.calculateValues();
+                            if (plans['30-day'] && Number(plans['30-day'].price) > this.price) {
+                                this.originalPrice = Number(plans['30-day'].price);
+                            } else {
+                                this.calculateValues();
+                            }
+                        } else {
+                            this.useFallbackPricing();
                         }
                     } catch (e) {
-                        this.price = 45;
-                        this.calculateValues();
+                        this.useFallbackPricing();
                     } finally {
                         this.pricingLoaded = true;
                     }
+                },
+
+                useFallbackPricing() {
+                    const cfg = window.CONFIG && window.CONFIG.pricing && window.CONFIG.pricing['mens-vitality-plan'];
+                    this.price = cfg ? cfg.salePrice : 87;
+                    this.originalPrice = cfg ? cfg.originalPrice : 157;
                 },
 
                 loadVitalityType() {

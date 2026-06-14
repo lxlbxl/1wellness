@@ -1,0 +1,125 @@
+{
+    "country": "Serbia",
+    "country_code": "RS",
+    "climate_zone": "continental",
+    "measurement_system": "metric",
+    "staple_foods": [
+        "whole-grain bread",
+        "beans (pasulj)",
+        "cabbage",
+        "peppers",
+        "yogurt",
+        "kajmak",
+        "plums",
+        "walnuts",
+        "cornmeal (proja)",
+        "potatoes",
+        "wheat"
+    ],
+    "common_proteins": [
+        "chicken",
+        "pork",
+        "freshwater fish",
+        "eggs",
+        "legumes",
+        "lamb",
+        "beef",
+        "cottage cheese (sitni sir)"
+    ],
+    "vegetables": [
+        "cabbage (kupus)",
+        "peppers (paprika)",
+        "tomatoes (paradajz)",
+        "onions (crni luk)",
+        "garlic (beli luk)",
+        "carrots (sargarepa)",
+        "beans (pasulj)",
+        "potatoes (krompir)",
+        "spinach (spanac)",
+        "nettle (kopriva)",
+        "dandelion (maslačak)"
+    ],
+    "fruits": [
+        "apples (jabuke)",
+        "plums (šljive)",
+        "cherries (trešnje)",
+        "raspberries (maline)",
+        "blueberries (borovnice)",
+        "peaches (breskve)",
+        "grapes (grožđe)",
+        "quince (dunja)"
+    ],
+    "fats_and_oils": [
+        "sunflower oil",
+        "pork fat (svinjska mast)",
+        "butter",
+        "walnut oil",
+        "pumpkin seed oil"
+    ],
+    "locally_available_herbs": [
+        {
+            "name": "Nettle",
+            "local_name": "Kopriva",
+            "use": "Anti-inflammatory, mineral-rich, blood purification",
+            "preparation": "Tea from dried leaves, or cooked as vegetable"
+        },
+        {
+            "name": "Chamomile",
+            "local_name": "Kamilica",
+            "use": "Calming, sleep support, digestive",
+            "preparation": "Tea from dried flowers"
+        },
+        {
+            "name": "St John's Wort",
+            "local_name": "Kantarion",
+            "use": "Mood support, mild depression",
+            "preparation": "Tea or tincture",
+            "caution": "MAJOR drug interactions - check medications"
+        },
+        {
+            "name": "Yarrow",
+            "local_name": "Hajdučka trava",
+            "use": "Cycle support, anti-inflammatory",
+            "preparation": "Tea from dried herb"
+        },
+        {
+            "name": "Peppermint",
+            "local_name": "Nana",
+            "use": "Digestive, calming",
+            "preparation": "Fresh or dried tea"
+        },
+        {
+            "name": "Linden",
+            "local_name": "Lipa",
+            "use": "Calming, sleep, fever reduction",
+            "preparation": "Tea from flowers"
+        },
+        {
+            "name": "Dandelion",
+            "local_name": "Maslačak",
+            "use": "Liver support, digestive, diuretic",
+            "preparation": "Root tea, or fresh leaves in salad"
+        }
+    ],
+    "where_to_source": "Green markets (pijaca), apoteka (pharmacies), herbal shops (biljna apoteka), health food stores",
+    "typical_cost_band": "RSD - Serbian Dinar. Herbs affordable at markets and pharmacies.",
+    "dietary_norms": "Pork common. Large dairy presence. Orthodox fasting periods (vegan during Lent). Hearty, seasonal cuisine.",
+    "language_for_local_names": "Serbian",
+    "sample_meals": {
+        "breakfast": [
+            "Proja (cornmeal bread) with yogurt and cheese",
+            "Oatmeal with plums and walnuts",
+            "Eggs with spinach and whole-grain bread"
+        ],
+        "lunch": [
+            "Pasulj (bean soup) with whole-grain bread and salad",
+            "Grilled chicken with roasted peppers and potatoes",
+            "Fish (šaran) with chard and rice"
+        ],
+        "dinner": [
+            "Cabbage rolls (sarma) with lean meat",
+            "Vegetable soup with cottage cheese",
+            "Grilled vegetables with kajmak and bread"
+        ]
+    }
+}

@@ -199,75 +199,83 @@
                             </div>
                         </div>
 
-                        <!-- Step 2: Hormonal Profile -->
+                        <!-- Step 2: Condition-specific profile -->
+                        <?php
+                        $cond = $userCondition ?? 'pcos';
+                        $step2Options = [
+                            'pcos' => [
+                                'label' => 'PCOS Type',
+                                'options' => [
+                                    ['value' => 'Insulin Resistant', 'label' => 'Insulin Resistant', 'sub' => 'Weight gain, fatigue, sugar cravings.'],
+                                    ['value' => 'Adrenal',           'label' => 'Adrenal Driven',    'sub' => 'High stress, anxiety, sleep issues.'],
+                                    ['value' => 'Inflammatory',      'label' => 'Inflammatory',       'sub' => 'Acne, headaches, joint pain.'],
+                                    ['value' => 'Post-Pill',         'label' => 'Post-Pill',          'sub' => 'Symptoms flared after birth control.'],
+                                ],
+                            ],
+                            'acne' => [
+                                'label' => 'Skin Type',
+                                'options' => [
+                                    ['value' => 'Oily',        'label' => 'Oily Skin',        'sub' => 'Prone to excess sebum and shine.'],
+                                    ['value' => 'Combination', 'label' => 'Combination',       'sub' => 'Oily T-zone, normal/dry cheeks.'],
+                                    ['value' => 'Dry',         'label' => 'Dry / Sensitive',   'sub' => 'Easily irritated, flaky patches.'],
+                                    ['value' => 'Normal',      'label' => 'Normal',            'sub' => 'Generally balanced, occasional breakouts.'],
+                                ],
+                            ],
+                            'weight' => [
+                                'label' => 'Activity Level',
+                                'options' => [
+                                    ['value' => 'Sedentary',    'label' => 'Sedentary',      'sub' => 'Desk job, little movement.'],
+                                    ['value' => 'Light',        'label' => 'Lightly Active', 'sub' => 'Light exercise 1-3x/week.'],
+                                    ['value' => 'Moderate',     'label' => 'Moderately Active','sub' => 'Exercise 3-5x/week.'],
+                                    ['value' => 'Active',       'label' => 'Very Active',    'sub' => 'Hard exercise 6-7x/week.'],
+                                ],
+                            ],
+                            'mens' => [
+                                'label' => 'Primary Goal',
+                                'options' => [
+                                    ['value' => 'Energy',      'label' => 'Boost Energy',     'sub' => 'Combat fatigue and sluggishness.'],
+                                    ['value' => 'Hormones',    'label' => 'Hormone Balance',  'sub' => 'Testosterone and vitality support.'],
+                                    ['value' => 'Performance', 'label' => 'Performance',      'sub' => 'Athletic and sexual performance.'],
+                                    ['value' => 'Stress',      'label' => 'Stress & Sleep',   'sub' => 'Better sleep and stress resilience.'],
+                                ],
+                            ],
+                        ];
+                        $s2 = $step2Options[$cond] ?? $step2Options['pcos'];
+                        ?>
                         <div class="boarding-step hidden space-y-8 animate-fade-in-up" data-step="2">
                             <div class="space-y-4">
-                                <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">PCOS
-                                    Type</label>
-                                <div class="grid grid-cols-1 gap-4">
-                                    <label
-                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
-                                        <input type="radio" name="pcos_type" value="Insulin Resistant" class="hidden"
-                                            required>
+                                <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest"><?php echo htmlspecialchars($s2['label']); ?></label>
+                                <div class="grid grid-cols-1 gap-3">
+                                    <?php foreach ($s2['options'] as $idx => $opt): ?>
+                                    <label class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
+                                        <input type="radio" name="condition_subtype" value="<?php echo htmlspecialchars($opt['value']); ?>"
+                                            class="hidden" <?php echo $idx === 0 ? 'checked' : ''; ?>>
                                         <div class="flex-1">
-                                            <div class="font-bold text-sage-500">Insulin Resistant</div>
-                                            <div class="text-[10px] text-sage-400 leading-tight">Weight gain, fatigue,
-                                                sugar cravings.</div>
+                                            <div class="font-bold text-sage-500"><?php echo htmlspecialchars($opt['label']); ?></div>
+                                            <div class="text-[10px] text-sage-400 leading-tight"><?php echo htmlspecialchars($opt['sub']); ?></div>
                                         </div>
-                                        <i data-lucide="check-circle-2"
-                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
+                                        <i data-lucide="check-circle-2" class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
                                     </label>
-                                    <label
-                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
-                                        <input type="radio" name="pcos_type" value="Adrenal" class="hidden">
-                                        <div class="flex-1">
-                                            <div class="font-bold text-sage-500">Adrenal Driven</div>
-                                            <div class="text-[10px] text-sage-400 leading-tight">High stress, anxiety,
-                                                sleep issues.</div>
-                                        </div>
-                                        <i data-lucide="check-circle-2"
-                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
-                                    </label>
-                                    <label
-                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
-                                        <input type="radio" name="pcos_type" value="Inflammatory" class="hidden">
-                                        <div class="flex-1">
-                                            <div class="font-bold text-sage-500">Inflammatory</div>
-                                            <div class="text-[10px] text-sage-400 leading-tight">Acne, headaches, joint
-                                                pain.</div>
-                                        </div>
-                                        <i data-lucide="check-circle-2"
-                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
-                                    </label>
-                                    <label
-                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
-                                        <input type="radio" name="pcos_type" value="Post-Pill" class="hidden">
-                                        <div class="flex-1">
-                                            <div class="font-bold text-sage-500">Post-Pill</div>
-                                            <div class="text-[10px] text-sage-400 leading-tight">Symptoms flared after
-                                                birth control.</div>
-                                        </div>
-                                        <i data-lucide="check-circle-2"
-                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
-                                    </label>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
+                            <?php if ($cond === 'pcos'): ?>
                             <div class="grid grid-cols-2 gap-6">
                                 <div class="space-y-2">
-                                    <label
-                                        class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Cycle
-                                        Length</label>
-                                    <input type="number" name="cycle_length" value="28"
-                                        class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
+                                    <label class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Cycle Length</label>
+                                    <input type="number" name="cycle_length" value="28" class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
                                 </div>
                                 <div class="space-y-2">
-                                    <label
-                                        class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Last
-                                        Period</label>
-                                    <input type="date" name="last_period_date"
-                                        class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
+                                    <label class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Last Period</label>
+                                    <input type="date" name="last_period_date" class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
                                 </div>
                             </div>
+                            <?php elseif ($cond === 'weight'): ?>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Goal Weight (kg)</label>
+                                <input type="number" name="goal_weight" step="0.1" placeholder="70.0" class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
+                            </div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Step 3: Diet & Custom -->
