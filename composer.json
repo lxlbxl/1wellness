@@ -30,6 +30,19 @@
     },
     "config": {
         "optimize-autoloader": true,
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        },
+        "audit": {
+            "abandoned": "ignore"
+        },
+        "policy": {
+            "advisories": {
+                "ignore-id": {
+                    "PKSA-y2cr-5h3j-g3ys": "Not exploitable in this environment"
+                }
+            }
+        }
     }
 }
