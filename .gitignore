@@ -123,6 +123,7 @@ backend/logs/
 *.sql
 !backend/database/schema.sql
 !backend/database/*.sql
+!backend/database/migrations/*.sql
 
 # Admin database
 backend/database/data/admin_users.json

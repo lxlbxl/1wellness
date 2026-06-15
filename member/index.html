@@ -7,6 +7,7 @@
     <title>Member Area | 1wellness</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
         rel="stylesheet">
@@ -132,8 +133,7 @@
         <div class="text-center px-6">
             <h2 class="font-serif text-4xl text-sage-500 mb-4 animate-fade-in-up">Sculpting Your Protocol</h2>
             <p class="text-sage-400 max-w-sm mx-auto leading-relaxed animate-fade-in-up" style="animation-delay: 0.2s">
-                Our AI is weaving together your cycle phase, PCOS type, and health metrics into a personalized 7-day
-                plan.
+                Our AI is weaving together your health data and wellness profile into a personalised protocol.
             </p>
             <div id="genProgress" class="mt-8 flex justify-center gap-2">
                 <!-- Dots -->
@@ -292,8 +292,7 @@
                             </div>
                             <div class="mt-12 flex items-center justify-between">
                                 <span id="conditionTag"
-                                    class="text-xs font-bold uppercase tracking-widest bg-white/10 px-3 py-1.5 rounded-full">PCOS
-                                    Support</span>
+                                    class="text-xs font-bold uppercase tracking-widest bg-white/10 px-3 py-1.5 rounded-full">My Protocol</span>
                                 <i data-lucide="chevron-right"
                                     class="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
                             </div>
@@ -330,13 +329,40 @@
 
                     </div>
 
+                    <!-- Progress Trend Chart -->
+                    <div class="bg-white rounded-[3rem] p-8 md:p-12 border border-sage-100 shadow-sm" id="progressChartSection">
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 class="font-serif text-3xl" id="progressChartTitle">Your Progress</h2>
+                                <p class="text-sage-400 mt-1 text-sm" id="progressChartSubtitle">Last 14 days — logging more gives better insights</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="setProgressRange(14)" id="range-14"
+                                    class="px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest bg-sage-500 text-white transition-all">14d</button>
+                                <button onclick="setProgressRange(30)" id="range-30"
+                                    class="px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest bg-sage-50 text-sage-400 hover:bg-sage-100 transition-all">30d</button>
+                            </div>
+                        </div>
+                        <div class="relative h-48">
+                            <canvas id="progressChart"></canvas>
+                            <div id="progressChartEmpty" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center">
+                                <i data-lucide="trending-up" class="w-10 h-10 text-sage-200 mb-3"></i>
+                                <p class="text-sage-400 text-sm font-medium">Start logging daily metrics to see your trend here.</p>
+                                <button onclick="openTrackerModal()" class="mt-4 px-5 py-2 bg-sage-500 text-white rounded-xl text-xs font-bold uppercase tracking-widest">Log Today</button>
+                            </div>
+                        </div>
+                        <div class="mt-6 grid grid-cols-3 gap-4" id="progressStatGrid">
+                            <!-- Stats populated by JS -->
+                        </div>
+                    </div>
+
                     <!-- Meal Preview -->
                     <div
                         class="bg-white rounded-[3rem] p-8 md:p-12 border border-sage-100 shadow-sm transition-all duration-500">
                         <div class="flex items-center justify-between mb-8">
                             <div>
                                 <h2 class="font-serif text-3xl">Nourishment Plan</h2>
-                                <p class="text-sage-400 mt-1">Tailored for your PCOS type</p>
+                                <p id="nourishments-subtitle" class="text-sage-400 mt-1">Tailored for your wellness protocol</p>
                             </div>
                             <button onclick="fetchData()"
                                 class="p-4 rounded-2xl hover:bg-sage-50 text-sage-400 transition-colors">
@@ -428,8 +454,7 @@
                                         <span id="morningTeaTime" class="text-xs text-sage-400">10:00 AM - 10:30
                                             AM</span>
                                     </div>
-                                    <h4 id="morningTeaName" class="font-serif text-xl text-sage-600 mb-2">PCOS Morning
-                                        Harmony Blend</h4>
+                                    <h4 id="morningTeaName" class="font-serif text-xl text-sage-600 mb-2">Morning Harmony Blend</h4>
                                     <p id="morningTeaBenefits" class="text-sm text-sage-400 mb-4">Supports insulin
                                         sensitivity and hormonal balance</p>
                                     <div class="flex items-center justify-between">
@@ -438,7 +463,7 @@
                                             <i data-lucide="check" class="w-3 h-3"></i>
                                             Done
                                         </button>
-                                        <a href="#" onclick="openHerbalShop('pcos_morning_blend')"
+                                        <a href="#" id="morningTeaBuyBtn" onclick="openHerbalShop('morning_blend')"
                                             class="text-xs text-amber-600 hover:underline font-medium flex items-center gap-1">
                                             <i data-lucide="shopping-bag" class="w-3 h-3"></i>
                                             Buy Now
@@ -454,8 +479,7 @@
                                             Ritual</span>
                                         <span id="eveningTeaTime" class="text-xs text-sage-400">8:30 PM - 9:00 PM</span>
                                     </div>
-                                    <h4 id="eveningTeaName" class="font-serif text-xl text-sage-600 mb-2">PCOS Evening
-                                        Calm Blend</h4>
+                                    <h4 id="eveningTeaName" class="font-serif text-xl text-sage-600 mb-2">Evening Calm Blend</h4>
                                     <p id="eveningTeaBenefits" class="text-sm text-sage-400 mb-4">Reduces cortisol and
                                         promotes restful sleep</p>
                                     <div class="flex items-center justify-between">
@@ -464,7 +488,7 @@
                                             <i data-lucide="check" class="w-3 h-3"></i>
                                             Done
                                         </button>
-                                        <a href="#" onclick="openHerbalShop('pcos_evening_blend')"
+                                        <a href="#" id="eveningTeaBuyBtn" onclick="openHerbalShop('evening_blend')"
                                             class="text-xs text-amber-600 hover:underline font-medium flex items-center gap-1">
                                             <i data-lucide="shopping-bag" class="w-3 h-3"></i>
                                             Buy Now
@@ -556,14 +580,13 @@
                                     <input type="number" name="age" id="body_age"
                                         class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium">
                                 </div>
-                                <div class="space-y-2">
+                                <div class="space-y-2" id="pcos-type-row">
                                     <label
-                                        class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">PCOS
-                                        Type</label>
+                                        class="text-[10px] font-bold text-sage-300 uppercase tracking-widest pl-1">PCOS Type</label>
                                     <select name="pcos_type" id="body_pcos_type"
                                         class="w-full bg-sage-50/50 border border-sage-50 rounded-2xl p-4 outline-none focus:border-sage-300 transition-all text-sage-600 font-medium appearance-none">
                                         <option value="Insulin Resistant">Insulin Resistant</option>
-                                        <option value="Inlammatory">Inflammatory</option>
+                                        <option value="Inflammatory">Inflammatory</option>
                                         <option value="Adrenal">Adrenal</option>
                                         <option value="Post-Pill">Post-Pill</option>
                                         <option value="General">General</option>
@@ -640,6 +663,10 @@
                             <button onclick="switchProfileTab('subscription')" id="tab-subscription"
                                 class="profile-tab text-[10px] font-bold uppercase tracking-[0.2em] pb-4 border-b-2 border-transparent text-sage-300 hover:text-sage-400 transition-all whitespace-nowrap">
                                 Subscription & Renewal
+                            </button>
+                            <button onclick="switchProfileTab('manage')" id="tab-manage"
+                                class="profile-tab text-[10px] font-bold uppercase tracking-[0.2em] pb-4 border-b-2 border-transparent text-sage-300 hover:text-sage-400 transition-all whitespace-nowrap">
+                                Manage & Refer
                             </button>
                         </div>
 
@@ -733,7 +760,7 @@
                                         </div>
                                         <p class="text-xs text-sage-400 leading-relaxed px-2">
                                             Your subscription unlocks daily tailored meal plans, workout protocols,
-                                            and real-time cycle tracking tailored to your PCOS type.
+                                            and real-time progress tracking personalised to your condition.
                                         </p>
                                     </div>
 
@@ -754,6 +781,103 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Manage & Refer Tab Content -->
+                            <div id="content-manage" class="profile-content hidden space-y-10 text-left">
+
+                                <!-- Referral Section -->
+                                <div class="space-y-4">
+                                    <h3 class="text-[10px] font-bold text-sage-300 uppercase tracking-[0.2em]">Refer a Friend</h3>
+                                    <div class="p-8 bg-sage-50/50 rounded-[2rem] border border-sage-50 space-y-6" id="referralPanel">
+                                        <div class="animate-pulse space-y-3">
+                                            <div class="h-4 bg-sage-100 rounded w-1/2"></div>
+                                            <div class="h-10 bg-sage-100 rounded-2xl"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cancellation Section -->
+                                <div class="space-y-4">
+                                    <h3 class="text-[10px] font-bold text-sage-300 uppercase tracking-[0.2em]">Manage Subscription</h3>
+
+                                    <!-- Step 0: Cancel button -->
+                                    <div id="cancelStep0" class="p-8 bg-sage-50/50 rounded-[2rem] border border-sage-50 space-y-4">
+                                        <p class="text-sm text-sage-400 leading-relaxed">Need to cancel? We offer a <strong class="text-sage-500">30-day money-back guarantee</strong>. If you're within 30 days of your purchase, you can also request a full refund.</p>
+                                        <button type="button" onclick="cancelStep1()"
+                                            class="text-xs font-bold text-coral-400 hover:underline uppercase tracking-widest transition-colors">
+                                            Cancel My Subscription
+                                        </button>
+                                    </div>
+
+                                    <!-- Step 1: Save offer -->
+                                    <div id="cancelStep1" class="hidden p-8 bg-white rounded-[2rem] border border-sage-100 shadow-sm space-y-6">
+                                        <div class="flex items-start gap-4">
+                                            <div class="w-12 h-12 bg-coral-400/10 rounded-2xl flex items-center justify-center text-coral-400 shrink-0">
+                                                <i data-lucide="heart" class="w-6 h-6"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-serif text-xl text-sage-600 mb-1">Before you go…</h4>
+                                                <p class="text-sm text-sage-400 leading-relaxed">Cancelling now means losing access to your personalised plans, progress tracking, and herbal protocols. Your journey data will be preserved for 90 days.</p>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <p class="text-[10px] font-bold text-sage-300 uppercase tracking-widest">Why are you leaving?</p>
+                                            <div class="space-y-2" id="cancelReasons">
+                                                <label class="flex items-center gap-3 p-4 bg-sage-50 rounded-2xl cursor-pointer hover:bg-sage-100 transition-colors">
+                                                    <input type="radio" name="cancel_reason" value="too_expensive" class="text-sage-500"> <span class="text-sm text-sage-500">It's too expensive</span>
+                                                </label>
+                                                <label class="flex items-center gap-3 p-4 bg-sage-50 rounded-2xl cursor-pointer hover:bg-sage-100 transition-colors">
+                                                    <input type="radio" name="cancel_reason" value="not_seeing_results" class="text-sage-500"> <span class="text-sm text-sage-500">I'm not seeing results yet</span>
+                                                </label>
+                                                <label class="flex items-center gap-3 p-4 bg-sage-50 rounded-2xl cursor-pointer hover:bg-sage-100 transition-colors">
+                                                    <input type="radio" name="cancel_reason" value="too_busy" class="text-sage-500"> <span class="text-sm text-sage-500">I don't have time to use it</span>
+                                                </label>
+                                                <label class="flex items-center gap-3 p-4 bg-sage-50 rounded-2xl cursor-pointer hover:bg-sage-100 transition-colors">
+                                                    <input type="radio" name="cancel_reason" value="other" class="text-sage-500"> <span class="text-sm text-sage-500">Other reason</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-4">
+                                            <button type="button" onclick="cancelStep0()"
+                                                class="flex-1 py-3 border border-sage-100 rounded-2xl text-sm text-sage-400 hover:border-sage-300 transition-all">
+                                                Keep My Plan
+                                            </button>
+                                            <button type="button" onclick="cancelStep2()"
+                                                class="flex-1 py-3 bg-coral-400 text-white rounded-2xl text-sm font-bold hover:shadow-lg transition-all">
+                                                Continue to Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 2: Final confirm -->
+                                    <div id="cancelStep2" class="hidden p-8 bg-white rounded-[2rem] border border-red-100 shadow-sm space-y-6">
+                                        <h4 class="font-serif text-xl text-sage-600">Confirm Cancellation</h4>
+                                        <p class="text-sm text-sage-400 leading-relaxed">Your access will remain active until the end of your current period. After that, no future charges will occur.</p>
+                                        <div id="refundEligibility" class="p-4 bg-green-50 rounded-2xl border border-green-100 text-sm text-green-700 hidden">
+                                            <strong>You're within the 30-day refund window.</strong> Would you also like to request a refund?
+                                            <button type="button" onclick="requestRefund()" class="block mt-2 text-xs font-bold underline hover:no-underline">Request Refund Instead</button>
+                                        </div>
+                                        <div id="cancelMsg" class="hidden text-sm text-center py-2 rounded-xl"></div>
+                                        <div class="flex gap-4">
+                                            <button type="button" onclick="cancelStep0()"
+                                                class="flex-1 py-3 border border-sage-100 rounded-2xl text-sm text-sage-400 hover:border-sage-300 transition-all">
+                                                Nevermind
+                                            </button>
+                                            <button type="button" id="confirmCancelBtn" onclick="confirmCancel()"
+                                                class="flex-1 py-3 bg-red-500 text-white rounded-2xl text-sm font-bold hover:shadow-lg transition-all">
+                                                Yes, Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 3: Cancelled -->
+                                    <div id="cancelStep3" class="hidden p-8 bg-sage-50/50 rounded-[2rem] border border-sage-100 text-center space-y-3">
+                                        <p class="font-serif text-xl text-sage-600">Subscription Cancelled</p>
+                                        <p class="text-sm text-sage-400">Your access remains active until the plan ends. We hope to see you again.</p>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <!-- Bottom Actions (Only for Personal Tab) -->
@@ -783,7 +907,7 @@
             </button>
             <div class="text-center mb-10">
                 <h2 class="font-serif text-4xl text-sage-500 mb-4">Extend Your Protocol</h2>
-                <p class="text-sage-400">Select a plan to continue your PCOS transformation journey.</p>
+                <p id="renewalModalSubtitle" class="text-sage-400">Select a plan to continue your health transformation journey.</p>
             </div>
             <div id="renewalPlans" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                 <!-- Dynamic Plans -->
@@ -887,22 +1011,19 @@
                     const p = userData.user;
                     const b = userData.body;
 
-                    const pcosType = (p.pcos_type || "").toLowerCase();
+                    const condition = (p.condition_type || 'pcos').toLowerCase();
                     const allergies = (b.allergies || "").toLowerCase();
                     const prefs = (b.dietary_preferences || "").toLowerCase();
 
-                    const isProfileIncomplete =
-                        !pcosType || pcosType === 'general' || pcosType === 'pcos' || pcosType === 'unknown' ||
-                        (!allergies && allergies !== '') || // Allow empty sring if that's how we save 'no allergies', but wait, logic above says !allergies. 
-                        // Let's simplify. If they have 'none', it is VALID. 
-                        // So we only fail if it is falsy AND not 'none'? 
-                        // No, the original logic was: is incomplete if (!allergies OR allergies === 'none').
-                        // We want: is incomplete if (!allergies). If it is 'none', it is complete.
-                        !allergies ||
-                        !prefs;
+                    // PCOS users also need a sub-type; other conditions don't require it
+                    const needsSubType = condition === 'pcos';
+                    const conditionValue = (p.condition_value || "").toLowerCase();
+                    const subTypeIncomplete = needsSubType && (!conditionValue || conditionValue === 'general');
+
+                    const isProfileIncomplete = subTypeIncomplete || !allergies || !prefs;
 
                     if (isProfileIncomplete) {
-                        console.log("Profile incomplete, showing modal", { pcosType, allergies, prefs });
+                        populateOnboardingStep2(condition);
                         document.getElementById('onboardingModal').classList.remove('hidden');
                         lucide.createIcons();
                         return;
@@ -949,14 +1070,25 @@
 
         function renderBodyForm() {
             const { body, user } = userData;
-            document.getElementById('body_weight').value = body.weight;
-            document.getElementById('body_height').value = body.height;
-            document.getElementById('body_age').value = user.age;
-            document.getElementById('body_pcos_type').value = user.pcos_type;
-            document.getElementById('body_cycle_length').value = body.cycle_length;
-            document.getElementById('body_last_period').value = body.last_period_date;
-            document.getElementById('body_allergies').value = body.allergies;
-            document.getElementById('body_diet_prefs').value = body.dietary_preferences;
+            document.getElementById('body_weight').value = body.weight || '';
+            document.getElementById('body_height').value = body.height || '';
+            document.getElementById('body_age').value = user.age || '';
+            document.getElementById('body_cycle_length').value = body.cycle_length || 28;
+            document.getElementById('body_last_period').value = body.last_period_date || '';
+            document.getElementById('body_allergies').value = body.allergies || '';
+            document.getElementById('body_diet_prefs').value = body.dietary_preferences || '';
+
+            // Show PCOS type selector only for PCOS users
+            const condition = (user.condition_type || 'pcos').toLowerCase();
+            const pcosRow = document.getElementById('pcos-type-row');
+            if (pcosRow) {
+                if (condition === 'pcos') {
+                    pcosRow.classList.remove('hidden');
+                    document.getElementById('body_pcos_type').value = user.condition_value || 'General';
+                } else {
+                    pcosRow.classList.add('hidden');
+                }
+            }
         }
 
         async function saveBodyData(e) {
@@ -1036,6 +1168,138 @@
                 }
             }
             lucide.createIcons();
+            if (tab === 'manage') loadReferralSection();
+        }
+
+        // ── Referral + Cancel/Refund functions ──────────────────────────────
+
+        async function loadReferralSection() {
+            const panel = document.getElementById('referralPanel');
+            if (!panel || panel.dataset.loaded) return;
+            try {
+                const res  = await fetch('/backend/api/referral.php?action=get_link', { credentials: 'include' });
+                const data = await res.json();
+                if (!data.success) throw new Error();
+                panel.dataset.loaded = '1';
+                panel.innerHTML = `
+                    <div>
+                        <p class="text-[10px] font-bold text-sage-300 uppercase tracking-widest mb-3">Your Referral Link</p>
+                        <p class="text-xs text-sage-400 mb-4 leading-relaxed">Share your personalised link. When a friend signs up through it, you'll both benefit.</p>
+                        <div class="flex gap-2">
+                            <input id="referralLinkInput" value="${data.link}" readonly
+                                class="flex-1 bg-sage-50 border border-sage-100 rounded-2xl px-4 py-3 text-xs text-sage-500 outline-none select-all">
+                            <button type="button" onclick="copyReferralLink()" id="copyRefBtn"
+                                class="px-5 py-3 bg-sage-500 text-white rounded-2xl text-xs font-bold hover:shadow-lg transition-all shrink-0">
+                                Copy
+                            </button>
+                        </div>
+                        <a href="https://wa.me/?text=${encodeURIComponent(data.share_message)}" target="_blank" rel="noopener"
+                            class="mt-3 flex items-center justify-center gap-2 w-full py-3 bg-green-500 text-white rounded-2xl text-xs font-bold hover:shadow-lg transition-all">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            Share on WhatsApp
+                        </a>
+                    </div>
+                    <div class="pt-6 border-t border-sage-100 grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <p class="text-2xl font-serif text-sage-600">${data.stats.referred}</p>
+                            <p class="text-[10px] text-sage-300 uppercase tracking-widest mt-1">Referred</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-serif text-sage-600">${data.stats.converted}</p>
+                            <p class="text-[10px] text-sage-300 uppercase tracking-widest mt-1">Converted</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-serif text-sage-600">${data.stats.rewards}</p>
+                            <p class="text-[10px] text-sage-300 uppercase tracking-widest mt-1">Rewards</p>
+                        </div>
+                    </div>`;
+            } catch (e) {
+                panel.innerHTML = '<p class="text-sm text-sage-300">Unable to load referral link. Please try again later.</p>';
+            }
+        }
+
+        function copyReferralLink() {
+            const input = document.getElementById('referralLinkInput');
+            if (!input) return;
+            input.select();
+            document.execCommand('copy');
+            const btn = document.getElementById('copyRefBtn');
+            if (btn) { btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = 'Copy'; }, 2000); }
+        }
+
+        function cancelStep0() {
+            ['cancelStep1','cancelStep2','cancelStep3'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById('cancelStep0').classList.remove('hidden');
+        }
+
+        function cancelStep1() {
+            document.getElementById('cancelStep0').classList.add('hidden');
+            document.getElementById('cancelStep1').classList.remove('hidden');
+        }
+
+        async function cancelStep2() {
+            const reason = document.querySelector('input[name="cancel_reason"]:checked');
+            if (!reason) { alert('Please tell us why you\'re leaving.'); return; }
+
+            document.getElementById('cancelStep1').classList.add('hidden');
+            document.getElementById('cancelStep2').classList.remove('hidden');
+
+            // Check 30-day refund eligibility
+            const user = userData && userData.user;
+            if (user && user.plan_start_date) {
+                const daysSince = (Date.now() - new Date(user.plan_start_date).getTime()) / 86400000;
+                if (daysSince <= 30) {
+                    document.getElementById('refundEligibility').classList.remove('hidden');
+                }
+            }
+        }
+
+        async function confirmCancel() {
+            const reason  = document.querySelector('input[name="cancel_reason"]:checked');
+            const btn     = document.getElementById('confirmCancelBtn');
+            const msg     = document.getElementById('cancelMsg');
+            btn.disabled  = true; btn.textContent = 'Cancelling…';
+
+            try {
+                const fd = new FormData();
+                fd.append('action', 'cancel_subscription');
+                if (reason) fd.append('reason', reason.value);
+                const res  = await fetch('/member/api/member_actions.php', { method: 'POST', body: fd, credentials: 'include' });
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('cancelStep2').classList.add('hidden');
+                    document.getElementById('cancelStep3').classList.remove('hidden');
+                } else {
+                    msg.textContent = data.error || 'Unable to cancel at this time. Please contact support.';
+                    msg.className   = 'text-sm text-center py-2 rounded-xl bg-red-50 text-red-700';
+                    msg.classList.remove('hidden');
+                    btn.disabled = false; btn.textContent = 'Yes, Cancel';
+                }
+            } catch (e) {
+                msg.textContent = 'Network error. Please try again.';
+                msg.className   = 'text-sm text-center py-2 rounded-xl bg-red-50 text-red-700';
+                msg.classList.remove('hidden');
+                btn.disabled = false; btn.textContent = 'Yes, Cancel';
+            }
+        }
+
+        async function requestRefund() {
+            if (!confirm('Request a full refund? Our team will process it within 3-5 business days.')) return;
+            try {
+                const fd = new FormData();
+                fd.append('action', 'refund_request');
+                const res  = await fetch('/member/api/member_actions.php', { method: 'POST', body: fd, credentials: 'include' });
+                const data = await res.json();
+                const el   = document.getElementById('refundEligibility');
+                if (data.success) {
+                    el.innerHTML = '<strong class="text-green-700">Refund request submitted.</strong> Our team will process it within 3-5 business days.';
+                } else {
+                    el.innerHTML = '<span class="text-red-700">' + (data.error || 'Unable to submit refund request. Please contact support.') + '</span>';
+                }
+            } catch (e) {
+                document.getElementById('refundEligibility').innerHTML = '<span class="text-red-700">Network error. Please contact support.</span>';
+            }
         }
 
         async function saveProfile(e) {
@@ -1207,7 +1471,13 @@
 
             document.getElementById('cyclePhase').textContent = cycle.phase || cycle.focus || pl.cycle;
             document.getElementById('cycleDay').textContent = cycle.day ? `Day ${cycle.day} of cycle` : cycle.focus || pl.cycle;
-            document.getElementById('conditionTag').textContent = (user.condition_value || user.condition_label || 'PCOS') + ' ' + (user.condition_label || '');
+            document.getElementById('conditionTag').textContent = user.condition_value || user.condition_label || 'My Protocol';
+
+            // Update nourishment subtitle with sub-brand
+            const subBrandLabels = { pcos: 'CycleSync', acne: 'GlowClear', weight: 'LeanFlow', mens: 'Vitale' };
+            const subBrand = subBrandLabels[condition] || 'Wellness';
+            const nSubtitle = document.getElementById('nourishments-subtitle');
+            if (nSubtitle) nSubtitle.textContent = 'Tailored for your ' + subBrand + ' protocol';
             // Update plan title
             const planTitleEl = document.getElementById('planTitle');
             if (planTitleEl) {
@@ -1276,15 +1546,35 @@
 
             // Update herbal tea section if plan includes it
             const herbalTea = plan.herbal_tea || {};
+            // Update buy-button hrefs to use condition-specific product keys
+            const morningBundle = condition + '_morning_blend';
+            const eveningBundle = condition + '_evening_blend';
+            const morningBuyBtn = document.getElementById('morningTeaBuyBtn');
+            const eveningBuyBtn = document.getElementById('eveningTeaBuyBtn');
+            if (morningBuyBtn) morningBuyBtn.setAttribute('onclick', `openHerbalShop('${morningBundle}')`);
+            if (eveningBuyBtn) eveningBuyBtn.setAttribute('onclick', `openHerbalShop('${eveningBundle}')`);
+
+            const conditionTeaNames = {
+                pcos:   { morning: 'Morning Harmony Blend',  evening: 'Evening Calm Blend' },
+                acne:   { morning: 'Anti-Inflammatory Blend', evening: 'Skin-Calm Blend' },
+                weight: { morning: 'Metabolic Morning Blend', evening: 'Digest & Rest Blend' },
+                mens:   { morning: 'Vitality Boost Blend',    evening: 'Recovery Night Blend' },
+            };
+            const teaNames = conditionTeaNames[condition] || conditionTeaNames.pcos;
+
             if (herbalTea.morning) {
-                document.getElementById('morningTeaName').textContent = herbalTea.morning.name || 'PCOS Morning Harmony Blend';
-                document.getElementById('morningTeaBenefits').textContent = herbalTea.morning.benefits || 'Supports insulin sensitivity and hormonal balance';
+                document.getElementById('morningTeaName').textContent = herbalTea.morning.name || teaNames.morning;
+                document.getElementById('morningTeaBenefits').textContent = herbalTea.morning.benefits || 'Supports your morning wellness ritual';
                 document.getElementById('morningTeaTime').textContent = `${herbalTea.morning.time_start || '10:00'} - ${herbalTea.morning.time_end || '10:30'}`;
+            } else {
+                document.getElementById('morningTeaName').textContent = teaNames.morning;
             }
             if (herbalTea.evening) {
-                document.getElementById('eveningTeaName').textContent = herbalTea.evening.name || 'PCOS Evening Calm Blend';
-                document.getElementById('eveningTeaBenefits').textContent = herbalTea.evening.benefits || 'Reduces cortisol and promotes restful sleep';
+                document.getElementById('eveningTeaName').textContent = herbalTea.evening.name || teaNames.evening;
+                document.getElementById('eveningTeaBenefits').textContent = herbalTea.evening.benefits || 'Promotes relaxation and recovery';
                 document.getElementById('eveningTeaTime').textContent = `${herbalTea.evening.time_start || '20:30'} - ${herbalTea.evening.time_end || '21:00'}`;
+            } else {
+                document.getElementById('eveningTeaName').textContent = teaNames.evening;
             }
 
             // Update meal preview with time ranges
@@ -1315,6 +1605,9 @@
 
             // Check and update activity button states based on time windows
             updateActivityButtonStates();
+
+            // Render progress trend chart
+            renderProgressChart();
 
             lucide.createIcons();
         }
@@ -1640,15 +1933,10 @@
 
         function openHerbalShop(productKey) {
             event.preventDefault();
-            // Open product modal or redirect to shop
             const shopUrl = `https://1wellness.club/shop?product=${productKey}`;
-
-            if (productKey === 'bundle') {
-                // Show bundle offer
-                showNotification('🌿 Herbal Bundle offer - Opening shop...', 'info');
+            if (productKey.includes('bundle')) {
+                showNotification('🌿 Herbal Bundle — Opening shop...', 'info');
             }
-
-            // For now, open in new tab - can be replaced with modal
             window.open(shopUrl, '_blank');
         }
 
@@ -1691,8 +1979,11 @@
 
         function chatWithSpecialist() {
             const userName = document.getElementById('userName')?.textContent || 'Member';
+            const condition = userData?.user?.condition_type || 'pcos';
+            const subBrandLabels = { pcos: 'CycleSync', acne: 'GlowClear', weight: 'LeanFlow', mens: 'Vitale' };
+            const programName = subBrandLabels[condition] || '1wellness';
             const supportNumber = '+2348133149989';
-            const message = encodeURIComponent(`Hi! I'm ${userName} from the 1wellness CycleSync program. I need help with my healing journey.`);
+            const message = encodeURIComponent(`Hi! I'm ${userName} from the 1wellness ${programName} program. I need help with my healing journey.`);
             const whatsappUrl = `https://wa.me/${supportNumber}?text=${message}`;
             window.open(whatsappUrl, '_blank');
         }
@@ -1839,43 +2130,6 @@
         let boardingStep = 1;
         const totalSteps = 3;
 
-        // Pre-fill PCOS type from localStorage if available (from assessment results)
-        function prefillPCOSTypeFromStorage() {
-            const savedPCOSType = localStorage.getItem('1w_pcos_type');
-            if (savedPCOSType) {
-                // Find the radio button with matching value and check it
-                const radios = document.querySelectorAll('input[name="pcos_type"]');
-                radios.forEach(radio => {
-                    if (radio.value === savedPCOSType) {
-                        radio.checked = true;
-                        // Trigger visual update for the label styling
-                        radio.dispatchEvent(new Event('change'));
-                    }
-                });
-                console.log('Pre-filled PCOS type from assessment:', savedPCOSType);
-            }
-        }
-
-        // Call prefill when onboarding modal becomes visible
-        const onboardingObserver = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.target.id === 'onboardingModal' && !mutation.target.classList.contains('hidden')) {
-                    prefillPCOSTypeFromStorage();
-                }
-            });
-        });
-
-        // Start observing once DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('onboardingModal');
-            if (modal) {
-                onboardingObserver.observe(modal, { attributes: true, attributeFilter: ['class'] });
-                // Also prefill immediately if modal is already visible
-                if (!modal.classList.contains('hidden')) {
-                    prefillPCOSTypeFromStorage();
-                }
-            }
-        });
 
         function nextBoardingStep() {
             // Validation
@@ -1954,8 +2208,10 @@
             const progress = (boardingStep / totalSteps) * 100;
             document.getElementById('boardingProgress').style.width = `${progress}% `;
 
-            // Step Titles
-            const titles = ["Vital Metrics", "Hormonal Profile", "Personalized Needs"];
+            // Step Titles (Step 2 is condition-specific)
+            const condition2 = userData?.user?.condition_type || 'pcos';
+            const step2Titles = { pcos: 'Hormonal Profile', acne: 'Skin Profile', weight: 'Metabolic Profile', mens: 'Vitality Profile' };
+            const titles = ["Vital Metrics", step2Titles[condition2] || 'Your Profile', "Personalised Needs"];
             document.getElementById('boardingStepTitle').textContent = titles[boardingStep - 1];
 
             // Button Logic
@@ -2122,6 +2378,239 @@
             document.getElementById('recipeModal').classList.add('hidden');
         }
 
+        // ── Progress trend chart ──────────────────────────────────────────────────
+        let _progressChart = null;
+        let _progressRange = 14;
+
+        const HERO_METRICS = {
+            pcos:   { key: 'energy',    label: 'Energy Level',  unit: '/5',  color: '#2C3E35', higher: true  },
+            acne:   { key: 'breakouts', label: 'Breakout Score',unit: '/5',  color: '#B5534A', higher: false },
+            weight: { key: 'weight_kg', label: 'Weight (kg)',   unit: 'kg',  color: '#2D6A4F', higher: false },
+            mens:   { key: 'energy',    label: 'Energy Level',  unit: '/5',  color: '#1E4D7B', higher: true  },
+        };
+
+        function setProgressRange(days) {
+            _progressRange = days;
+            document.getElementById('range-14').className = days === 14
+                ? 'px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest bg-sage-500 text-white transition-all'
+                : 'px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest bg-sage-50 text-sage-400 hover:bg-sage-100 transition-all';
+            document.getElementById('range-30').className = days === 30
+                ? 'px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest bg-sage-500 text-white transition-all'
+                : 'px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest bg-sage-50 text-sage-400 hover:bg-sage-100 transition-all';
+            renderProgressChart();
+        }
+
+        async function renderProgressChart() {
+            if (!userData) return;
+            const condition = (userData.user.condition_type || 'pcos').toLowerCase();
+            const hero = HERO_METRICS[condition] || HERO_METRICS.pcos;
+
+            const titleEl = document.getElementById('progressChartTitle');
+            const subtitleEl = document.getElementById('progressChartSubtitle');
+            if (titleEl) titleEl.textContent = hero.label + ' Trend';
+            if (subtitleEl) subtitleEl.textContent = 'Last ' + _progressRange + ' days — logging more gives better insights';
+
+            try {
+                const res = await fetch('/backend/api/get-tracker-history.php?days=' + _progressRange + '&metrics=' + hero.key, { credentials: 'include' });
+                const data = await res.json();
+                if (!data.success) return;
+
+                const values  = data.series[hero.key] || [];
+                const dates   = data.dates || [];
+                const hasData = values.some(v => v !== null);
+
+                const emptyEl = document.getElementById('progressChartEmpty');
+                const canvas  = document.getElementById('progressChart');
+                if (!hasData) {
+                    if (emptyEl) emptyEl.classList.remove('hidden');
+                    if (canvas)  canvas.style.opacity = '0';
+                    document.getElementById('progressStatGrid').innerHTML = '';
+                    return;
+                }
+                if (emptyEl) emptyEl.classList.add('hidden');
+                if (canvas)  canvas.style.opacity = '1';
+
+                // Trend-smooth for weight (7-day rolling average) to avoid daily-noise churn
+                let displayValues = values;
+                if (hero.key === 'weight_kg') {
+                    displayValues = values.map((v, i) => {
+                        if (v === null) return null;
+                        const window = values.slice(Math.max(0, i - 3), i + 4).filter(x => x !== null);
+                        return window.length ? window.reduce((a, b) => a + b, 0) / window.length : null;
+                    });
+                }
+
+                const labels = dates.map(d => {
+                    const dt = new Date(d + 'T00:00:00');
+                    return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                });
+
+                if (_progressChart) _progressChart.destroy();
+
+                _progressChart = new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: hero.label,
+                            data: displayValues,
+                            borderColor: hero.color,
+                            backgroundColor: hero.color + '18',
+                            borderWidth: 2.5,
+                            pointRadius: 3,
+                            pointBackgroundColor: hero.color,
+                            fill: true,
+                            tension: 0.4,
+                            spanGaps: true,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: { callbacks: {
+                            label: ctx => ' ' + (ctx.parsed.y !== null ? ctx.parsed.y.toFixed(1) + hero.unit : 'No data')
+                        }}},
+                        scales: {
+                            x: { grid: { display: false }, ticks: { font: { size: 10 }, maxTicksLimit: 7 } },
+                            y: { grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 } }, beginAtZero: hero.key !== 'weight_kg' }
+                        }
+                    }
+                });
+
+                // Stats strip
+                const nonNull = values.filter(v => v !== null);
+                const latest  = [...values].reverse().find(v => v !== null);
+                const avg     = nonNull.length ? nonNull.reduce((a, b) => a + b, 0) / nonNull.length : null;
+                const best    = nonNull.length ? (hero.higher ? Math.max(...nonNull) : Math.min(...nonNull)) : null;
+
+                document.getElementById('progressStatGrid').innerHTML = [
+                    { label: 'Latest', val: latest !== undefined && latest !== null ? latest.toFixed(1) + hero.unit : '—' },
+                    { label: 'Avg',    val: avg !== null ? avg.toFixed(1) + hero.unit : '—' },
+                    { label: hero.higher ? 'Best' : 'Lowest', val: best !== null ? best.toFixed(1) + hero.unit : '—' },
+                ].map(s => `
+                    <div class="text-center p-4 bg-sage-50/50 rounded-2xl">
+                        <p class="text-[9px] font-bold text-sage-300 uppercase tracking-widest mb-1">${s.label}</p>
+                        <p class="text-xl font-serif text-sage-600">${s.val}</p>
+                    </div>`).join('');
+
+            } catch (e) { /* chart is non-critical */ }
+        }
+
+        // Condition-aware onboarding step 2 — call before showing the modal
+        function populateOnboardingStep2(condition) {
+            const el = document.getElementById('onboarding-step2');
+            if (!el) return;
+
+            const radioOption = (name, value, label, hint) => `
+                <label class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
+                    <input type="radio" name="${name}" value="${value}" class="hidden">
+                    <div class="flex-1">
+                        <div class="font-bold text-sage-500">${label}</div>
+                        <div class="text-[10px] text-sage-400 leading-tight">${hint}</div>
+                    </div>
+                    <i data-lucide="check-circle-2" class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
+                </label>`;
+
+            const configs = {
+                pcos: {
+                    html: `
+                        <div class="space-y-4">
+                            <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">Your PCOS Type</label>
+                            <div class="grid grid-cols-1 gap-4">
+                                ${radioOption('pcos_type','Insulin Resistant','Insulin Resistant','Weight gain, fatigue, sugar cravings.')}
+                                ${radioOption('pcos_type','Adrenal','Adrenal Driven','High stress, anxiety, sleep issues.')}
+                                ${radioOption('pcos_type','Inflammatory','Inflammatory','Acne, headaches, joint pain.')}
+                                ${radioOption('pcos_type','Post-Pill','Post-Pill','Symptoms flared after birth control.')}
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Cycle Length (days)</label>
+                                <input type="number" name="cycle_length" value="28" class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Last Period Date</label>
+                                <input type="date" name="last_period_date" class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
+                            </div>
+                        </div>`
+                },
+                acne: {
+                    html: `
+                        <div class="space-y-4">
+                            <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">Your Skin Type</label>
+                            <div class="grid grid-cols-1 gap-4">
+                                ${radioOption('skin_type','Oily','Oily','Excess sebum, frequent breakouts, enlarged pores.')}
+                                ${radioOption('skin_type','Combination','Combination','Oily T-zone, normal/dry cheeks.')}
+                                ${radioOption('skin_type','Hormonal','Hormonal Acne','Breakouts linked to your cycle or stress.')}
+                                ${radioOption('skin_type','Sensitive','Sensitive / Reactive','Redness, irritation, easily triggered.')}
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">How long have you had acne?</label>
+                            <select name="acne_duration" class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
+                                <option value="less_1yr">Less than 1 year</option>
+                                <option value="1_3yr" selected>1–3 years</option>
+                                <option value="3_plus">3+ years</option>
+                            </select>
+                        </div>`
+                },
+                weight: {
+                    html: `
+                        <div class="space-y-4">
+                            <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">Primary Goal</label>
+                            <div class="grid grid-cols-1 gap-4">
+                                ${radioOption('weight_goal','fat_loss','Lose Body Fat','Reduce overall fat, especially belly fat.')}
+                                ${radioOption('weight_goal','lean_muscle','Lean & Toned','Lose fat while building lean muscle.')}
+                                ${radioOption('weight_goal','plateau_break','Break a Plateau','Scale hasn\'t moved in weeks.')}
+                                ${radioOption('weight_goal','metabolic_health','Metabolic Health','Blood sugar, energy, and hormone balance.')}
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Target weight (kg) — optional</label>
+                            <input type="number" name="target_weight" step="0.1" placeholder="e.g. 65" class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
+                        </div>`
+                },
+                mens: {
+                    html: `
+                        <div class="space-y-4">
+                            <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">Primary Concern</label>
+                            <div class="grid grid-cols-1 gap-4">
+                                ${radioOption('mens_goal','low_energy','Low Energy / Fatigue','Always tired, brain fog, low drive.')}
+                                ${radioOption('mens_goal','low_libido','Low Libido','Reduced sex drive or performance.')}
+                                ${radioOption('mens_goal','weight_loss','Weight & Body Composition','Belly fat, low muscle tone.')}
+                                ${radioOption('mens_goal','sleep_recovery','Sleep & Recovery','Poor sleep, slow recovery from exercise.')}
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">How long have you had these symptoms?</label>
+                            <select name="symptom_duration" class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
+                                <option value="less_6m">Less than 6 months</option>
+                                <option value="6m_2yr" selected>6 months – 2 years</option>
+                                <option value="2_plus">2+ years</option>
+                            </select>
+                        </div>`
+                }
+            };
+
+            const cfg = configs[condition] || configs.pcos;
+            el.innerHTML = cfg.html;
+            lucide.createIcons();
+        }
+
+        // Prefill PCOS type from localStorage if available (from assessment)
+        function prefillPCOSTypeFromStorage() {
+            const savedPCOSType = localStorage.getItem('1w_pcos_type');
+            if (savedPCOSType) {
+                const radios = document.querySelectorAll('input[name="pcos_type"]');
+                radios.forEach(radio => {
+                    if (radio.value === savedPCOSType) {
+                        radio.checked = true;
+                        radio.dispatchEvent(new Event('change'));
+                    }
+                });
+            }
+        }
+
         initialize();
     </script>
     <!-- Recipe Modal -->
@@ -2249,76 +2738,9 @@
                             </div>
                         </div>
 
-                        <!-- Step 2: Hormonal Profile -->
-                        <div class="boarding-step hidden space-y-8 animate-fade-in-up" data-step="2">
-                            <div class="space-y-4">
-                                <label class="block text-xs font-bold text-sage-400 uppercase tracking-widest">PCOS
-                                    Type</label>
-                                <div class="grid grid-cols-1 gap-4">
-                                    <label
-                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
-                                        <input type="radio" name="pcos_type" value="Insulin Resistant" class="hidden"
-                                            required>
-                                        <div class="flex-1">
-                                            <div class="font-bold text-sage-500">Insulin Resistant</div>
-                                            <div class="text-[10px] text-sage-400 leading-tight">Weight gain, fatigue,
-                                                sugar cravings.</div>
-                                        </div>
-                                        <i data-lucide="check-circle-2"
-                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
-                                    </label>
-                                    <label
-                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
-                                        <input type="radio" name="pcos_type" value="Adrenal" class="hidden">
-                                        <div class="flex-1">
-                                            <div class="font-bold text-sage-500">Adrenal Driven</div>
-                                            <div class="text-[10px] text-sage-400 leading-tight">High stress, anxiety,
-                                                sleep issues.</div>
-                                        </div>
-                                        <i data-lucide="check-circle-2"
-                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
-                                    </label>
-                                    <label
-                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
-                                        <input type="radio" name="pcos_type" value="Inflammatory" class="hidden">
-                                        <div class="flex-1">
-                                            <div class="font-bold text-sage-500">Inflammatory</div>
-                                            <div class="text-[10px] text-sage-400 leading-tight">Acne, headaches, joint
-                                                pain.</div>
-                                        </div>
-                                        <i data-lucide="check-circle-2"
-                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
-                                    </label>
-                                    <label
-                                        class="relative flex items-center p-4 border-2 border-sage-100 rounded-2xl cursor-pointer hover:bg-sage-50 transition-all has-[:checked]:border-sage-500 has-[:checked]:bg-sage-50/50 group">
-                                        <input type="radio" name="pcos_type" value="Post-Pill" class="hidden">
-                                        <div class="flex-1">
-                                            <div class="font-bold text-sage-500">Post-Pill</div>
-                                            <div class="text-[10px] text-sage-400 leading-tight">Symptoms flared after
-                                                birth control.</div>
-                                        </div>
-                                        <i data-lucide="check-circle-2"
-                                            class="w-5 h-5 text-sage-500 opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></i>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="space-y-2">
-                                    <label
-                                        class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Cycle
-                                        Length</label>
-                                    <input type="number" name="cycle_length" value="28"
-                                        class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
-                                </div>
-                                <div class="space-y-2">
-                                    <label
-                                        class="block text-[10px] font-bold text-sage-400 uppercase tracking-widest">Last
-                                        Period</label>
-                                    <input type="date" name="last_period_date"
-                                        class="w-full p-3 bg-white border border-sage-100 rounded-xl focus:outline-none focus:border-sage-500">
-                                </div>
-                            </div>
+                        <!-- Step 2: Condition Profile (populated dynamically by populateOnboardingStep2) -->
+                        <div class="boarding-step hidden space-y-8 animate-fade-in-up" data-step="2" id="onboarding-step2">
+                            <!-- JS populates this based on user condition -->
                         </div>
 
                         <!-- Step 3: Diet & Custom -->

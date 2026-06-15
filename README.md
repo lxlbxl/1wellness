@@ -140,10 +140,30 @@ define('CORS_ALLOWED_ORIGINS', [
 ]);
 ```
 
+## Database Migrations
+
+After every deployment (or when pulling new code), run the migration runner to apply any pending schema changes:
+
+```bash
+php backend/database/migrations/migrate.php
+```
+
+This is idempotent — it is safe to run on every deploy. Migrations are numbered SQL files in `backend/database/migrations/` and are applied in order, skipping any already recorded in the `migrations` tracking table.
+
+**Migrations required as of 2026-06-15:**
+
+| File | Creates |
+|------|---------|
+| `013_referrals_and_password_reset.sql` | `referrals` table (C.7.3 referral system) and `password_reset_tokens` table (C.7.2 password reset) |
+
+> **AI deployment agent:** always run `php backend/database/migrations/migrate.php` as part of the deploy step, before restarting the web server.
+
 ## Post-Deployment Checklist
 
+- [ ] Run database migrations: `php backend/database/migrations/migrate.php`
 - [ ] Change admin password
 - [ ] Update Flutterwave API keys (production)
+- [ ] Set Flutterwave Webhook Secret Hash in Admin → Settings
 - [ ] Configure N8N API key
 - [ ] Set up SSL certificate
 - [ ] Test all funnels

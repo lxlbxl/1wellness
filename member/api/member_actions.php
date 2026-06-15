@@ -209,44 +209,60 @@ try {
 
         case 'verify_renewal':
             $transactionId = $_POST['transaction_id'] ?? '';
-            $txRef = $_POST['tx_ref'] ?? '';
-            $tier = $_POST['tier'] ?? '30-day';
+            $txRef         = $_POST['tx_ref'] ?? '';
+            $tier          = in_array($_POST['tier'] ?? '', ['30-day', '90-day']) ? $_POST['tier'] : '30-day';
 
-            // In a real scenario, we would call Flutterwave API to verify the transaction
-            // But for this task, we will assume it's successful and update the DB
+            if (!$transactionId) throw new Exception('transaction_id required');
 
-            $daysToAdd = ($tier === '90-day') ? 90 : 30;
-
-            // Get current profile
-            $profile = $db->fetch("SELECT subscription_expiry FROM member_profiles WHERE user_id = :uid", [':uid' => $userId]);
-
-            $currentExpiry = $profile['subscription_expiry'] ? new DateTime($profile['subscription_expiry']) : new DateTime();
-            if ($currentExpiry < new DateTime()) {
-                $currentExpiry = new DateTime();
+            // Server-side verification via Flutterwave API — never trust the client amount
+            require_once '../../backend/classes/Settings.php';
+            require_once '../../backend/classes/PaymentIntegrity.php';
+            $integrity = new PaymentIntegrity();
+            $txData    = $integrity->verifyTransaction($transactionId);
+            if (!$txData) {
+                throw new Exception('Payment verification failed — please contact support.');
             }
 
-            $currentExpiry->modify("+$daysToAdd day");
+            $expectedAmounts = ['30-day' => 97, '90-day' => 197];
+            $expected = $expectedAmounts[$tier] ?? 97;
+            $verified = (float)($txData['amount'] ?? 0);
+            if (abs($verified - $expected) > 1.0) {
+                error_log("Renewal amount mismatch: expected $expected, got $verified for user $userId");
+                throw new Exception('Amount mismatch — transaction not applied.');
+            }
+
+            // Idempotency: don't apply same tx twice
+            $dupSale = $db->fetch("SELECT id FROM sales WHERE transaction_id = :tx", [':tx' => $transactionId]);
+            if ($dupSale) {
+                $response = ['success' => true, 'message' => 'Already applied', 'new_expiry' => null];
+                break;
+            }
+
+            $daysToAdd = ($tier === '90-day') ? 90 : 30;
+            $profile = $db->fetch("SELECT subscription_expiry FROM member_profiles WHERE user_id = :uid", [':uid' => $userId]);
+            $currentExpiry = $profile['subscription_expiry'] ? new DateTime($profile['subscription_expiry']) : new DateTime();
+            if ($currentExpiry < new DateTime()) $currentExpiry = new DateTime();
+            $currentExpiry->modify("+{$daysToAdd} day");
             $newExpiry = $currentExpiry->format('Y-m-d');
 
             $db->update('member_profiles', [
-                'subscription_tier' => $tier,
+                'subscription_tier'   => $tier,
                 'subscription_expiry' => $newExpiry,
                 'subscription_status' => 'active',
-                'updated_at' => date('Y-m-d H:i:s')
+                'updated_at'          => date('Y-m-d H:i:s'),
             ], "user_id = :uid", [':uid' => $userId]);
 
-            // Record the sale
             $db->insert('sales', [
-                'id' => 'RNW_' . uniqid(),
-                'user_id' => $userId,
+                'id'             => 'RNW_' . uniqid(),
+                'user_id'        => $userId,
                 'transaction_id' => $transactionId,
-                'tx_ref' => $txRef,
-                'email' => $user['email'],
-                'name' => $user['first_name'] . ' ' . ($user['last_name'] ?? ''),
-                'product_type' => 'renewal',
-                'product_name' => $tier . ' Plan Renewal',
-                'amount' => ($tier === '90-day') ? 197 : 97,
-                'currency' => 'USD',
+                'tx_ref'         => $txRef,
+                'email'          => $user['email'],
+                'name'           => trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')),
+                'product_type'   => 'renewal',
+                'product_name'   => $tier . ' Plan Renewal',
+                'amount'         => $verified,
+                'currency'       => $txData['currency'] ?? 'USD',
                 'payment_status' => 'completed',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
@@ -379,6 +395,97 @@ try {
             );
 
             $response = ['success' => true, 'products' => $products];
+            break;
+
+        case 'cancel_subscription':
+            $reason  = trim(strip_tags($_POST['reason'] ?? ''));
+            $confirm = $_POST['confirm'] ?? '';
+            if ($confirm !== 'yes') {
+                $response = ['success' => false, 'error' => 'Confirmation required'];
+                break;
+            }
+
+            $profile = $db->fetch(
+                "SELECT subscription_expiry, subscription_status, start_date FROM member_profiles WHERE user_id = :uid",
+                [':uid' => $userId]
+            );
+
+            // Check 30-day money-back window
+            $startDate  = $profile['start_date'] ?? null;
+            $inWindow   = false;
+            $windowNote = '';
+            if ($startDate) {
+                $daysSince = (new DateTime())->diff(new DateTime($startDate))->days;
+                $inWindow  = $daysSince <= 30;
+                $windowNote = $inWindow
+                    ? 'You are within the 30-day guarantee window. A refund request has been created.'
+                    : 'Your 30-day guarantee window has passed. Access continues until ' . ($profile['subscription_expiry'] ?? 'end of period') . '.';
+            }
+
+            $db->update('member_profiles', [
+                'subscription_status' => 'cancelled',
+                'updated_at'          => date('Y-m-d H:i:s'),
+            ], "user_id = :uid", [':uid' => $userId]);
+
+            // Log cancellation
+            $db->insert('activity_logs', [
+                'user_id'        => $userId,
+                'plan_date'      => date('Y-m-d'),
+                'activity_type'  => 'cancellation',
+                'activity_name'  => 'Subscription cancelled' . ($reason ? ': ' . substr($reason, 0, 200) : ''),
+                'scheduled_start'=> '00:00',
+                'scheduled_end'  => '23:59',
+                'status'         => 'completed',
+                'created_at'     => date('Y-m-d H:i:s'),
+            ]);
+
+            // Auto-create refund request if in window
+            if ($inWindow) {
+                try {
+                    $db->insert('activity_logs', [
+                        'user_id'        => $userId,
+                        'plan_date'      => date('Y-m-d'),
+                        'activity_type'  => 'refund_request',
+                        'activity_name'  => 'Auto-refund: within 30-day guarantee',
+                        'scheduled_start'=> '00:00',
+                        'scheduled_end'  => '23:59',
+                        'status'         => 'pending',
+                        'created_at'     => date('Y-m-d H:i:s'),
+                    ]);
+                } catch (Exception $e) { /* non-fatal */ }
+            }
+
+            $response = ['success' => true, 'in_window' => $inWindow, 'note' => $windowNote];
+            break;
+
+        case 'refund_request':
+            $reason = trim(strip_tags($_POST['reason'] ?? ''));
+            $profile = $db->fetch(
+                "SELECT start_date, subscription_status FROM member_profiles WHERE user_id = :uid",
+                [':uid' => $userId]
+            );
+            $startDate = $profile['start_date'] ?? null;
+            $daysSince = $startDate ? (new DateTime())->diff(new DateTime($startDate))->days : 999;
+
+            if ($daysSince > 30) {
+                $response = ['success' => false, 'error' => 'Outside the 30-day money-back window.'];
+                break;
+            }
+
+            try {
+                $db->insert('activity_logs', [
+                    'user_id'        => $userId,
+                    'plan_date'      => date('Y-m-d'),
+                    'activity_type'  => 'refund_request',
+                    'activity_name'  => 'Refund request' . ($reason ? ': ' . substr($reason, 0, 200) : ''),
+                    'scheduled_start'=> '00:00',
+                    'scheduled_end'  => '23:59',
+                    'status'         => 'pending',
+                    'created_at'     => date('Y-m-d H:i:s'),
+                ]);
+            } catch (Exception $e) { /* already filed */ }
+
+            $response = ['success' => true, 'message' => 'Refund request submitted. Our team will process it within 3 business days.'];
             break;
 
         default:

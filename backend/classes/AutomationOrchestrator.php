@@ -89,11 +89,14 @@ class AutomationOrchestrator
         $planStartDate = date('Y-m-d H:i:s');
         $planEndDate = date('Y-m-d H:i:s', strtotime("+{$planDuration} days"));
 
-        // Update user with plan dates
+        // Update user with plan dates + condition columns (migration 010)
+        $subBrandMap = ['pcos' => 'CycleSync', 'acne' => 'GlowClear', 'weight' => 'LeanFlow', 'mens' => 'Vitale'];
         $this->userModel->update($userId, [
-            'plan_duration' => $planDuration,
+            'plan_duration'  => $planDuration,
             'plan_start_date' => $planStartDate,
-            'plan_end_date' => $planEndDate
+            'plan_end_date'  => $planEndDate,
+            'condition'      => $type,
+            'sub_brand'      => $subBrandMap[$type] ?? null,
         ]);
 
         // 1c. Record Sale (CRITICAL for Credentials Display) — with duplicate guard
@@ -154,16 +157,13 @@ class AutomationOrchestrator
         // 2. Save/Update Member Profile
         $this->saveMemberProfile($userId, $assessmentData, $type);
 
-        // 3. Generate Plan
+        // 3. Queue Plan Generation async — worker picks up within 1 minute via cron.
+        //    Avoids blocking the webhook/purchase flow on slow AI calls.
         try {
-            $startDate = new DateTime();
-            $nextSunday = new DateTime('next sunday');
-            if ($startDate->diff($nextSunday)->days < 4) {
-                $nextSunday->modify('+1 week');
-            }
-            $this->mealPlanner->generateWeeklyPlanRange($userId, $startDate->format('Y-m-d'), $nextSunday->format('Y-m-d'));
+            require_once __DIR__ . '/JobQueue.php';
+            JobQueue::dispatch('generate_plan', ['user_id' => $userId, 'days' => 7], 8);
         } catch (Exception $e) {
-            error_log("Automation Plan Gen Error: " . $e->getMessage());
+            error_log("Automation Plan Gen Queue Error: " . $e->getMessage());
         }
 
         // 4. Send Welcome Email
@@ -178,7 +178,7 @@ class AutomationOrchestrator
                         <p style='color: #8DA38D; margin: 10px 0 0;'>Your {$planLabel} is ready</p>
                     </div>
                     <div style='background: #ffffff; padding: 30px; border: 1px solid #e0e0e0;'>
-                        <p style='font-size: 16px; line-height: 1.6;'>Your personalized {$planLabel} has been generated and is waiting for you in the member area.</p>
+                        <p style='font-size: 16px; line-height: 1.6;'>Your personalized {$planLabel} is being prepared and will be ready in your member area within a few minutes.</p>
                         <div style='background: #f8f6f2; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #0f3922;'>
                             <p style='margin: 0 0 12px; font-size: 14px; color: #666; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;'>Your Login Credentials</p>
                             <p style='margin: 8px 0; font-size: 16px;'>Email: <strong style='color: #0f3922;'>{$email}</strong></p>
@@ -203,7 +203,25 @@ class AutomationOrchestrator
             }
         }
 
-        // 5. Auto-Login Token
+        // 5. Referral attribution — mark referral converted if cookie is set
+        try {
+            $refCode = isset($_COOKIE['1w_ref']) ? preg_replace('/[^A-Z0-9]/', '', strtoupper(trim($_COOKIE['1w_ref']))) : '';
+            if ($refCode) {
+                $ref = $this->db->fetch("SELECT id, referrer_id, status FROM referrals WHERE referral_code = ?", [$refCode]);
+                if ($ref && $ref['status'] !== 'purchased') {
+                    $this->db->execute(
+                        "UPDATE referrals SET status='purchased', referred_user_id=?, referred_email=?, converted_at=? WHERE id=?",
+                        [$userId, $email, date('Y-m-d H:i:s'), $ref['id']]
+                    );
+                }
+                // Clear cookie after attribution
+                setcookie('1w_ref', '', time() - 3600, '/', '', true, true);
+            }
+        } catch (Exception $e) {
+            error_log("Referral attribution error: " . $e->getMessage());
+        }
+
+        // 6. Auto-Login Token
         $token = bin2hex(random_bytes(16));
         $expiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
         $this->db->query("INSERT INTO auth_tokens (user_id, token, expires_at) VALUES (?, ?, ?)", [$userId, $token, $expiry]);
