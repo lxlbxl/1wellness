@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
 <head>
@@ -140,6 +140,8 @@
     <script defer src="../js/webhook-manager.js"></script>
     <script defer src="../js/flutterwave-integration.js"></script>
     <script defer src="../js/tracking.js"></script>
+    <!-- Personalization Engine -->
+    <script src="../js/personalization.js"></script>
 </head>
 
 <body class="antialiased relative overflow-x-hidden">
@@ -164,7 +166,7 @@
                         class="inline-flex items-center gap-2 bg-forest-50 border border-forest-100 px-3 md:px-4 py-1.5 rounded-full text-xs font-medium tracking-wide text-forest-800 uppercase">
                         <span class="w-2 h-2 rounded-full bg-terracotta-500 animate-pulse"></span>
                         <span class="md:hidden">Offer Active</span>
-                        <span class="hidden md:inline">Assessment Offer Active</span>
+                        <span class="hidden md:inline" x-text="pctx.typeShort ? pctx.typeShort + ' Protocol Ready' : 'Assessment Offer Active'">Assessment Offer Active</span>
                     </span>
                 </div>
             </div>
@@ -182,16 +184,15 @@
                             Your Preferred Format</span>
                     </div>
 
-                    <h1 class="text-4xl md:text-7xl font-serif font-medium leading-[1.1] text-forest-900 reveal-up">
-                        One Proven Protocol.<br>
-                        <span class="italic text-terracotta-600">Two Ways</span> to Heal.
-                    </h1>
-
-                    <p class="text-xl text-gray-600 font-light leading-relaxed max-w-lg reveal-up delay-100">
-                        Get the exact same hormone-balancing meal plans, herbal rituals, and tracking tools to reverse
-                        your <strong x-text="weightType">Weight Loss</strong>.
-                        Choose the format that fits your lifestyle.
-                    </p>
+                    <!-- Personalized hero headline -->
+                    <div>
+                        <h1 class="text-4xl md:text-7xl font-serif font-medium leading-[1.1] text-forest-900 reveal-up">
+                            <span x-text="pctx.firstName ? pctx.firstName + '\u2019s ' + pctx.typeShort + ' Reset Protocol' : 'One Proven Protocol'">One Proven Protocol.</span><br>
+                            <span class="italic text-terracotta-600">Two Ways</span> to Heal.
+                        </h1>
+                        <p class="text-xl text-gray-600 font-light leading-relaxed max-w-lg mt-6 reveal-up delay-100" x-text="pctx.firstName ? pctx.selectPlanSubtext : 'Get the exact same hormone-balancing meal plans, herbal rituals, and tracking tools. Choose the format that fits your lifestyle.'">
+                        </p>
+                    </div>
 
                     <!-- Plan Selection Area -->
                     <div class="grid md:grid-cols-2 gap-4 pt-4 reveal-up delay-200">
@@ -208,6 +209,8 @@
                             <h3 class="font-serif font-bold text-lg text-forest-900 mb-2">Member Portal</h3>
                             <p class="text-xs text-gray-500 mb-4 h-10">Interactive dashboard with daily tracking,
                                 community features, and automated reminders.</p>
+                            <!-- Personalized protocol note -->
+                            <p class="text-xs text-forest-700 font-medium bg-forest-50 rounded-lg px-3 py-2 mb-3 border border-forest-100" x-show="pctx.typeShort" x-text="'Your ' + pctx.typeShort + ' protocol: meals, herbal rituals & tracking — all inside'"></p>
                             <ul class="text-xs space-y-2 mb-6">
                                 <li class="flex items-center gap-2"><span class="text-green-600">✓</span> Daily Dynamic
                                     Meal Plans</li>
@@ -232,6 +235,8 @@
                             <h3 class="font-serif font-bold text-lg text-forest-900 mb-2">Instant PDF Download</h3>
                             <p class="text-xs text-gray-500 mb-4 h-10">Beautifully designed, printer-friendly guides
                                 tailored to your needs. Yours to keep forever.</p>
+                            <!-- Personalized protocol note -->
+                            <p class="text-xs text-forest-700 font-medium bg-forest-50 rounded-lg px-3 py-2 mb-3 border border-forest-100" x-show="pctx.typeShort" x-text="'Complete ' + pctx.typeShort + ' protocol as a printable PDF guide'"></p>
                             <ul class="text-xs space-y-2 mb-6">
                                 <li class="flex items-center gap-2"><span class="text-green-600">✓</span> Complete Meal
                                     Plan PDF</li>
@@ -586,12 +591,18 @@
                 showOrderForm: false,
                 orderBump: false,
                 bumpPrice: 17,
+                // Personalization context
+                pctx: { firstName: null, typeShort: '', selectPlanSubtext: '' },
 
                 get totalPrice() {
                     return Number(this.price) + (this.orderBump ? this.bumpPrice : 0);
                 },
 
                 init() {
+                    // Load personalization context
+                    if (window.Personalization) {
+                        this.pctx = window.Personalization.getContext();
+                    }
                     this.loadWeightType();
                     this.loadPricing();
                     this.trackPageView();

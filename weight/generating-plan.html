@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -15,6 +15,8 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Personalization Engine -->
+    <script src="../js/personalization.js"></script>
 
     <script>
         tailwind.config = {
@@ -114,10 +116,10 @@
                 </div>
 
                 <div>
-                    <h1 class="text-3xl md:text-4xl font-serif font-bold text-forest-900 mb-2">
+                    <h1 class="text-3xl md:text-4xl font-serif font-bold text-forest-900 mb-2" x-text="loadingTitle">
                         Analyzing Your Profile...
                     </h1>
-                    <p class="text-terracotta-600 font-medium tracking-wide uppercase text-xs">
+                    <p class="text-terracotta-600 font-medium tracking-wide uppercase text-xs" x-text="loadingSubtitle">
                         Building your custom protocol
                     </p>
                 </div>
@@ -142,13 +144,13 @@
                 </div>
 
                 <div>
-                    <h1 class="text-3xl md:text-4xl font-serif font-bold text-forest-900 mb-4">
+                    <h1 class="text-3xl md:text-4xl font-serif font-bold text-forest-900 mb-4" x-text="successTitle">
                         Your Protocol is Ready!
                     </h1>
                     <p class="text-gray-600 leading-relaxed">
-                        We've generated a personalized 90-day action plan specifically for your <strong
+                        We've generated a personalised 90-day action plan specifically for your <strong
                             x-text="weightType" class="text-terracotta-600"></strong> type.
-                        It includes your meal plans, supplement guide, herbal protocols, daily routines, and more.
+                        It includes your meal plans, herbal protocols, daily routines, and more.
                     </p>
                 </div>
 
@@ -210,33 +212,49 @@
         function generator() {
             return {
                 progress: 0,
-                statusMessage: 'Connecting to AI engine...',
+                statusMessage: 'Connecting to analysis engine...',
                 completed: false,
                 error: false,
                 errorMessage: 'We couldn\'t generate your PDF right now. Please try again or contact support.',
                 downloadUrl: '',
-                downloadFilename: 'My_90Day_Weight Loss_Protocol.pdf',
+                downloadFilename: 'My_90Day_Weight_Loss_Protocol.pdf',
                 email: '',
                 weightType: '',
                 emailSent: false,
                 retryCount: 0,
                 abortController: null,
+                // Personalized copy
+                loadingTitle: 'Analyzing Your Profile...',
+                loadingSubtitle: 'Building your custom protocol',
+                successTitle: 'Your Protocol is Ready!',
+                _pctxMessages: [],
 
                 init() {
+                    // Load personalization context
+                    if (window.Personalization) {
+                        const pctx = window.Personalization.getContext();
+                        this._pctxMessages = pctx.statusMessages || [];
+                        if (pctx.firstName) {
+                            this.loadingTitle = 'Analyzing ' + pctx.firstName + '\u2019s Profile\u2026';
+                            this.loadingSubtitle = 'Building your ' + (pctx.typeShort || '') + ' protocol';
+                            this.successTitle = pctx.firstName + '\u2019s Protocol is Ready!';
+                        }
+                    }
                     this.startProgressAnimation();
                     this.startGeneration();
                 },
 
                 startProgressAnimation() {
-                    const messages = [
-                        "Analyzing your hormone profile...",
-                        "Identifying your Weight Loss root cause...",
-                        "Structuring your 12-week phased plan...",
-                        "Creating your personalized meal plan...",
-                        "Compiling herbal protocols & supplements...",
-                        "Building daily routines for your type...",
-                        "Generating your tracking workbook...",
-                        "Finalizing your premium PDF..."
+                    // Use personalized messages if available, fall back to generic
+                    const messages = this._pctxMessages.length > 0 ? this._pctxMessages : [
+                        'Analyzing your hormone profile...',
+                        'Identifying your weight loss root cause...',
+                        'Structuring your 12-week phased plan...',
+                        'Creating your personalised meal plan...',
+                        'Compiling herbal protocols & supplements...',
+                        'Building daily routines for your type...',
+                        'Generating your tracking workbook...',
+                        'Finalising your premium PDF...'
                     ];
 
                     let step = 0;

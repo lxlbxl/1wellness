@@ -427,8 +427,10 @@
                     track('plan_select', { label: (hit.textContent || '').trim().substring(0, 80) });
                 }
             }, true);
-            // checkout_init fallback: WebhookManager fires the primary event; this catches
-            // it if WebhookManager isn't loaded (e.g. stripped in a structural A/B variant).
+            // checkout_init: primary call is in flutterwave-integration.js immediately before
+            // FlutterwaveCheckout(). This form-submit fallback covers structural A/B variants
+            // where flutterwave-integration.js may be replaced; track() dedup prevents
+            // double-firing when both paths are active (Alpine emits a real submit event).
             document.addEventListener('submit', function () {
                 track('checkout_init');
             }, { once: true, capture: true });

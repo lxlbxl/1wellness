@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
 <head>
@@ -124,6 +124,8 @@
     <script defer src="../js/webhook-manager.js"></script>
     <script defer src="../js/flutterwave-integration.js"></script>
     <script defer src="../js/tracking.js"></script>
+    <!-- Personalization Engine -->
+    <script src="../js/personalization.js"></script>
 </head>
 
 <body class="antialiased relative overflow-x-hidden">
@@ -148,7 +150,7 @@
                         class="inline-flex items-center gap-2 bg-forest-50 border border-forest-100 px-3 md:px-4 py-1.5 rounded-full text-xs font-medium tracking-wide text-forest-800 uppercase">
                         <span class="w-2 h-2 rounded-full bg-terracotta-500 animate-pulse"></span>
                         <span class="md:hidden">Offer Active</span>
-                        <span class="hidden md:inline">Assessment Offer Active</span>
+                        <span class="hidden md:inline" x-text="pctx.typeShort ? pctx.typeShort + ' Reset Active' : 'Assessment Offer Active'">Assessment Offer Active</span>
                     </span>
                 </div>
             </div>
@@ -168,12 +170,11 @@
                     </div>
 
                     <h1 class="text-4xl md:text-7xl font-serif font-medium leading-[1.1] text-forest-900 reveal-up">
-                        Your body is <span class="italic text-terracotta-600">screaming</span> for
-                        help.<br>
+                        <span x-text="pctx.firstName ? pctx.firstName + ', your body' : 'Your body'">Your body</span> is <span class="italic text-terracotta-600">screaming</span> for help.<br>
                         <span class="italic text-forest-800/80">We finally listened.</span>
                     </h1>
 
-                    <p class="text-xl text-gray-600 font-light leading-relaxed max-w-lg reveal-up delay-100">
+                    <p class="text-xl text-gray-600 font-light leading-relaxed max-w-lg reveal-up delay-100" x-text="pctx.firstName ? pctx.firstName + ', unlock your private, smart-personalized dashboard — daily meals and herbal rituals crafted specifically to reverse your ' + pctx.fatLocation + ' accumulation and repair your ' + (pctx.sleepPattern || 'sleep cycle') + '.' : 'Unlock your private, smart-personalized dashboard — daily meals, protocols, and herbal rituals crafted specifically for ' + weightType + '.'">
                         Unlock your <strong>private smart-personalized dashboard</strong> — daily Western meals,
                         cycle-synced protocols, and herbal rituals crafted <em>specifically</em> for <strong
                             x-text="weightType">your Weight Loss type</strong>. Not a PDF. A living system that adapts with you.
@@ -286,10 +287,8 @@
 
         <section class="max-w-5xl mx-auto mb-24">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-serif text-forest-900 mb-4">Your Private Healing Command Center
-                </h2>
-                <p class="text-gray-500">A living dashboard that knows your <span x-text="weightType"
-                        class="font-bold"></span>, tracks your progress, and adapts <em>daily</em>.</p>
+                <h2 class="text-3xl md:text-4xl font-serif text-forest-900 mb-4">Your Private Healing Command Center</h2>
+                <p class="text-gray-500" x-text="pctx.firstName ? 'A living dashboard built for ' + pctx.firstName + '\u2019s ' + pctx.typeShort + ' type to resolve ' + pctx.goalLabel + '.' : 'A living dashboard that knows your ' + weightType + ', tracks your progress, and adapts daily.'">A living dashboard that knows your <span x-text="weightType" class="font-bold"></span>, tracks your progress, and adapts daily.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-6">
@@ -300,13 +299,8 @@
                     </div>
                     <div class="relative z-10">
                         <span class="text-3xl mb-4 block">🥗</span>
-                        <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Smart-Personalized Nutrition
-                            Portal
-                        </h3>
-                        <p class="text-gray-600 mb-4 text-sm leading-relaxed">Wake up to a <strong>new meal plan every
-                                day</strong> — Jollof, Moi Moi, Egusi — all hormone-balancing recipes using ingredients
-                            from your local market. Your <strong x-text="weightType"></strong> dashboard knows exactly
-                            what to feed you.</p>
+                        <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Smart-Personalized Nutrition Portal</h3>
+                        <p class="text-gray-600 mb-4 text-sm leading-relaxed" x-text="pctx.firstName ? 'Wake up to a new meal plan every day — designed specifically for your ' + pctx.typeShort + ' metabolism. Each meal is structured to address your ' + (pctx.cravingPattern || 'cravings') + ' and support ' + pctx.goalLabel + '.' : 'Wake up to a new meal plan every day — hormone-balancing recipes built for your body. Your ' + weightType + ' dashboard knows exactly what to feed you.'">Wake up to a new meal plan every day — hormone-balancing recipes built for your body. Your dashboard knows exactly what to feed you.</p>
                         <div class="inline-block bg-sand px-3 py-1 rounded-md text-xs font-medium text-forest-800"
                             data-price-static>
                             Valued at $45</div>
@@ -319,10 +313,7 @@
                     </div>
                     <span class="text-3xl mb-4 block">🍵</span>
                     <h3 class="text-xl font-serif font-bold mb-2">Morning & Evening Herbal Rituals</h3>
-                    <p class="text-forest-100 mb-4 text-sm">Your dashboard reminds you <strong>when</strong> to drink
-                        your teas, <strong>which</strong> blends balance <strong
-                            x-text="weightType.split(' ')[0]"></strong>, and tracks your consistency. No more forgetting.
-                    </p>
+                    <p class="text-forest-100 mb-4 text-sm" x-text="pctx.firstName ? 'Your dashboard reminds you when to drink your organic teas, which specific botanicals balance your ' + pctx.typeShort + ' system, and tracks your consistency to help repair your ' + (pctx.sleepPattern || 'sleep cycle') + '.' : 'Your dashboard reminds you when to drink your teas, which blends balance ' + weightType.split(\' \')[0] + ', and tracks your consistency.'">Your dashboard reminds you when to drink your teas, which blends balance weight type, and tracks your consistency.</p>
                     <div class="inline-block bg-white/10 px-3 py-1 rounded-md text-xs font-medium" data-price-static>
                         Valued at $35
                     </div>
@@ -332,9 +323,7 @@
                     class="bg-terracotta-50 rounded-3xl p-8 shadow-sm border border-terracotta-100 hover:border-terracotta-200 transition-colors">
                     <span class="text-3xl mb-4 block">🚶‍♀️</span>
                     <h3 class="text-xl font-serif font-bold text-terracotta-900 mb-2">Phase-Synced Movement Tracker</h3>
-                    <p class="text-terracotta-800 mb-4 text-sm">Daily walking protocols that know your cycle phase.
-                        6,000 steps in the morning, gentle strolls in the evening — your dashboard tracks every minute.
-                    </p>
+                    <p class="text-terracotta-800 mb-4 text-sm" x-text="pctx.firstName ? 'Daily movement protocols calibrated for your ' + pctx.typeShort + ' body. Adrenal-safe exercises that won\u2019t spike cortisol, designed to help burn fat from your ' + (pctx.fatLocation || 'body') + ' without causing metabolic burnout.' : 'Daily movement protocols that know your body. Designed to preserve lean muscle and support your hormones.'">Daily movement protocols that know your body. Designed to preserve lean muscle and support your hormones.</p>
                     <div class="inline-block bg-white px-3 py-1 rounded-md text-xs font-medium text-terracotta-700"
                         data-price-static>
                         Valued at $27</div>
@@ -379,12 +368,7 @@
             <div class="grid md:grid-cols-2 gap-8">
                 <div class="bg-forest-50 p-8 rounded-3xl border border-forest-100">
                     <h3 class="text-xl font-bold text-forest-900 mb-4">Root Cause Targeting</h3>
-                    <p class="text-gray-700 leading-relaxed text-sm">
-                        Most treatments just mask symptoms. We target the biological root of your <span
-                            x-text="weightType"></span>
-                        by stabilizing insulin, reducing inflammation, and regulating cortisol. When the root heals,
-                        symptoms vanish.
-                    </p>
+                    <p class="text-gray-700 leading-relaxed text-sm" x-text="pctx.firstName ? 'Most treatments just mask symptoms. We target the biological root of your ' + pctx.typeShort + ' pattern by stabilizing insulin, reducing inflammation, and regulating cortisol. When the root heals, symptoms vanish.' : 'Most treatments just mask symptoms. We target the biological root of your metabolism by stabilizing insulin, reducing inflammation, and regulating cortisol. When the root heals, symptoms vanish.'">Most treatments just mask symptoms. We target the biological root of your metabolism by stabilizing insulin, reducing inflammation, and regulating cortisol. When the root heals, symptoms vanish.</p>
                 </div>
                 <div class="bg-sage-100/50 p-8 rounded-3xl border border-sage-200">
                     <h3 class="text-xl font-bold text-forest-900 mb-4">Metabolic Synergy</h3>
@@ -520,6 +504,14 @@
 
                 <div class="p-8 md:p-12">
                     <form @submit.prevent="processPayment()" class="space-y-6">
+                        <!-- Personalized Profile Confirmation -->
+                        <div class="bg-forest-50 border border-forest-200 rounded-xl p-4 mb-4 flex items-center gap-3" x-show="pctx.firstName">
+                            <span class="text-xl">🎯</span>
+                            <div class="text-xs text-forest-900 leading-normal">
+                                <strong x-text="pctx.firstName + ', secure your spot for the 90-day protocol:'"></strong><br>
+                                <span x-text="'Addressing your ' + (pctx.fatLocation || 'body characteristics') + ', ' + (pctx.sleepPattern || 'sleep symptoms') + ', and ' + (pctx.cravingPattern || 'cravings') + '.'"></span>
+                            </div>
+                        </div>
                         <div class="bg-sand/50 rounded-xl p-6 mb-6 border border-sand" data-exp="price-block">
                             <div class="flex justify-between items-center mb-4">
                                 <span class="font-bold text-gray-800">90-Day Transformation Protocol</span>
@@ -716,7 +708,13 @@
                     return Number(this.price) + (this.orderBump ? this.bumpPrice : 0);
                 },
 
+                pctx: { firstName: null, typeShort: '', selectPlanSubtext: '', fatLocation: '', sleepPattern: '', cravingPattern: '', goalLabel: '' },
+
                 init() {
+                    // Load personalization context
+                    if (window.Personalization) {
+                        this.pctx = window.Personalization.getContext();
+                    }
                     this.loadWeightType();
                     this.loadPricing();
                     this.trackPageView();

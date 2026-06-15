@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth overflow-x-hidden">
 
 <head>
@@ -84,6 +84,8 @@
     <script defer src="../js/config.js"></script>
     <script defer src="../js/webhook-manager.js"></script>
     <script defer src="../js/tracking.js"></script>
+    <!-- Personalization Engine -->
+    <script src="../js/personalization.js"></script>
 </head>
 
 <body class="antialiased relative min-h-screen overflow-x-hidden w-full max-w-[100vw]">
@@ -124,13 +126,12 @@
                 </div>
 
                 <h1 class="text-3xl md:text-5xl font-serif font-bold text-forest-900 mb-6 leading-[1.1]">
-                    Your Protocol is<br>
+                    <span x-text="pctx.firstName ? pctx.firstName + ', your protocol' : 'Your Protocol'">Your Protocol</span> is<br>
                     <span class="italic text-terracotta-600">Ready for Download</span>
                 </h1>
 
-                <p class="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed font-light">
-                    Success! You've taken the first step to healing. Your personalized 90-Day Weight Loss Protocol is ready
-                    below.
+                <p class="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed font-light" x-text="pctx.firstName ? 'Success, ' + pctx.firstName + '! You\u2019ve taken the first step to healing. Your personalized ' + pctx.typeShort + ' protocol is ready below.' : 'Success! You\u2019ve taken the first step to healing. Your personalized protocol is ready below.'">
+                    Success! You've taken the first step to healing. Your personalized 90-Day Weight Loss Protocol is ready below.
                 </p>
 
                 <!-- Order Summary & Download -->
@@ -197,26 +198,22 @@
 
                 <!-- Next Steps -->
                 <div class="max-w-4xl mx-auto mt-16 text-left">
-                    <h2 class="text-2xl font-serif font-bold text-center text-forest-900 mb-8">What's Inside Your
-                        Protocol?</h2>
+                    <h2 class="text-2xl font-serif font-bold text-center text-forest-900 mb-8" x-text="pctx.firstName ? 'What\u2019s Inside Your ' + pctx.typeShort + ' Protocol?' : 'What\u2019s Inside Your Protocol?'">What's Inside Your Protocol?</h2>
                     <div class="grid md:grid-cols-3 gap-6">
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-50">
                             <div class="text-2xl mb-3">🍽️</div>
                             <h4 class="font-bold text-forest-900 mb-2">7-Day Meal Plan</h4>
-                            <p class="text-sm text-gray-600">Western meals specifically chosen for your Weight Loss type, with
-                                hormone-balancing benefits explained.</p>
+                            <p class="text-sm text-gray-600" x-text="pctx.typeShort ? 'Healthy meals specifically calibrated for your ' + pctx.typeShort + ' type, structured to address ' + (pctx.cravingPattern || 'cravings') + '.' : 'Western meals specifically chosen for your Weight Loss type, with hormone-balancing benefits explained.'">Western meals specifically chosen for your Weight Loss type, with hormone-balancing benefits explained.</p>
                         </div>
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-50">
                             <div class="text-2xl mb-3">💊</div>
                             <h4 class="font-bold text-forest-900 mb-2">Supplement & Herb Guide</h4>
-                            <p class="text-sm text-gray-600">Exact dosages, timing, and reasons for each supplement and
-                                traditional herbal remedy.</p>
+                            <p class="text-sm text-gray-600" x-text="pctx.typeShort ? 'Exact botanical blends, adaptogens, and dosing schedules designed to support your ' + pctx.typeShort + ' biochemistry.' : 'Exact dosages, timing, and reasons for each supplement and traditional herbal remedy.'">Exact dosages, timing, and reasons for each supplement and traditional herbal remedy.</p>
                         </div>
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-50">
                             <div class="text-2xl mb-3">📅</div>
                             <h4 class="font-bold text-forest-900 mb-2">12-Week Action Plan</h4>
-                            <p class="text-sm text-gray-600">Progressive weekly actions across 3 phases, plus daily
-                                routines and progress trackers.</p>
+                            <p class="text-sm text-gray-600" x-text="pctx.typeShort ? 'Progressive lifestyle and movement tracking tailored to resolve your ' + (pctx.fatLocation || 'belly fat') + ' accumulation.' : 'Progressive weekly actions across 3 phases, plus daily routines and progress trackers.'">Progressive weekly actions across 3 phases, plus daily routines and progress trackers.</p>
                         </div>
                     </div>
                 </div>
@@ -254,7 +251,13 @@
                 downloadFilename: 'My_90Day_Weight Loss_Protocol.pdf',
                 hasDownload: false,
 
+                pctx: { firstName: null, typeShort: '', fatLocation: '', sleepPattern: '', cravingPattern: '' },
+
                 init() {
+                    // Load personalization context
+                    if (window.Personalization) {
+                        this.pctx = window.Personalization.getContext();
+                    }
                     const urlParams = new URLSearchParams(window.location.search);
                     this.orderDetails.amount = '$' + parseInt(urlParams.get('amount') || '45').toLocaleString();
                     this.orderDetails.transactionId = urlParams.get('transaction_id') || urlParams.get('tx_ref') || '';

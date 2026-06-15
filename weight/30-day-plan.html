@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
 <head>
@@ -124,6 +124,8 @@
     <script defer src="../js/webhook-manager.js"></script>
     <script defer src="../js/flutterwave-integration.js"></script>
     <script defer src="../js/tracking.js"></script>
+    <!-- Personalization Engine -->
+    <script src="../js/personalization.js"></script>
 </head>
 
 <body class="antialiased relative overflow-x-hidden">
@@ -148,7 +150,7 @@
                         class="inline-flex items-center gap-2 bg-forest-50 border border-forest-100 px-3 md:px-4 py-1.5 rounded-full text-xs font-medium tracking-wide text-forest-800 uppercase">
                         <span class="w-2 h-2 rounded-full bg-terracotta-500 animate-pulse"></span>
                         <span class="md:hidden">Quick Start</span>
-                        <span class="hidden md:inline">Quick Start Offer</span>
+                        <span class="hidden md:inline" x-text="pctx.typeShort ? pctx.typeShort + ' Reset Active' : 'Quick Start Offer'">Quick Start Offer</span>
                     </span>
                 </div>
             </div>
@@ -167,14 +169,12 @@
                     </div>
 
                     <h1 class="text-4xl md:text-7xl font-serif font-medium leading-[1.1] text-forest-900 reveal-up">
-                        Smart women <span class="italic text-terracotta-600">test first.</span><br>
+                        <span x-text="pctx.firstName ? pctx.firstName + ', smart' : 'Smart'">Smart</span> women <span class="italic text-terracotta-600">test first.</span><br>
                         <span class="italic text-forest-800/80">30 days. Prove it works.</span>
                     </h1>
 
-                    <p class="text-xl text-gray-600 font-light leading-relaxed max-w-lg reveal-up delay-100">
-                        Get <strong>instant access</strong> to your private member portal — smart-personalized Nigerian
-                        meals, morning rituals, and daily tracking tailored for <strong x-text="weightType">your Weight Loss
-                            type</strong>. Real change starts in 30 days.
+                    <p class="text-xl text-gray-600 font-light leading-relaxed max-w-lg reveal-up delay-100" x-text="pctx.firstName ? pctx.firstName + ', start with 30 days of daily meals and herbal rituals customized for your ' + pctx.typeShort + ' type. Build the foundation to resolve your ' + pctx.fatLocation + ' accumulation.' : 'Get instant access to your private member portal — smart-personalized meals, morning rituals, and daily tracking tailored for ' + weightType + '.'">
+                        Get <strong>instant access</strong> to your private member portal — smart-personalized meals, morning rituals, and daily tracking tailored for your Weight Loss type. Real change starts in 30 days.
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 pt-4 reveal-up delay-200">
@@ -280,12 +280,8 @@
                     </div>
                     <div class="relative z-10">
                         <span class="text-3xl mb-4 block">🥗</span>
-                        <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Smart-Personalized Daily Meals
-                        </h3>
-                        <p class="text-gray-600 mb-4 text-sm leading-relaxed">Log into your portal each morning to
-                            discover <strong>what to eat today</strong> — Western recipes that heal. Jollof that
-                            balances hormones. Moi Moi that fights inflammation. For <strong
-                                x-text="weightType"></strong>.</p>
+                        <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Smart-Personalized Daily Meals</h3>
+                        <p class="text-gray-600 mb-4 text-sm leading-relaxed" x-text="pctx.firstName ? 'Log into your portal each morning to discover meals designed specifically for your ' + pctx.typeShort + ' metabolism. Each meal is structured to address your ' + (pctx.cravingPattern || 'cravings') + ' and support ' + pctx.goalLabel + '.' : 'Log into your portal each morning to discover what to eat today — hormone-balancing recipes that heal. Built for your specific weight type.'">Log into your portal each morning to discover what to eat today — hormone-balancing recipes that heal. Built for your specific weight type.</p>
                         <div class="inline-block bg-sand px-3 py-1 rounded-md text-xs font-medium text-forest-800"
                             data-price-static>
                             Valued at $49</div>
@@ -296,9 +292,7 @@
                     class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 relative overflow-hidden hover:border-terracotta-200 transition-colors">
                     <span class="text-3xl mb-4 block">🍵</span>
                     <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Herbal Ritual Tracking</h3>
-                    <p class="text-gray-600 mb-4 text-sm">Morning and evening tea protocols with reminders. Your
-                        dashboard knows <strong>which teas</strong> work for <strong x-text="weightType"></strong>.
-                    </p>
+                    <p class="text-gray-600 mb-4 text-sm" x-text="pctx.firstName ? 'Morning and evening tea protocols with reminders. Your dashboard knows exactly which botanical tea rituals support your ' + pctx.typeShort + ' system, and tracks your consistency to help repair your ' + (pctx.sleepPattern || 'sleep cycle') + '.' : 'Morning and evening tea protocols with reminders. Your dashboard knows which teas work for ' + weightType + '.'">Morning and evening tea protocols with reminders. Your dashboard knows which teas work for your Weight Loss type.</p>
                     <div class="inline-block bg-terracotta-50 text-terracotta-800 px-3 py-1 rounded-md text-xs font-medium"
                         data-price-static>
                         Valued at $19</div>
@@ -307,8 +301,7 @@
                 <div class="bg-forest-900 rounded-3xl p-8 shadow-sm relative overflow-hidden text-cream">
                     <span class="text-3xl mb-4 block">💬</span>
                     <h3 class="text-xl font-serif font-bold mb-2">WhatsApp Access</h3>
-                    <p class="text-forest-100 mb-4 text-sm">Direct chat access to our Weight Loss specialist for urgency
-                        questions.</p>
+                    <p class="text-forest-100 mb-4 text-sm" x-text="pctx.firstName ? 'Direct chat access to our wellness team for 1-on-1 support as you begin your ' + pctx.typeShort + ' reset.' : 'Direct chat access to our Weight Loss specialist for urgency questions.'">Direct chat access to our Weight Loss specialist for urgency questions.</p>
                     <div class="inline-block bg-white/10 px-3 py-1 rounded-md text-xs font-medium" data-price-static>
                         Valued at $29
                     </div>
@@ -319,10 +312,8 @@
                     <div class="flex flex-col md:flex-row gap-6 items-start">
                         <div class="flex-1">
                             <span class="text-3xl mb-4 block">📊</span>
-                            <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Progress Dashboard & Tracking
-                            </h3>
-                            <p class="text-gray-600 mb-4 text-sm">Watch your transformation unfold. Log weight, cycles,
-                                energy levels — and get direct WhatsApp access to specialists.</p>
+                            <h3 class="text-xl font-serif font-bold text-forest-900 mb-2">Progress Dashboard & Tracking</h3>
+                            <p class="text-gray-600 mb-4 text-sm" x-text="pctx.firstName ? 'Watch your transformation unfold. Log weight, cycles, energy levels — and track your ' + pctx.typeShort + ' recovery daily.' : 'Watch your transformation unfold. Log weight, cycles, energy levels — and get direct WhatsApp access to specialists.'">Watch your transformation unfold. Log weight, cycles, energy levels — and get direct WhatsApp access to specialists.</p>
                             <div class="inline-block bg-sand px-3 py-1 rounded-md text-xs font-medium text-forest-800"
                                 data-price-static>
                                 Valued at $22</div>
@@ -352,10 +343,7 @@
             <div class="grid md:grid-cols-2 gap-8">
                 <div class="bg-forest-50 p-8 rounded-3xl border border-forest-100">
                     <h3 class="text-xl font-bold text-forest-900 mb-4">Habit Formation</h3>
-                    <p class="text-gray-700 leading-relaxed text-sm">
-                        Healing <span x-text="weightType"></span> requires consistency. This 30-day protocol focuses on
-                        building the daily nutritional habits that stabilize your hormones, without overwhelming you.
-                    </p>
+                    <p class="text-gray-700 leading-relaxed text-sm" x-text="pctx.firstName ? 'Healing your ' + pctx.typeShort + ' metabolism requires consistency. This 30-day protocol focuses on building the daily nutritional habits that stabilize your hormones, without overwhelming you.' : 'Healing your metabolism requires consistency. This 30-day protocol focuses on building the daily nutritional habits that stabilize your hormones, without overwhelming you.'">Healing requires consistency. This 30-day protocol focuses on building the daily nutritional habits that stabilize your hormones, without overwhelming you.</p>
                 </div>
                 <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
                     <h3 class="text-xl font-bold text-forest-900 mb-4">Quick Wins</h3>
@@ -455,10 +443,8 @@
                 </div>
 
                 <div class="relative z-10 text-center mb-10">
-                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">Choose Your Transformation
-                        Speed</h2>
-                    <p class="text-forest-200 text-lg max-w-2xl mx-auto">Compare the Starter Plan vs. the Complete
-                        Transformation System for <span x-text="weightType"></span></p>
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">Choose Your Transformation Speed</h2>
+                    <p class="text-forest-200 text-lg max-w-2xl mx-auto" x-text="pctx.typeShort ? 'Compare the Starter Plan vs. the Complete Transformation System for your ' + pctx.typeShort + ' type' : 'Compare the Starter Plan vs. the Complete Transformation System for ' + weightType">Compare the Starter Plan vs. the Complete Transformation System for your weight type</p>
                 </div>
 
                 <div class="relative z-10 overflow-x-auto -mx-6 md:mx-0 px-6 md:px-0">
@@ -493,8 +479,7 @@
                             <tr class="border-b border-forest-800/50">
                                 <td class="p-4 text-forest-100 font-medium">Meal Plan Protocol</td>
                                 <td class="p-4 text-gray-300 bg-forest-800/30">30 Days Entry-Level</td>
-                                <td class="p-4 text-forest-900 font-bold bg-sand">90 Days Advanced Phasing for <span
-                                        x-text="weightType"></span></td>
+                                <td class="p-4 text-forest-900 font-bold bg-sand" x-text="pctx.firstName ? '90 Days Advanced Phasing for ' + pctx.typeShort : '90 Days Advanced Phasing for ' + weightType">90 Days Advanced Phasing for weight type</td>
                             </tr>
                             <!-- Row 3 -->
                             <tr class="border-b border-forest-800/50">
@@ -561,6 +546,14 @@
                     </div>
 
                     <form @submit.prevent="processPayment()" class="space-y-6">
+                        <!-- Personalized Profile Confirmation -->
+                        <div class="bg-forest-50 border border-forest-200 rounded-xl p-4 mb-4 flex items-center gap-3" x-show="pctx.firstName">
+                            <span class="text-xl">🎯</span>
+                            <div class="text-xs text-forest-900 leading-normal">
+                                <strong x-text="pctx.firstName + ', start your 30-day reset for:'"></strong><br>
+                                <span x-text="'Addressing your ' + (pctx.fatLocation || 'body characteristics') + ', ' + (pctx.sleepPattern || 'sleep symptoms') + ', and ' + (pctx.cravingPattern || 'cravings') + '.'"></span>
+                            </div>
+                        </div>
                         <div class="bg-sand/50 rounded-xl p-6 mb-6 border border-sand">
                             <div class="flex justify-between items-center mb-4">
                                 <span class="font-bold text-gray-800">30-Day Quick Start Plan</span>
@@ -730,8 +723,13 @@
                 pricingLoaded: false,
                 offerExpired: false,
                 customerPrefilled: false,
+                pctx: { firstName: null, typeShort: '', selectPlanSubtext: '', fatLocation: '', sleepPattern: '', cravingPattern: '', goalLabel: '' },
 
                 init() {
+                    // Load personalization context
+                    if (window.Personalization) {
+                        this.pctx = window.Personalization.getContext();
+                    }
                     this.loadWeightType();
                     this.loadPricing();
                     this.startCountdown();

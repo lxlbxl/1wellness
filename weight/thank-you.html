@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth overflow-x-hidden">
 
 <head>
@@ -102,6 +102,8 @@
     <script src="https://checkout.flutterwave.com/v3.js"></script>
     <script defer src="../js/flutterwave-integration.js"></script>
     <script defer src="../js/tracking.js"></script>
+    <!-- Personalization Engine -->
+    <script src="../js/personalization.js"></script>
 </head>
 
 <body class="antialiased relative min-h-screen overflow-x-hidden w-full max-w-[100vw]">
@@ -146,15 +148,14 @@
                     🎉
                 </div>
 
+                <!-- Personalized headline -->
                 <h1 class="text-3xl md:text-5xl font-serif font-bold text-forest-900 mb-6 leading-[1.1]">
-                    Your <span class="italic text-terracotta-600">Private Healing Portal</span> is Ready.<br>
+                    <span x-text="pctx.firstName ? pctx.firstName + '\u2019s ' : 'Your '">Your </span><span class="italic text-terracotta-600" x-text="pctx.typeShort ? pctx.typeShort + ' Reset Portal' : 'Private Healing Portal'">Private Healing Portal</span> is Ready.<br>
                     Step Inside.
                 </h1>
 
-                <p class="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed font-light">
-                    Forget generic diets and static PDFs. You just unlocked a <strong>living, smart-personalized
-                        dashboard</strong> that adapts to your cycle, your Weight Loss type, and your progress — every single
-                    day.
+                <!-- Personalized subtext -->
+                <p class="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed font-light" x-text="pctx.thankYouDescription || 'Forget generic diets and static PDFs. You just unlocked a living, smart-personalized dashboard that adapts to your metabolic type and your progress — every single day.'">
                 </p>
 
                 <!-- Order Summary -->
@@ -234,25 +235,22 @@
                     </div>
                 </div>
 
-                <!-- Value Highlights Section -->
+                <!-- Value Highlights Section — Personalized by type -->
                 <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-8 mt-16 text-left">
                     <div class="space-y-3">
                         <div class="text-terracotta-600 text-2xl">✨</div>
-                        <h4 class="font-serif font-bold text-forest-900 text-lg">Smart-Personalized Daily Meals</h4>
-                        <p class="text-sm text-gray-600 font-light leading-relaxed">Wake up to a fresh meal plan every
-                            morning — Salmon, Berries, Oatmeal — all hormone-balancing and made for YOUR Weight Loss type.</p>
+                        <h4 class="font-serif font-bold text-forest-900 text-lg" x-text="valueHighlights[0].title">Smart-Personalized Daily Meals</h4>
+                        <p class="text-sm text-gray-600 font-light leading-relaxed" x-text="valueHighlights[0].body">Wake up to a fresh meal plan every morning, hormone-balancing and built for your type.</p>
                     </div>
                     <div class="space-y-3">
                         <div class="text-terracotta-600 text-2xl">🍵</div>
-                        <h4 class="font-serif font-bold text-forest-900 text-lg">Herbal Tea Rituals & Tracking</h4>
-                        <p class="text-sm text-gray-600 font-light leading-relaxed">Morning and evening tea protocols
-                            with reminders. Your dashboard tracks your consistency and adapts with you.</p>
+                        <h4 class="font-serif font-bold text-forest-900 text-lg" x-text="valueHighlights[1].title">Herbal Tea Rituals & Tracking</h4>
+                        <p class="text-sm text-gray-600 font-light leading-relaxed" x-text="valueHighlights[1].body">Morning and evening tea protocols with reminders and tracking.</p>
                     </div>
                     <div class="space-y-3">
                         <div class="text-terracotta-600 text-2xl">📈</div>
-                        <h4 class="font-serif font-bold text-forest-900 text-lg">Body Data & Progress Tracking</h4>
-                        <p class="text-sm text-gray-600 font-light leading-relaxed">Log weight, cycles, symptoms — watch
-                            your transformation unfold week by week inside your private portal.</p>
+                        <h4 class="font-serif font-bold text-forest-900 text-lg" x-text="valueHighlights[2].title">Body Data & Progress Tracking</h4>
+                        <p class="text-sm text-gray-600 font-light leading-relaxed" x-text="valueHighlights[2].body">Log weight, symptoms and energy — watch your transformation unfold week by week.</p>
                     </div>
                 </div>
             </div>
@@ -545,6 +543,18 @@
                 otoPurchased: false,
                 isProcessingOTO: false,
                 userCreationTriggered: false,
+                // Personalization context — populated on init
+                pctx: {
+                    firstName: null,
+                    typeShort: '',
+                    thankYouDescription: '',
+                },
+                // Type-specific value highlight cards
+                valueHighlights: [
+                    { title: 'Smart-Personalized Daily Meals', body: 'Wake up to a fresh meal plan every morning — hormone-balancing and built specifically for your metabolic type.' },
+                    { title: 'Herbal Tea Rituals & Tracking', body: 'Morning and evening tea protocols with reminders. Your dashboard tracks your consistency and adapts with you.' },
+                    { title: 'Body Data & Progress Tracking', body: 'Log weight, cycles, symptoms — watch your transformation unfold week by week inside your private portal.' }
+                ],
 
                 async testFlutterwaveInit() {
                     console.log('Testing Flutterwave initialization...');
@@ -738,6 +748,38 @@
                 // Enhanced init
                 async init() {
                     console.log('Thank You page initializing...');
+
+                    // Step 0: Load personalization context
+                    if (window.Personalization) {
+                        this.pctx = window.Personalization.getContext();
+                        // Build type-specific value highlights
+                        const type = this.pctx.type || 'insulin';
+                        const highlights = {
+                            insulin: [
+                                { title: 'Glucose-Sequencing Daily Meals', body: 'Wake up to meals eaten in a specific sequence — fibre first, protein second, carbs last — engineered to flatten your post-meal glucose spikes and stop belly fat storage.' },
+                                { title: 'Berberine & Cinnamon Herbal Rituals', body: 'Morning and evening tea with organic insulin-sensitising roots. Your dashboard tracks each ritual and adapts your protocol as your glucose tolerance improves.' },
+                                { title: 'Metabolic Progress Tracking', body: 'Log weight, waist measurements, and energy levels — your trend chart shows metabolic recovery week by week, even when the daily scale fluctuates.' }
+                            ],
+                            inflammatory: [
+                                { title: 'Anti-Inflammatory Daily Meals', body: 'Wake up to elimination-protocol meals that remove your top inflammatory triggers and replace them with gut-healing, anti-inflammatory whole foods — every single day.' },
+                                { title: 'Turmeric & Ginger Herbal Rituals', body: 'Morning and evening botanical teas with organic turmeric, ginger, and green tea catechins. Tracked inside your portal to ensure consistent anti-inflammatory support.' },
+                                { title: 'Inflammation & Symptom Tracking', body: 'Log bloating, joint stiffness, energy, and weight. Your portal surfaces weekly trends showing inflammation receding as your gut heals.' }
+                            ],
+                            adrenal: [
+                                { title: 'Cortisol-Timed Daily Meals', body: 'Wake up to meals timed around your cortisol rhythm — front-loading protein and minerals in the morning to stabilise your adrenals and prevent afternoon crashes.' },
+                                { title: 'Adaptogen Herbal Rituals', body: 'Morning and evening adaptogen rituals with ashwagandha, rhodiola, and reishi — calibrated to repair your cortisol curve and restore your sleep architecture.' },
+                                { title: 'Cortisol & Sleep Tracking', body: 'Log sleep quality, energy levels, and stress symptoms — your trend chart shows your cortisol rhythm stabilising and your 3am wake-ups fading over time.' }
+                            ],
+                            transition: [
+                                { title: 'Phytoestrogenic Daily Meals', body: 'Wake up to estrogen-supporting meals with flaxseed, soy isoflavones, and cruciferous vegetables — designed to gently balance your transition and reduce hot flash frequency.' },
+                                { title: 'Black Cohosh & Red Clover Rituals', body: 'Morning and evening herbal rituals with evidence-backed phytoestrogens to calm vasomotor symptoms and support your hormonal transition.' },
+                                { title: 'Hormonal Transition Tracking', body: 'Log hot flash frequency, sleep quality, and weight — your portal shows your transition symptoms reducing as your protocol takes hold.' }
+                            ]
+                        };
+                        if (highlights[type]) {
+                            this.valueHighlights = highlights[type];
+                        }
+                    }
 
                     // Step 1: Load order details from URL/localStorage
                     this.loadOrderDetails();

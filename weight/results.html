@@ -116,6 +116,8 @@
     <script defer src="../js/config.js"></script>
     <script defer src="../js/webhook-manager.js"></script>
     <script defer src="../js/tracking.js"></script>
+    <!-- Personalization Engine -->
+    <script src="../js/personalization.js"></script>
 </head>
 
 <body class="antialiased relative min-h-screen">
@@ -151,8 +153,8 @@
         <!-- Loading State -->
         <div x-show="isLoading" class="text-center py-24 min-h-[60vh] flex flex-col items-center justify-center">
             <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-forest-900 mx-auto mb-6"></div>
-            <h2 class="text-3xl font-serif font-bold text-forest-900 mb-3">Analyzing Your Unique Profile...</h2>
-            <p class="text-gray-500 font-light text-lg">Comparing your symptoms with our database of metabolic and transition profiles.</p>
+            <h2 class="text-3xl font-serif font-bold text-forest-900 mb-3" x-text="pctx.firstName ? 'Analyzing ' + pctx.firstName + '\u2019s unique profile\u2026' : 'Analyzing your unique profile\u2026'">Analyzing your unique profile...</h2>
+            <p class="text-gray-500 font-light text-lg">Cross-referencing your 12 answers with our database of metabolic and hormonal profiles.</p>
         </div>
 
         <!-- Results Content -->
@@ -170,28 +172,55 @@
                         class="w-20 h-20 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-sm">
                         🎉
                     </div>
-                    <h1 data-exp="results-headline" class="text-4xl md:text-5xl font-serif font-bold text-forest-900 mb-4">
-                        <span x-text="assessmentData?.contactInfo?.name?.split(' ')[0] ? assessmentData.contactInfo.name.split(' ')[0] + ', based' : 'Based'"></span>
-                        on your answers, you're showing strong markers of
-                        <span class="italic text-terracotta-600" x-text="weightTypeInfo.name"></span>
-                    </h1>
-                    <p class="text-xl text-gray-600 font-light max-w-2xl mx-auto">
-                        We've identified your primary metabolic and transition driver. This is the first step to finally taking control of
-                        your health.
+                    <h1 data-exp="results-headline" class="text-4xl md:text-5xl font-serif font-bold text-forest-900 mb-4" x-text="pctx.customHeadline"></h1>
+                    <p class="text-lg md:text-xl text-terracotta-600 font-medium mb-4" x-show="pctx.symptomConfirmation" x-text="pctx.symptomConfirmation"></p>
+                    <p class="text-lg text-gray-600 font-light max-w-2xl mx-auto">
+                        Your answers reveal a clear metabolic pattern. Below is everything our analysis found — and exactly what it means for your body.
                     </p>
                 </div>
             </section>
 
-            <!-- Empathy Beat -->
+            <!-- Empathy Beat (Personalized) -->
             <section class="mb-10 md:mb-16 max-w-3xl mx-auto" data-exp="empathy-block">
                 <div class="bg-terracotta-500/5 border border-terracotta-500/15 rounded-[2rem] p-7 md:p-10">
                     <p class="text-sm font-bold tracking-widest text-terracotta-600 uppercase mb-4">Before we show you your results</p>
-                    <p class="text-lg md:text-xl text-gray-700 font-light leading-relaxed">
-                        If you've counted calories, followed plans, exercised consistently — and still haven't seen lasting results — <strong>that frustration is real, and it's not your fault.</strong>
-                    </p>
+                    <p class="text-lg md:text-xl text-gray-700 font-light leading-relaxed" x-text="pctx.empathyLine"></p>
                     <p class="text-base text-gray-600 font-light leading-relaxed mt-4">
-                        Metabolic resistance, cortisol patterns, and hormonal imbalances can make standard calorie-deficit advice actively counterproductive for your body. What you need isn't less willpower — it's a protocol built for your specific metabolic type. That's what follows.
+                        Metabolic resistance, cortisol patterns, and hormonal imbalances can make standard calorie-deficit advice actively counterproductive for your body. What you need isn't less willpower — it's a protocol built for your exact type. That's what follows.
                     </p>
+                </div>
+            </section>
+
+            <!-- ✨ We Noticed About You — Personalized Insight Panel -->
+            <section class="mb-10 md:mb-16 max-w-5xl mx-auto" x-show="pctx.topInsights && pctx.topInsights.length > 0">
+                <div class="glass-panel rounded-[2rem] p-7 md:p-10 shadow-soft border border-forest-100/60 relative overflow-hidden">
+                    <!-- Subtle top accent -->
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-forest-800/60 via-terracotta-500/60 to-forest-800/60"></div>
+
+                    <div class="flex items-center gap-3 mb-7">
+                        <div class="w-10 h-10 bg-forest-900 rounded-xl flex items-center justify-center text-xl shrink-0">🔍</div>
+                        <div>
+                            <p class="text-xs font-bold tracking-widest text-forest-800/60 uppercase">Based on your 12 answers</p>
+                            <h3 class="text-xl md:text-2xl font-serif font-bold text-forest-900"
+                                x-text="pctx.firstName ? 'What we noticed about ' + pctx.firstName : 'What we noticed about you'"></h3>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <template x-for="(insight, i) in pctx.topInsights" :key="i">
+                            <div class="flex items-start gap-4 bg-white/60 rounded-2xl p-5 border border-white/80 hover:bg-white/80 transition-colors">
+                                <span class="text-2xl shrink-0 mt-0.5" x-text="insight.icon"></span>
+                                <p class="text-gray-700 font-light text-sm leading-relaxed" x-text="insight.text"></p>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="mt-6 pt-5 border-t border-forest-100/60">
+                        <p class="text-sm text-forest-800/70 font-medium flex items-center gap-2">
+                            <span class="text-forest-500">✓</span>
+                            <span x-text="'These are not random symptoms — they are interconnected signals of your ' + pctx.typeShort + ' pattern. Your protocol is built to address all of them simultaneously.'"></span>
+                        </p>
+                    </div>
                 </div>
             </section>
 
@@ -564,8 +593,21 @@
                 weightTypeInfo: {},
                 startingPrice: 0,
                 pricingLoaded: false,
+                // Personalization context — populated on init from the shared engine
+                pctx: {
+                    firstName: null,
+                    customHeadline: 'Your results confirm your metabolic type',
+                    symptomConfirmation: '',
+                    empathyLine: "If you've counted calories, followed plans, exercised consistently — and still haven't seen lasting results — that frustration is real, and it's not your fault.",
+                    topInsights: [],
+                    typeShort: 'Metabolic'
+                },
 
                 init() {
+                    // Load personalization context immediately (synchronous)
+                    if (window.Personalization) {
+                        this.pctx = window.Personalization.getContext();
+                    }
                     this.loadAssessmentData();
                     this.loadPricing();
                 },
