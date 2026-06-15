@@ -12,6 +12,11 @@ if (!defined('APP_ROOT')) {
     define('APP_ROOT', dirname(__DIR__));
 }
 
+// Composer autoloader (vendor packages: Sentry, PHPMailer, etc.)
+if (file_exists(APP_ROOT . '/../vendor/autoload.php')) {
+    require_once APP_ROOT . '/../vendor/autoload.php';
+}
+
 // Load database configuration from file if exists (created by installer)
 $dbConfigFile = __DIR__ . '/db_config.php';
 if (file_exists($dbConfigFile)) {
@@ -47,6 +52,20 @@ define('APP_NAME', env('APP_NAME', '1wellness Admin'));
 define('APP_VERSION', '2.0.0');
 define('APP_ENV', env('APP_ENV', 'development'));
 define('APP_URL', env('APP_URL', 'https://1wellness.club'));
+
+// Sentry error monitoring
+(function () {
+    $dsn = env('SENTRY_DSN', '');
+    if ($dsn && class_exists('\Sentry\SentrySdk')) {
+        \Sentry\init([
+            'dsn'                  => $dsn,
+            'environment'          => APP_ENV,
+            'release'              => APP_VERSION,
+            'traces_sample_rate'   => (float) env('SENTRY_TRACES_SAMPLE_RATE', 1.0),
+            'profiles_sample_rate' => (float) env('SENTRY_PROFILES_SAMPLE_RATE', 1.0),
+        ]);
+    }
+})();
 
 // Security Settings
 define('SESSION_NAME', env('SESSION_NAME', '1wellness_admin_session'));
