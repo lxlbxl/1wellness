@@ -1908,7 +1908,7 @@ function processRenewal(tier, amount, pubKey) {
                 customizations: {
                     title: "1wellness Plan Renewal",
                     description: "Payment for " + tier + " plan",
-                    logo: "https://1wellness.club/assets/img/logo.png",
+                    logo: "https://1wellness.club/images/brand/logo-icon-square.png",
                 },
                 callback: async function (data) {
                     console.log("Flutterwave callback:", data);

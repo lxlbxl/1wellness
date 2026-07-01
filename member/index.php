@@ -38,7 +38,9 @@ $isOnboarded   = !empty($_dbUser['onboarded_at']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member Area | 1wellness</title>
-    
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png">
+    <link rel="shortcut icon" href="/images/brand/favicon.ico">
+
     <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>

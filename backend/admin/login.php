@@ -111,6 +111,8 @@ if ($_POST) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - 1wellness</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png">
+    <link rel="shortcut icon" href="/images/brand/favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
@@ -132,10 +134,7 @@ if ($_POST) {
     <div class="w-full max-w-md">
         <!-- Brand -->
         <div class="text-center mb-12">
-            <div
-                class="w-16 h-16 bg-[#2C3E35] rounded-2xl flex items-center justify-center text-white text-3xl font-serif mx-auto mb-4 shadow-xl shadow-[#2C3E35]/20">
-                L
-            </div>
+            <img src="/images/brand/logo-nav.png" alt="1wellness" class="h-20 w-auto mx-auto mb-4">
             <h1 class="text-3xl font-serif text-[#2C3E35]">1wellness Admin</h1>
             <p class="text-[#6B7C70] mt-2 text-sm uppercase tracking-widest font-medium">Control Center</p>
         </div>

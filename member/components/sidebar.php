@@ -7,10 +7,7 @@
 <aside class="hidden lg:flex fixed left-0 top-0 bottom-0 w-80 bg-white border-r border-sage-100 flex-col z-50">
     <div class="p-8 border-b border-sage-50 bg-sage-50/10">
         <div class="flex items-center gap-4">
-            <div
-                class="w-12 h-12 rounded-2xl bg-sage-500 flex items-center justify-center text-white shadow-lg shadow-sage-500/20">
-                <i data-lucide="leaf" class="w-6 h-6"></i>
-            </div>
+            <img src="/images/brand/logo-icon-sm.png" alt="1wellness" class="w-12 h-12 object-contain">
             <div>
                 <h1 class="font-serif text-xl text-sage-600 leading-tight">1wellness</h1>
                 <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-sage-300"><?php echo htmlspecialchars($subBrand ?? '1wellness'); ?></p>

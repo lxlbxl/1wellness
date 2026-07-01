@@ -57,9 +57,7 @@ $pageLabel = $flatAll[$currentPage]
     <!-- ── Logo + collapse toggle ── -->
     <div class="flex items-center h-14 px-3 flex-shrink-0" style="border-bottom: 1px solid rgba(255,255,255,.08);">
         <a href="dashboard.php" class="flex items-center gap-2.5 flex-1 min-w-0 overflow-hidden group">
-            <div class="w-8 h-8 rounded-xl bg-[#D97757] flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-                <i class="fas fa-leaf text-white" style="font-size: 13px;"></i>
-            </div>
+            <img src="/images/brand/logo-icon-sm-white.png" alt="1wellness" class="h-8 w-auto flex-shrink-0 group-hover:scale-105 transition-transform">
             <span class="sb-label font-serif font-semibold text-white truncate" style="font-size: 15px; line-height: 1;">
                 1wellness
             </span>

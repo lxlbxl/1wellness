@@ -15,6 +15,8 @@ if (!isset($_SESSION['admin_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | 1wellness</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png">
+    <link rel="shortcut icon" href="/images/brand/favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -127,11 +129,8 @@ if (!isset($_SESSION['admin_id'])) {
         <aside
             class="hidden md:flex flex-col fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-sage-100 p-8 z-50">
             <div class="flex items-center gap-3 mb-12 pl-2">
-                <div
-                    class="w-10 h-10 bg-sage-500 rounded-xl flex items-center justify-center text-white font-serif text-xl">
-                    O</div>
-                <span class="font-serif text-2xl text-sage-600 tracking-tight">1wellness.<span
-                        class="italic font-light">admin</span></span>
+                <img src="/images/brand/logo-icon-sm.png" alt="1wellness" class="w-10 h-10 object-contain">
+                <span class="font-serif text-2xl text-sage-600 tracking-tight">1wellness</span>
             </div>
 
             <nav class="flex-1 space-y-2">

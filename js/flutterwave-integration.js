@@ -630,7 +630,7 @@ class FlutterwaveIntegration {
         if (funnel === 'pcos') return "https://1wellness.club/assets/cyclesync-logo.png";
         if (funnel === 'acne') return "https://1wellness.club/assets/glowclear-logo.png";
         if (funnel === 'weight') return "https://1wellness.club/assets/leanflow-logo.png";
-        return "https://1wellness.club/assets/logo.png";
+        return "https://1wellness.club/images/brand/logo-icon-square.png";
     }
 
     /**
