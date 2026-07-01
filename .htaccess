@@ -10,6 +10,13 @@ RewriteRule ^(pcos|acne|weight|mens)/?$ backend/router.php?funnel=$1 [L,QSA]
 # Also catch explicit index.html requests on funnel roots
 RewriteRule ^(pcos|acne|weight|mens)/index\.html$ backend/router.php?funnel=$1 [L,QSA]
 
+# A/B engine: structural variant directories ({funnel}__{slug}/) must not be
+# directly reachable — that would let a specific variant be bookmarked/shared,
+# bypassing sticky-assignment and skipping exposure tracking entirely. Route
+# them through the same router.php logic as the funnel root.
+RewriteRule ^(pcos|acne|weight|mens)__[^/]+/?$ backend/router.php?funnel=$1 [L,QSA]
+RewriteRule ^(pcos|acne|weight|mens)__[^/]+/index\.html$ backend/router.php?funnel=$1 [L,QSA]
+
 # Block direct web access to structural variant directories' siblings metadata
 <FilesMatch "\.(sql|md)$">
     <IfModule mod_authz_core.c>
