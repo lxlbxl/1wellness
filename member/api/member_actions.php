@@ -223,8 +223,18 @@ try {
                 throw new Exception('Payment verification failed — please contact support.');
             }
 
-            $expectedAmounts = ['30-day' => 97, '90-day' => 197];
-            $expected = $expectedAmounts[$tier] ?? 97;
+            // Expected price is derived from this user's actual funnel/condition and
+            // the admin-configured pricing, not a hardcoded PCOS-only price map -
+            // otherwise a pricing change in the admin panel silently breaks renewals
+            // for every condition until the hardcoded map is manually updated too.
+            $profileRow = $db->fetch("SELECT condition_type FROM member_profiles WHERE user_id = :uid", [':uid' => $userId]);
+            $condition  = in_array($profileRow['condition_type'] ?? '', ['pcos', 'acne', 'weight', 'mens'])
+                ? $profileRow['condition_type'] : 'pcos';
+
+            $defaultAmounts = ['30-day' => 97, '90-day' => 197];
+            $settings       = Settings::getInstance();
+            $plans          = $settings->get('payment_plans');
+            $expected       = $plans[$condition][$tier]['price'] ?? $defaultAmounts[$tier] ?? 97;
             $verified = (float)($txData['amount'] ?? 0);
             if (abs($verified - $expected) > 1.0) {
                 error_log("Renewal amount mismatch: expected $expected, got $verified for user $userId");

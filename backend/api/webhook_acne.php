@@ -19,14 +19,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $integrity = new PaymentIntegrity();
 
-$signature = $_SERVER['HTTP_VERIF_HASH'] ?? '';
-[$hashOk, $hashReason] = $integrity->checkWebhookHash($signature);
-if (!$hashOk) {
-    $integrity->log('webhook', 'rejected', ['detail' => ['source' => 'webhook_acne', 'reason' => $hashReason]]);
-    http_response_code($hashReason === 'hash_not_configured' ? 503 : 401);
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
-}
+// This endpoint is called directly by the customer's browser right after a
+// client-side Flutterwave success callback, so a shared-secret header (meant
+// for genuine server-to-server calls, like flutterwave-webhook.php) can never
+// be legitimately supplied here — it was rejecting 100% of real traffic.
+// The only trustworthy check for a browser-originated claim is re-verifying
+// the transaction against Flutterwave's own API, so that is now mandatory
+// rather than skipped when transaction_id is absent.
 
 $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
@@ -44,26 +43,32 @@ if ($txRef && $integrity->saleExists($txRef, $txId)) {
     exit;
 }
 
-if ($txId) {
-    $verified = $integrity->verifyTransaction($txId);
-    if (!$verified) {
-        $integrity->log('webhook', 'verify_failed', ['tx_ref' => $txRef, 'transaction_id' => $txId,
-            'detail' => ['source' => 'webhook_acne']]);
-        http_response_code(422);
-        echo json_encode(['success' => false, 'error' => 'Transaction verification failed']);
-        exit;
-    }
-    if (abs((float)($verified['amount'] ?? 0) - (float)($input['amount'] ?? 0)) > 0.01) {
-        $integrity->log('webhook', 'rejected', ['tx_ref' => $txRef, 'transaction_id' => $txId,
-            'detail' => ['source' => 'webhook_acne', 'reason' => 'amount_mismatch',
-                         'posted' => $input['amount'], 'verified' => $verified['amount']]]);
-        http_response_code(422);
-        echo json_encode(['success' => false, 'error' => 'Amount mismatch']);
-        exit;
-    }
-    $input['amount']   = $verified['amount'];
-    $input['currency'] = $verified['currency'] ?? ($input['currency'] ?? 'USD');
+if (!$txId) {
+    $integrity->log('webhook', 'rejected', ['tx_ref' => $txRef,
+        'detail' => ['source' => 'webhook_acne', 'reason' => 'missing_transaction_id']]);
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Missing transaction_id']);
+    exit;
 }
+
+$verified = $integrity->verifyTransaction($txId);
+if (!$verified) {
+    $integrity->log('webhook', 'verify_failed', ['tx_ref' => $txRef, 'transaction_id' => $txId,
+        'detail' => ['source' => 'webhook_acne']]);
+    http_response_code(422);
+    echo json_encode(['success' => false, 'error' => 'Transaction verification failed']);
+    exit;
+}
+if (abs((float)($verified['amount'] ?? 0) - (float)($input['amount'] ?? 0)) > 0.01) {
+    $integrity->log('webhook', 'rejected', ['tx_ref' => $txRef, 'transaction_id' => $txId,
+        'detail' => ['source' => 'webhook_acne', 'reason' => 'amount_mismatch',
+                     'posted' => $input['amount'], 'verified' => $verified['amount']]]);
+    http_response_code(422);
+    echo json_encode(['success' => false, 'error' => 'Amount mismatch']);
+    exit;
+}
+$input['amount']   = $verified['amount'];
+$input['currency'] = $verified['currency'] ?? ($input['currency'] ?? 'USD');
 
 try {
     $orchestrator = new AutomationOrchestrator();

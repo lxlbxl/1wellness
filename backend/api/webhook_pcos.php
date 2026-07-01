@@ -19,15 +19,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $integrity = new PaymentIntegrity();
 
-// 1. Verify sender signature (constant-time)
-$signature = $_SERVER['HTTP_VERIF_HASH'] ?? '';
-[$hashOk, $hashReason] = $integrity->checkWebhookHash($signature);
-if (!$hashOk) {
-    $integrity->log('webhook', 'rejected', ['detail' => ['source' => 'webhook_pcos', 'reason' => $hashReason]]);
-    http_response_code($hashReason === 'hash_not_configured' ? 503 : 401);
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
-}
+// This endpoint is called directly by the customer's browser right after a
+// client-side Flutterwave success callback, so a shared-secret header (meant
+// for genuine server-to-server calls, like flutterwave-webhook.php) can never
+// be legitimately supplied here — it was rejecting 100% of real traffic.
+// The only trustworthy check for a browser-originated claim is re-verifying
+// the transaction against Flutterwave's own API, so that is now mandatory
+// rather than skipped when transaction_id is absent.
 
 $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
@@ -40,35 +38,42 @@ if (!isset($input['email']) || !isset($input['name'])) {
 $txRef = $input['tx_ref'] ?? $input['reference'] ?? null;
 $txId  = $input['transaction_id'] ?? $input['order_id'] ?? null;
 
-// 2. Idempotency — don't process the same transaction twice
+// 1. Idempotency — don't process the same transaction twice
 if ($txRef && $integrity->saleExists($txRef, $txId)) {
     echo json_encode(['success' => true, 'duplicate' => true]);
     exit;
 }
 
-// 3. Re-verify against Flutterwave API; never trust POST body amount alone
-if ($txId) {
-    $verified = $integrity->verifyTransaction($txId);
-    if (!$verified) {
-        $integrity->log('webhook', 'verify_failed', ['tx_ref' => $txRef, 'transaction_id' => $txId,
-            'detail' => ['source' => 'webhook_pcos']]);
-        http_response_code(422);
-        echo json_encode(['success' => false, 'error' => 'Transaction verification failed']);
-        exit;
-    }
-    // Confirm amount matches to guard against tampered-amount attacks
-    if (abs((float)($verified['amount'] ?? 0) - (float)($input['amount'] ?? 0)) > 0.01) {
-        $integrity->log('webhook', 'rejected', ['tx_ref' => $txRef, 'transaction_id' => $txId,
-            'detail' => ['source' => 'webhook_pcos', 'reason' => 'amount_mismatch',
-                         'posted' => $input['amount'], 'verified' => $verified['amount']]]);
-        http_response_code(422);
-        echo json_encode(['success' => false, 'error' => 'Amount mismatch']);
-        exit;
-    }
-    // Use verified canonical values
-    $input['amount']   = $verified['amount'];
-    $input['currency'] = $verified['currency'] ?? ($input['currency'] ?? 'USD');
+// 2. Re-verify against Flutterwave API; never trust POST body amount alone.
+// A missing transaction_id is rejected outright rather than skipping verification.
+if (!$txId) {
+    $integrity->log('webhook', 'rejected', ['tx_ref' => $txRef,
+        'detail' => ['source' => 'webhook_pcos', 'reason' => 'missing_transaction_id']]);
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Missing transaction_id']);
+    exit;
 }
+
+$verified = $integrity->verifyTransaction($txId);
+if (!$verified) {
+    $integrity->log('webhook', 'verify_failed', ['tx_ref' => $txRef, 'transaction_id' => $txId,
+        'detail' => ['source' => 'webhook_pcos']]);
+    http_response_code(422);
+    echo json_encode(['success' => false, 'error' => 'Transaction verification failed']);
+    exit;
+}
+// Confirm amount matches to guard against tampered-amount attacks
+if (abs((float)($verified['amount'] ?? 0) - (float)($input['amount'] ?? 0)) > 0.01) {
+    $integrity->log('webhook', 'rejected', ['tx_ref' => $txRef, 'transaction_id' => $txId,
+        'detail' => ['source' => 'webhook_pcos', 'reason' => 'amount_mismatch',
+                     'posted' => $input['amount'], 'verified' => $verified['amount']]]);
+    http_response_code(422);
+    echo json_encode(['success' => false, 'error' => 'Amount mismatch']);
+    exit;
+}
+// Use verified canonical values
+$input['amount']   = $verified['amount'];
+$input['currency'] = $verified['currency'] ?? ($input['currency'] ?? 'USD');
 
 try {
     $orchestrator = new AutomationOrchestrator();

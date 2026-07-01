@@ -784,10 +784,10 @@
                         try {
                             const parsed = JSON.parse(data);
                             const typeMap = {
-                                'insulin': 'Insulin-Resistant Vitality',
-                                'inflammatory': 'Inflammatory Vitality',
-                                'adrenal': 'Adrenal Vitality',
-                                'postPill': 'Post-Pill Vitality'
+                                'cortisol': 'Stress-Driven Vitality',
+                                'androgen': 'Low-Testosterone Vitality',
+                                'mitochondrial': 'Low-Energy Vitality',
+                                'inflammatory': 'Inflammatory Vitality'
                             };
                             if (parsed.mensType && parsed.mensType.primary) {
                                 this.mensType = typeMap[parsed.mensType.primary] || 'Vitality';

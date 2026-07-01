@@ -1898,7 +1898,7 @@ function processRenewal(tier, amount, pubKey) {
                 public_key: pubKey,
                 tx_ref: "1W_" + Math.floor((Math.random() * 1000000000) + 1),
                 amount: amount,
-                currency: "NGN",
+                currency: "USD",
                 payment_options: "card, account, ussd",
                 customer: {
                     email: userData?.user?.email || "",

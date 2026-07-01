@@ -808,7 +808,7 @@
 
                 autoLogin() {
                     if (this.newCredentials && this.newCredentials.auto_login_token) {
-                        window.location.href = `../member/login.html?autologin=${this.newCredentials.auto_login_token}`;
+                        window.location.href = `../member/login.html#autologin=${this.newCredentials.auto_login_token}`;
                     } else {
                         // Fallback to manual login
                         window.location.href = '../member/login.html';

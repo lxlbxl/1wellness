@@ -135,9 +135,16 @@
         const btnLoader = document.getElementById('btnLoader');
 
         // Check for Auto-Login Token
+        // Carried in the URL fragment (#autologin=...), not a query param -
+        // fragments are never sent to the server or included in Referer headers,
+        // so the token never appears in access logs. Cleared from the visible
+        // URL immediately so it doesn't linger in browser history either.
         window.addEventListener('load', async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('autologin');
+            const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+            const token = hashParams.get('autologin');
+            if (token) {
+                history.replaceState(null, '', window.location.pathname + window.location.search);
+            }
 
             if (token) {
                 console.log("Found auto-login token, verifying...");

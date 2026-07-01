@@ -265,10 +265,10 @@
                         this.email = urlParams.get('email') || assessmentData.contactInfo?.email || 'your email';
 
                         const typeMap = {
-                            'insulin': 'Insulin-Resistant',
-                            'inflammatory': 'Inflammatory',
-                            'adrenal': 'Adrenal',
-                            'postPill': 'Post-Pill'
+                            'cortisol': 'Stress-Driven',
+                            'androgen': 'Low-Testosterone',
+                            'mitochondrial': 'Low-Energy',
+                            'inflammatory': 'Inflammatory'
                         };
                         if (assessmentData.mensType && assessmentData.mensType.primary) {
                             this.mensType = typeMap[assessmentData.mensType.primary] || 'Vitality';
