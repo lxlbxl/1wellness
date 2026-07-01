@@ -52,9 +52,22 @@ class MensProtocolGenerator extends AbstractProtocolGenerator
      */
     private function resolveVitalityProfile(array $assessment): string
     {
-        $profile = $assessment['vitality_profile'] ?? $assessment['mens_type'] ?? '';
+        $profile = $assessment['vitality_profile'] ?? $assessment['mensType'] ?? $assessment['mens_type'] ?? '';
 
-        if (empty($profile)) {
+        // Frontend sends {primary, scores, confidence} keyed on cortisol/androgen/
+        // mitochondrial/inflammatory, not a plain string in this vocabulary.
+        if (is_array($profile)) {
+            $profile = $profile['primary'] ?? '';
+            $driverMap = [
+                'cortisol' => 'stress-burnout',
+                'androgen' => 'low-testosterone-markers',
+                'mitochondrial' => 'low-energy',
+                'inflammatory' => 'body-composition',
+            ];
+            $profile = $driverMap[strtolower((string)$profile)] ?? $profile;
+        }
+
+        if (empty($profile) || !is_string($profile)) {
             $desc = strtolower(implode(' ', $assessment));
 
             if (strpos($desc, 'testosterone') !== false || strpos($desc, 'libido') !== false || strpos($desc, 'muscle loss') !== false) {

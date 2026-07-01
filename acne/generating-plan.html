@@ -207,7 +207,7 @@
         // API URL — uses the PHP backend (same server, no separate Node.js process needed)
         const API_BASE_URL = '../backend/api';
 
-        const GENERATION_TIMEOUT_MS = 120; // 2 minutes
+        const GENERATION_TIMEOUT_MS = 120000; // 2 minutes
 
         function generator() {
             return {
@@ -282,6 +282,7 @@
                         const payload = {
                             email: this.email,
                             name: clientName,
+                            type: 'acne',
                             assessment: assessmentData,
                         };
 
@@ -305,10 +306,16 @@
                             throw new Error(errData.error || `Server error (${response.status})`);
                         }
 
-                        const blob = await response.blob();
-                        this.downloadUrl = window.URL.createObjectURL(blob);
+                        const result = await response.json();
+                        if (!result.success || !result.token) {
+                            throw new Error(result.error || 'Plan generation did not return a valid file.');
+                        }
+                        this.downloadFilename = result.filename || this.downloadFilename;
+                        this.downloadUrl = `${API_BASE_URL}/download-plan.php?token=${encodeURIComponent(result.token)}&filename=${encodeURIComponent(this.downloadFilename)}`;
 
-                        // Store for thank-you page
+                        // Store for thank-you page. Unlike a blob: URL (revoked once this
+                        // document unloads), this is a real server-backed URL that stays
+                        // valid across navigation, within the storage TTL.
                         localStorage.setItem('acneProtocolDownloadUrl', this.downloadUrl);
                         localStorage.setItem('acneProtocolFilename', this.downloadFilename);
                         localStorage.setItem('acneProtocolEmail', this.email);

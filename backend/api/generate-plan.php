@@ -4,7 +4,10 @@
  *
  * POST /api/generate-plan.php
  * Body: { email, name, type, assessment: {...} }
- * Returns: PDF binary (application/pdf)
+ * Returns: JSON { success, token, filename } — the PDF itself is persisted
+ * server-side (backend/storage/generated_plans/) and fetched via
+ * download-plan.php?token=...&filename=... so the link survives navigation
+ * (a raw blob: URL, used previously, does not survive a page navigation).
  *
  * Routes to condition-specific generators via ProtocolGeneratorFactory:
  * - pcos  → PcosProtocolGenerator (CycleSync)
@@ -89,8 +92,9 @@ try {
     // Get condition-specific generator via factory
     $generator = ProtocolGeneratorFactory::for($condition);
 
-    // Generate plan with region context
-    $pdfBinary = $generator->generate($assessment, $name, $email, $regionProfile);
+    // Generate the structured plan (JSON), then render it to an actual PDF binary
+    $planData = $generator->generate($assessment, $name, $email, $regionProfile);
+    $pdfBinary = $generator->renderPlanToPdf($planData, $name);
 
     // Brand names per condition
     $brandNames = [
@@ -103,10 +107,53 @@ try {
 
     $typeLabel = strtoupper($brand);
     $filename = preg_replace('/\s+/', '_', $name) . "_90Day_{$typeLabel}_Protocol.pdf";
-    header('Content-Type: application/pdf');
-    header('Content-Disposition: attachment; filename="' . $filename . '"');
-    header('Content-Length: ' . strlen($pdfBinary));
-    echo $pdfBinary;
+
+    // Persist the PDF server-side so the download link is a real, durable URL
+    // rather than a blob: URL (which does not survive navigating to another page).
+    $storageDir = __DIR__ . '/../storage/generated_plans';
+    if (!is_dir($storageDir)) {
+        mkdir($storageDir, 0755, true);
+    }
+
+    // Sweep files older than 2 hours — no cron needed, this endpoint is called
+    // often enough on a live site to keep the directory from growing unbounded.
+    foreach (glob($storageDir . '/*.pdf') ?: [] as $oldFile) {
+        if (filemtime($oldFile) < time() - 7200) {
+            @unlink($oldFile);
+        }
+    }
+
+    $token = bin2hex(random_bytes(16));
+    file_put_contents($storageDir . '/' . $token . '.pdf', $pdfBinary);
+
+    // Best-effort email delivery; never blocks or fails the download response.
+    $emailSent = false;
+    if (!empty($email)) {
+        try {
+            $tempFile = tempnam(sys_get_temp_dir(), 'plan_') . '.pdf';
+            file_put_contents($tempFile, $pdfBinary);
+            $mailer = new Mailer();
+            $emailSent = $mailer->send(
+                $email,
+                "Your 90-Day {$brand} Protocol",
+                "<p>Hi " . htmlspecialchars($name) . ",</p><p>Your personalized 90-Day {$brand} Protocol is attached.</p><p>With love,<br>1wellness Team</p>",
+                true,
+                $tempFile,
+                $filename
+            );
+            @unlink($tempFile);
+        } catch (Exception $e) {
+            error_log('[generate-plan] Email delivery failed (non-blocking): ' . $e->getMessage());
+        }
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => true,
+        'token' => $token,
+        'filename' => $filename,
+        'emailSent' => $emailSent,
+    ]);
 
 } catch (Exception $e) {
     error_log('[generate-plan] Error: ' . $e->getMessage());
@@ -173,7 +220,7 @@ function resolveRegionProfile(array $input): array
         $email = $input['email'] ?? '';
         if (!empty($email)) {
             try {
-                $db = new Database();
+                $db = Database::getInstance();
                 $stmt = $db->getConnection()->prepare("SELECT country_code, country_name, region_city, cuisine_pref, measurement_system FROM users WHERE email = ? LIMIT 1");
                 $stmt->execute([$email]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);

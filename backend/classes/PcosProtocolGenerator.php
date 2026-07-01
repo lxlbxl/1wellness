@@ -45,7 +45,12 @@ class PcosProtocolGenerator extends AbstractProtocolGenerator
     {
         $type = $assessment['pcos_type'] ?? $assessment['pcosType'] ?? '';
 
-        if (empty($type)) {
+        // Frontend sends {primary, scores, confidence}, not a plain string.
+        if (is_array($type)) {
+            $type = $type['primary'] ?? '';
+        }
+
+        if (empty($type) || !is_string($type)) {
             // Infer from symptoms
             $symptoms = strtolower(implode(' ', $assessment));
 

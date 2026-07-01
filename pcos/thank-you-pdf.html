@@ -258,7 +258,7 @@
 
                 init() {
                     const urlParams = new URLSearchParams(window.location.search);
-                    this.orderDetails.amount = '$' + parseInt(urlParams.get('amount') || '45').toLocaleString();
+                    this.orderDetails.amount = '$' + parseInt(urlParams.get('amount') || '97').toLocaleString();
                     this.orderDetails.transactionId = urlParams.get('transaction_id') || urlParams.get('tx_ref') || '';
                     this.orderDetails.email = urlParams.get('email') || localStorage.getItem('pcosProtocolEmail') || '';
                     this.orderDetails.pcosType = localStorage.getItem('pcosProtocolType') || 'PCOS';

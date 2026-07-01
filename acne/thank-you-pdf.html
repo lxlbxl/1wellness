@@ -258,7 +258,7 @@
 
                 init() {
                     const urlParams = new URLSearchParams(window.location.search);
-                    this.orderDetails.amount = '$' + parseInt(urlParams.get('amount') || '45').toLocaleString();
+                    this.orderDetails.amount = '$' + parseInt(urlParams.get('amount') || '67').toLocaleString();
                     this.orderDetails.transactionId = urlParams.get('transaction_id') || urlParams.get('tx_ref') || '';
                     this.orderDetails.email = urlParams.get('email') || localStorage.getItem('acneProtocolEmail') || '';
                     this.orderDetails.acneType = localStorage.getItem('acneProtocolType') || 'Acne';

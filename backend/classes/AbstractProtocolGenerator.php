@@ -43,7 +43,7 @@ abstract class AbstractProtocolGenerator
         $this->settings = Settings::getInstance();
         $this->ai = new AIOrchestrator();
         $this->regionProfile = new RegionProfile();
-        $this->modules = ModuleManifest::getModules($this->condition);
+        $this->modules = ModuleManifest::getModulesStatic($this->condition);
     }
 
     /**
@@ -220,7 +220,7 @@ LOCALIZATION;
     protected function injectModuleManifest(string $prompt): string
     {
         $moduleList = implode(', ', $this->modules);
-        $hasMovement = ModuleManifest::hasModule($this->condition, ModuleManifest::MODULE_MOVEMENT) ? 'YES' : 'NO';
+        $hasMovement = in_array(ModuleManifest::MODULE_MOVEMENT, $this->modules, true) ? 'YES' : 'NO';
 
         $manifestBlock = <<<MANIFEST
 ## MODULE MANIFEST FOR THIS CONDITION
@@ -260,13 +260,15 @@ MANIFEST;
     protected function callAI(string $systemPrompt, string $userPrompt): string
     {
         try {
-            $response = $this->ai->chat([
-                ['role' => 'system', 'content' => $systemPrompt],
-                ['role' => 'user', 'content' => $userPrompt],
-            ], [
-                'max_tokens' => 8000,
-                'temperature' => 0.7,
-            ]);
+            $response = $this->ai->callWithPrompts($systemPrompt, $userPrompt);
+
+            if (is_array($response)) {
+                $errorMessage = $response['error'] ?? 'AI provider returned an unexpected response';
+                if (!is_string($errorMessage)) {
+                    $errorMessage = json_encode($errorMessage);
+                }
+                throw new Exception($errorMessage);
+            }
 
             return $response;
         } catch (Exception $e) {
@@ -361,7 +363,7 @@ MANIFEST;
         }
 
         // Validate no forbidden modules
-        if (!ModuleManifest::hasModule($this->condition, ModuleManifest::MODULE_MOVEMENT)) {
+        if (!in_array(ModuleManifest::MODULE_MOVEMENT, $this->modules, true)) {
             if (isset($plan['workout']) || isset($plan['exercise']) || isset($plan['movement'])) {
                 error_log("[{$this->condition}Generator] Plan contains forbidden movement module");
                 unset($plan['workout'], $plan['exercise'], $plan['movement']);
@@ -525,5 +527,187 @@ MANIFEST;
     public function getBrandName(): string
     {
         return $this->brandName;
+    }
+
+    /**
+     * Render a generated plan (the array returned by generate()) into a PDF binary.
+     *
+     * Deliberately schema-agnostic: each condition's AI prompt returns a different
+     * JSON shape (skincare_routine, strength_protocol, macro_targets, etc.), and that
+     * shape has already drifted at least once since this class was written. Rather
+     * than hand-map placeholders that silently drop new/renamed sections, this walks
+     * the plan recursively and renders every section it finds.
+     */
+    public function renderPlanToPdf(array $plan, string $name): string
+    {
+        $html = $this->planToHtml($plan, $name);
+
+        $options = new \Dompdf\Options();
+        $options->set('isRemoteEnabled', false);
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('defaultFont', 'sans-serif');
+        $options->set('isFontSubsettingEnabled', true);
+        $options->set('tempDir', sys_get_temp_dir());
+
+        $dompdf = new \Dompdf\Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return $dompdf->output();
+    }
+
+    /**
+     * Build the full PDF HTML document for a plan.
+     */
+    private function planToHtml(array $plan, string $name): string
+    {
+        $brand = $this->esc($this->brandName ?: '1wellness');
+        $safeName = $this->esc($name ?: 'Friend');
+        $date = date('j F Y');
+
+        // Priority fields rendered first, in a fixed order, if present.
+        $priorityKeys = ['summary', 'personalized_root_cause', 'root_cause', 'goals'];
+        $body = '';
+        foreach ($priorityKeys as $key) {
+            if (isset($plan[$key]) && $plan[$key] !== '' && $plan[$key] !== []) {
+                $body .= $this->renderPlanSection($key, $plan[$key]);
+            }
+        }
+
+        // Everything else, in the order the AI returned it, skipping internal metadata,
+        // the disclaimer (rendered separately below), and whatever was already rendered above.
+        $skip = array_merge($priorityKeys, ['_metadata', 'medical_disclaimer']);
+        foreach ($plan as $key => $value) {
+            if (in_array($key, $skip, true)) continue;
+            if ($value === '' || $value === [] || $value === null) continue;
+            $body .= $this->renderPlanSection($key, $value);
+        }
+
+        $disclaimer = $this->esc($this->getMedicalDisclaimer());
+
+        return <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+    body { font-family: sans-serif; color: #1A1A18; font-size: 11pt; line-height: 1.5; }
+    h1 { font-size: 22pt; color: #1D4532; margin-bottom: 2pt; }
+    h2 { font-size: 15pt; color: #1D4532; border-bottom: 1pt solid #dcece3; padding-bottom: 4pt; margin-top: 22pt; }
+    h3 { font-size: 12pt; color: #2C2C2A; margin-bottom: 4pt; }
+    .meta { color: #6B6560; font-size: 9pt; margin-bottom: 18pt; }
+    .card { background: #f2f8f5; border-radius: 6pt; padding: 8pt 10pt; margin-bottom: 8pt; }
+    ul { margin: 4pt 0; padding-left: 18pt; }
+    li { margin-bottom: 3pt; }
+    .disclaimer { font-size: 8pt; color: #999; margin-top: 28pt; border-top: 1pt solid #eee; padding-top: 10pt; }
+</style>
+</head>
+<body>
+    <h1>{$brand} Personal Protocol</h1>
+    <p class="meta">Prepared for {$safeName} &middot; {$date}</p>
+    {$body}
+    <p class="disclaimer">{$disclaimer}</p>
+</body>
+</html>
+HTML;
+    }
+
+    /**
+     * Render one top-level plan section (key + value) as HTML.
+     */
+    private function renderPlanSection(string $key, $value): string
+    {
+        $title = $this->esc($this->humanizeKey($key));
+        return "<h2>{$title}</h2>" . $this->renderPlanValue($value);
+    }
+
+    /**
+     * Recursively render any plan value (string, list, or associative object) as HTML.
+     */
+    private function renderPlanValue($value): string
+    {
+        if (is_string($value) || is_numeric($value)) {
+            return '<p>' . nl2br($this->esc((string)$value)) . '</p>';
+        }
+
+        if (is_bool($value)) {
+            return '<p>' . ($value ? 'Yes' : 'No') . '</p>';
+        }
+
+        if (!is_array($value)) {
+            return '';
+        }
+
+        $isList = array_keys($value) === range(0, count($value) - 1);
+
+        if ($isList) {
+            // List of scalars -> bullet list. List of objects -> repeated cards.
+            $allScalar = true;
+            foreach ($value as $item) {
+                if (is_array($item)) { $allScalar = false; break; }
+            }
+
+            if ($allScalar) {
+                $html = '<ul>';
+                foreach ($value as $item) {
+                    $html .= '<li>' . $this->esc((string)$item) . '</li>';
+                }
+                return $html . '</ul>';
+            }
+
+            $html = '';
+            foreach ($value as $item) {
+                $html .= '<div class="card">' . $this->renderAssocEntries($item) . '</div>';
+            }
+            return $html;
+        }
+
+        // Associative object -> nested key/value block.
+        return $this->renderAssocEntries($value);
+    }
+
+    /**
+     * Render an associative array's entries as labeled sub-blocks.
+     */
+    private function renderAssocEntries($assoc): string
+    {
+        if (!is_array($assoc)) {
+            return '<p>' . $this->esc((string)$assoc) . '</p>';
+        }
+
+        $html = '';
+        foreach ($assoc as $k => $v) {
+            if ($v === '' || $v === [] || $v === null) continue;
+            if (is_string($k)) {
+                $label = $this->esc($this->humanizeKey($k));
+                if (is_string($v) || is_numeric($v) || is_bool($v)) {
+                    $html .= '<p><strong>' . $label . ':</strong> ' . $this->esc((string)$v) . '</p>';
+                } else {
+                    $html .= '<h3>' . $label . '</h3>' . $this->renderPlanValue($v);
+                }
+            } else {
+                $html .= $this->renderPlanValue($v);
+            }
+        }
+        return $html;
+    }
+
+    /**
+     * Convert a snake_case/camelCase plan key into a human-readable title.
+     */
+    private function humanizeKey(string $key): string
+    {
+        $key = str_replace(['_', '-'], ' ', $key);
+        $key = preg_replace('/(?<!^)([A-Z])/', ' $1', $key);
+        return ucwords(trim($key));
+    }
+
+    /**
+     * HTML-escape a value for safe interpolation.
+     */
+    private function esc($value): string
+    {
+        return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
     }
 }

@@ -51,7 +51,21 @@ class AcneProtocolGenerator extends AbstractProtocolGenerator
     {
         $type = $assessment['acne_type'] ?? $assessment['acneType'] ?? '';
 
-        if (empty($type)) {
+        // Frontend sends {primary, scores, confidence}, not a plain string. The
+        // frontend's scoring keys (insulin/inflammatory/adrenal/postPill) describe
+        // the same acne drivers this prompt's vocabulary uses different names for.
+        if (is_array($type)) {
+            $type = $type['primary'] ?? '';
+            $driverMap = [
+                'insulin' => 'hormonal',
+                'adrenal' => 'stress-cortisol',
+                'postpill' => 'hormonal',
+                'inflammatory' => 'inflammatory',
+            ];
+            $type = $driverMap[strtolower((string)$type)] ?? $type;
+        }
+
+        if (empty($type) || !is_string($type)) {
             // Infer from symptoms/description
             $desc = strtolower(implode(' ', $assessment));
 

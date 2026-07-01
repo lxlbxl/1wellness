@@ -37,6 +37,18 @@ class AIOrchestrator
         return $this->callStartAPI($systemPrompt, $userPrompt);
     }
 
+    /**
+     * Send a fully-built system + user prompt straight to the LLM, with no
+     * database prompt-template lookup or [variable] substitution — for callers
+     * (like AbstractProtocolGenerator) that already have complete prompt strings.
+     *
+     * @return string|array Response text on success, or ['error' => ...] on failure.
+     */
+    public function callWithPrompts(string $systemPrompt, string $userPrompt)
+    {
+        return $this->callStartAPI($systemPrompt, $userPrompt);
+    }
+
     private function getSystemPrompt($key)
     {
         $row = $this->db->fetch("SELECT prompt_text FROM system_prompts WHERE prompt_key = :key", [':key' => $key]);
@@ -75,10 +87,18 @@ class AIOrchestrator
             // For now, let's stick to OpenRouter which hosts Gemini.
             // If direct Gemini:
             $url = "https://generativelanguage.googleapis.com/v1beta/models/{$this->model}:generateContent?key={$this->apiKey}";
-            // payload differs. 
+            // payload differs.
             // TO KEEP IT SIMPLE: I recommend using OpenRouter for multiple models including Gemini.
             // But if specific Gemini Direct implementation is needed:
             return $this->callGeminiDirect($system, $user);
+        } elseif ($this->provider === 'anthropic') {
+            // Anthropic's Messages API uses a different request/response shape
+            // (system prompt is a top-level field, not a role:system message).
+            return $this->callAnthropicDirect($system, $user);
+        }
+
+        if ($url === '') {
+            return ['error' => "Unsupported AI provider configured: '{$this->provider}'"];
         }
 
         $body = [
@@ -127,6 +147,39 @@ class AIOrchestrator
         }
 
         return $json;
+    }
+
+    private function callAnthropicDirect($system, $user)
+    {
+        // Anthropic Messages API: system prompt is a top-level field, and
+        // max_tokens is required (not optional as with OpenAI-compatible APIs).
+        $url = 'https://api.anthropic.com/v1/messages';
+        $headers = [
+            "x-api-key: " . $this->apiKey,
+            "anthropic-version: 2023-06-01",
+            "Content-Type: application/json",
+        ];
+
+        $body = [
+            'model' => $this->model,
+            'max_tokens' => 8000,
+            'system' => $system,
+            'messages' => [
+                ['role' => 'user', 'content' => $user],
+            ],
+        ];
+
+        $response = $this->httpRequest($url, $headers, $body);
+        if (isset($response['error']))
+            return $response;
+
+        $json = json_decode($response, true);
+
+        if (isset($json['content'][0]['text'])) {
+            return $json['content'][0]['text'];
+        }
+
+        return $json; // Debug info or error
     }
 
     private function httpRequest($url, $headers, $body)

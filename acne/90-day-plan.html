@@ -731,22 +731,29 @@
                 async loadPricing() {
                     try {
                         const response = await fetch('../backend/api/get-pricing.php');
+                        if (!response.ok) throw new Error('HTTP ' + response.status);
                         const result = await response.json();
-                        if (result.success && result.data.plans.acne) {
-                            const plans = result.data.plans.acne;
-                            if (plans['90-day']) {
-                                this.price = Number(plans['90-day'].price);
-                            }
+                        const plan = result.success && result.data && result.data.plans && result.data.plans.acne
+                            ? result.data.plans.acne['90-day'] : null;
+                        if (plan && plan.price) {
+                            this.price = Number(plan.price);
                             this.calculateValues();
+                        } else {
+                            this.useFallbackPricing();
                         }
                     } catch (e) {
                         console.error('Failed to load pricing', e);
-                        // Fallback to sensible defaults if API fails
-                        this.price = 45;
-                        this.calculateValues();
+                        this.useFallbackPricing();
                     } finally {
                         this.pricingLoaded = true;
                     }
+                },
+
+                useFallbackPricing() {
+                    // Use CONFIG.pricing if available, else sensible defaults matching select-plan.html
+                    const cfg = window.CONFIG && window.CONFIG.pricing && window.CONFIG.pricing['acne-treatment-plan'];
+                    this.price = cfg ? cfg.salePrice : 67;
+                    this.calculateValues();
                 },
 
                 loadAcneType() {

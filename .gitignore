@@ -144,3 +144,6 @@ backend/database/settings.json
 backend/debug_log.txt
 *.php~
 *- Copy.php
+
+# Generated plan PDFs (ephemeral, swept on a TTL by generate-plan.php)
+backend/storage/generated_plans/*.pdf

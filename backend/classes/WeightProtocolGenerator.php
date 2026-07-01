@@ -57,7 +57,19 @@ class WeightProtocolGenerator extends AbstractProtocolGenerator
     {
         $type = $assessment['weight_type'] ?? $assessment['weightType'] ?? '';
 
-        if (empty($type)) {
+        // Frontend sends {primary, scores, confidence}, not a plain string.
+        if (is_array($type)) {
+            $type = $type['primary'] ?? '';
+            $driverMap = [
+                'insulin' => 'insulin-resistant',
+                'adrenal' => 'stress-driven',
+                'inflammatory' => 'hormonal',
+                'transition' => 'habit-lifestyle',
+            ];
+            $type = $driverMap[strtolower((string)$type)] ?? $type;
+        }
+
+        if (empty($type) || !is_string($type)) {
             $desc = strtolower(implode(' ', $assessment));
 
             if (strpos($desc, 'insulin') !== false || strpos($desc, 'craving') !== false || strpos($desc, 'belly') !== false || strpos($desc, 'metabolic') !== false) {
